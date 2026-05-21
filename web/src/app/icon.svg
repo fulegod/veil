@@ -1,7 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32">
-  <rect width="24" height="24" rx="5" fill="#0b294d"/>
-  <path
-    fill="#ffffff"
-    d="M12 4a4 4 0 0 0-4 4v2.5H7.2a1.7 1.7 0 0 0-1.7 1.7v6.6a1.7 1.7 0 0 0 1.7 1.7h9.6a1.7 1.7 0 0 0 1.7-1.7v-6.6a1.7 1.7 0 0 0-1.7-1.7H16V8a4 4 0 0 0-4-4Zm-2.4 6.5V8a2.4 2.4 0 1 1 4.8 0v2.5H9.6Zm2.4 3.2a1.2 1.2 0 0 1 .6 2.24v1.76a.6.6 0 1 1-1.2 0v-1.76A1.2 1.2 0 0 1 12 13.7Z"
-  />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Black square — the section block -->
+  <rect width="32" height="32" fill="#000000"/>
+  <!-- Bracketed [V] in neon green — pure type, no illustration -->
+  <text
+    x="50%"
+    y="54%"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    font-family="ui-monospace, 'JetBrains Mono', monospace"
+    font-size="18"
+    font-weight="700"
+    fill="#00e676"
+    letter-spacing="-0.5"
+  >[V]</text>
 </svg>

@@ -48,10 +48,11 @@ function HeroSection({
     <Section tag="[§00 — MASTHEAD]">
       <div className="grid grid-cols-12 gap-6">
         <div className="col-span-12 md:col-span-8">
-          <h1 className="text-5xl font-bold uppercase leading-[0.95] tracking-tighter md:text-7xl lg:text-8xl">
-            {t("home.heroTitleA")}
-            <br />
-            <span className="bg-[#00e676] px-2 [-webkit-box-decoration-break:clone] [box-decoration-break:clone]">
+          <h1 className="text-5xl font-bold uppercase tracking-tighter md:text-7xl lg:text-8xl">
+            <span className="block leading-[1] pb-2">
+              {t("home.heroTitleA")}
+            </span>
+            <span className="mt-4 inline-block bg-[#00e676] px-3 leading-[1.1] [-webkit-box-decoration-break:clone] [box-decoration-break:clone]">
               {t("home.heroTitleB")}
             </span>
           </h1>
@@ -260,21 +261,25 @@ function UseCasesSection({ t }: { t: TFn }) {
       tag: "[ALPHA]",
       title: t("home.useCase1Title"),
       body: t("home.useCase1Body"),
+      icon: <IconChart />,
     },
     {
       tag: "[FOUNDER]",
       title: t("home.useCase2Title"),
       body: t("home.useCase2Body"),
+      icon: <IconRocket />,
     },
     {
       tag: "[PERSONAL]",
       title: t("home.useCase3Title"),
       body: t("home.useCase3Body"),
+      icon: <IconEnvelope />,
     },
     {
       tag: "[DEAD-MAN]",
       title: t("home.useCase4Title"),
       body: t("home.useCase4Body"),
+      icon: <IconClockKey />,
     },
   ];
 
@@ -290,14 +295,19 @@ function UseCasesSection({ t }: { t: TFn }) {
         {cases.map((c, i) => (
           <div
             key={i}
-            className={`flex flex-col gap-2 p-5 ${
+            className={`group flex flex-col gap-3 p-5 transition-colors hover:bg-[#00e676]/10 ${
               i % 2 === 1
                 ? "border-t-2 border-black md:border-l-2 md:border-t-0"
                 : ""
             } ${i >= 2 ? "md:border-t-2 md:border-black" : ""}`}
           >
-            <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
-              {c.tag}
+            <div className="flex items-center justify-between gap-3">
+              <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+                {c.tag}
+              </div>
+              <div className="h-10 w-10 border-2 border-black bg-white p-1.5 text-black transition-colors group-hover:bg-black group-hover:text-[#00e676]">
+                {c.icon}
+              </div>
             </div>
             <h3 className="text-base font-bold uppercase tracking-tight">
               {c.title}
@@ -488,5 +498,80 @@ function FooterLink({
     >
       [{children}]
     </a>
+  );
+}
+
+// ─── Custom brutalist icons (2px stroke, no fill) ──────────────────────────
+// Each: 24×24 viewBox, currentColor stroke so it inherits parent color.
+
+function IconChart() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="square"
+      strokeLinejoin="miter"
+      aria-hidden
+    >
+      <path d="M3 21V3M3 21h18" />
+      <path d="M7 17v-4M11 17v-7M15 17v-5M19 17V8" />
+      <path d="M5 6l14-3" />
+    </svg>
+  );
+}
+
+function IconRocket() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="square"
+      strokeLinejoin="miter"
+      aria-hidden
+    >
+      <path d="M12 3c4 0 7 3 7 9l-3 3h-8l-3-3c0-6 3-9 7-9z" />
+      <circle cx="12" cy="10" r="1.5" fill="currentColor" />
+      <path d="M9 18l-2 3M15 18l2 3M12 18v3" />
+    </svg>
+  );
+}
+
+function IconEnvelope() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="square"
+      strokeLinejoin="miter"
+      aria-hidden
+    >
+      <rect x="3" y="5" width="18" height="14" />
+      <path d="M3 5l9 7 9-7" />
+      <circle cx="18" cy="18" r="2.5" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function IconClockKey() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="square"
+      strokeLinejoin="miter"
+      aria-hidden
+    >
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 7v5l3 2" />
+      <path d="M12 4v1M12 19v1M4 12h1M19 12h1" />
+    </svg>
   );
 }
