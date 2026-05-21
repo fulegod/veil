@@ -27,9 +27,10 @@ export function Providers({ children }: { children: ReactNode }) {
         <QueryClientProvider client={queryClient}>
           <RainbowKitProvider
             theme={lightTheme({
-              accentColor: "#1a9e3a",
-              accentColorForeground: "white",
-              borderRadius: "small",
+              accentColor: "#000000",
+              accentColorForeground: "#00e676",
+              borderRadius: "none",
+              fontStack: "system",
             })}
             avatar={VeilAvatar}
             modalSize="compact"

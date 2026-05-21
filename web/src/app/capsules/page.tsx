@@ -74,54 +74,67 @@ export default function CapsulesPage() {
   }, []);
 
   return (
-    <div className="flex flex-col flex-1 bg-[#f4f7f9]">
+    <div className="flex flex-col flex-1 bg-white text-black">
       <Header />
+      <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-6 p-4 md:p-8">
+        <section className="relative border-2 border-black bg-white p-6 md:p-12">
+          <div className="absolute top-0 left-0 bg-black px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+            [§FEED — PUBLIC CAPSULES]
+          </div>
 
-      <main className="flex flex-1 justify-center px-6 py-16">
-        <div className="w-full max-w-3xl space-y-8">
-          <div className="flex items-baseline justify-between">
-            <h1 className="font-[family-name:var(--font-barlow)] text-4xl font-black uppercase tracking-tight text-[#0b294d]">
+          <div className="mt-6 flex flex-wrap items-baseline justify-between gap-3 border-b-2 border-black pb-4">
+            <h1 className="text-3xl uppercase tracking-tighter md:text-5xl">
               {t("list.title")}
             </h1>
             <Link
               href="/capsule/new"
-              className="text-sm font-bold uppercase tracking-wider text-[#0099ff] hover:text-[#0b294d]"
+              className="border-2 border-black bg-white px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-widest shadow-[3px_3px_0_rgba(0,0,0,1)] hover:bg-[#00e676]"
             >
-              {t("list.newCapsule")}
+              [{t("list.newCapsule")}]
             </Link>
           </div>
 
           {load.kind === "loading" && (
-            <div className="text-[#666]">{t("common.loading")}</div>
+            <p className="mt-6 font-mono text-sm text-gray-500">
+              [{t("common.loading")}]
+            </p>
           )}
 
           {load.kind === "error" && (
-            <div className="rounded-[8px] border border-[#e53e3e]/30 bg-[#fdecea] px-4 py-3 text-sm text-[#9b2c2c]">
+            <div className="mt-6 border-2 border-black bg-white px-3 py-2 font-mono text-xs shadow-[3px_3px_0_rgba(0,0,0,1)]">
+              <span className="bg-black px-1 text-white">[ERROR]</span>{" "}
               {t("list.loadError")} {load.message}
             </div>
           )}
 
           {load.kind === "loaded" && load.capsules.length === 0 && (
-            <div className="rounded-[14px] bg-white px-6 py-12 text-center shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
-              <p className="text-[#666]">{t("list.empty")}</p>
+            <div className="mt-6 border-2 border-dashed border-black bg-white p-8 text-center">
+              <p className="font-mono text-sm lowercase text-gray-700">
+                {t("list.empty")}
+              </p>
               <Link
                 href="/capsule/new"
-                className="mt-3 inline-block text-sm font-bold uppercase tracking-wider text-[#0099ff] hover:text-[#0b294d]"
+                className="mt-3 inline-block border-2 border-black bg-black px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-white shadow-[3px_3px_0_rgba(0,0,0,1)] hover:bg-[#00e676] hover:text-black"
               >
-                {t("list.emptyCta")}
+                [{t("list.emptyCta")}]
               </Link>
             </div>
           )}
 
           {load.kind === "loaded" && load.capsules.length > 0 && (
-            <ul className="space-y-3">
-              {load.capsules.map((c) => (
-                <CapsuleRow key={c.entityKey} capsule={c} now={now} />
+            <ul className="mt-6 grid grid-cols-1 gap-0 border-2 border-black">
+              {load.capsules.map((c, i) => (
+                <CapsuleRow
+                  key={c.entityKey}
+                  capsule={c}
+                  now={now}
+                  borderTop={i > 0}
+                />
               ))}
             </ul>
           )}
-        </div>
-      </main>
+        </section>
+      </div>
     </div>
   );
 }
@@ -129,9 +142,11 @@ export default function CapsulesPage() {
 function CapsuleRow({
   capsule,
   now,
+  borderTop,
 }: {
   capsule: CapsuleSummary;
   now: number;
+  borderTop: boolean;
 }) {
   const { t } = useLanguage();
   const isUnlocked = now >= capsule.unlockAt;
@@ -139,38 +154,36 @@ function CapsuleRow({
   const remainingLabel = formatRemaining(remaining);
 
   return (
-    <li>
+    <li className={borderTop ? "border-t-2 border-black" : ""}>
       <Link
         href={`/capsule/${capsule.entityKey}`}
-        className="block rounded-[14px] bg-white px-5 py-5 shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:-translate-y-0.5"
+        className="grid grid-cols-12 gap-3 bg-white p-4 transition-colors hover:bg-[#00e676]"
       >
-        <div className="flex items-center justify-between gap-4">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <span
-                className={`inline-block h-2.5 w-2.5 rounded-full ${
-                  isUnlocked ? "bg-[#28a745]" : "bg-[#d69e2e]"
-                }`}
-                aria-hidden
-              />
-              <h2 className="truncate font-[family-name:var(--font-barlow)] text-xl font-bold uppercase tracking-tight text-[#0b294d]">
-                {capsule.title || t("view.untitled")}
-              </h2>
-            </div>
-            <p className="mt-1 font-[family-name:var(--font-geist-mono)] text-xs text-[#666]">
-              {t("list.by")} {capsule.creator.slice(0, 6)}…
-              {capsule.creator.slice(-4)}
-            </p>
+        <div className="col-span-12 md:col-span-1 flex items-center">
+          <span
+            className={`inline-block h-3 w-3 ${
+              isUnlocked ? "bg-[#00e676] border-2 border-black" : "bg-black"
+            }`}
+            aria-hidden
+          />
+        </div>
+        <div className="col-span-12 md:col-span-7">
+          <h2 className="text-lg uppercase tracking-tight md:text-xl">
+            {capsule.title || t("view.untitled")}
+          </h2>
+          <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-gray-700">
+            {t("list.by")} {capsule.creator.slice(0, 6)}…
+            {capsule.creator.slice(-4)}
+          </p>
+        </div>
+        <div className="col-span-12 md:col-span-4 md:text-right">
+          <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+            [{isUnlocked ? t("list.unlocked") : t("list.unlocksIn")}]
           </div>
-          <div className="text-right">
-            <div className="text-xs font-bold uppercase tracking-wider text-[#666]">
-              {isUnlocked ? t("list.unlocked") : t("list.unlocksIn")}
-            </div>
-            <div className="font-[family-name:var(--font-geist-mono)] text-sm font-bold text-[#0b294d]">
-              {isUnlocked
-                ? new Date(capsule.unlockAt).toLocaleDateString()
-                : remainingLabel}
-            </div>
+          <div className="font-mono text-sm font-bold tabular-nums">
+            {isUnlocked
+              ? new Date(capsule.unlockAt).toLocaleDateString()
+              : remainingLabel}
           </div>
         </div>
       </Link>

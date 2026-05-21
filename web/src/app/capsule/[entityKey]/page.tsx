@@ -5,17 +5,9 @@ import Link from "next/link";
 
 import { Header } from "@/components/Header";
 import { useLanguage } from "@/components/LanguageProvider";
-import { useArkivClients } from "@/hooks/useArkivClients";
-import {
-  getCapsule,
-  findFirstRevealForCapsule,
-  publishReveal,
-  sha256Hex,
-  type CapsuleEntity,
-  type RevealEntity,
-} from "@/lib/arkiv";
+import { getCapsule, type CapsuleEntity } from "@/lib/arkiv";
 import { decryptCiphertext } from "@/lib/tlock";
-import { explorerEntityUrl, explorerTxUrl } from "@/lib/config";
+import { explorerEntityUrl } from "@/lib/config";
 
 type LoadState =
   | { kind: "loading" }
@@ -63,13 +55,6 @@ export default function CapsulePage({
     return () => clearInterval(id);
   }, []);
 
-  // Decrypt effect — INTENTIONALLY does NOT depend on `now` (the per-second
-  // ticker). If `now` were in deps, the cleanup would run every second,
-  // setting `cancelled = true` on the in-flight decrypt promise → the .then
-  // would no-op and the UI stayed in "decrypting…" forever. Subtle bug,
-  // hours lost. The decrypt only depends on (a) the capsule being loaded
-  // and (b) the unlock time having passed. We capture `unlockAt` from the
-  // loaded capsule and schedule a one-shot timer for that moment.
   useEffect(() => {
     if (load.kind !== "loaded") return;
     const { unlockAt, ciphertext } = load.capsule;
@@ -92,13 +77,8 @@ export default function CapsulePage({
     }
 
     const delay = unlockAt - Date.now();
-    if (delay <= 0) {
-      // Already past unlock — decrypt immediately
-      runDecrypt();
-    } else {
-      // Wait until the unlock moment
-      timer = setTimeout(runDecrypt, delay);
-    }
+    if (delay <= 0) runDecrypt();
+    else timer = setTimeout(runDecrypt, delay);
 
     return () => {
       cancelled = true;
@@ -107,45 +87,46 @@ export default function CapsulePage({
   }, [load]);
 
   return (
-    <div className="flex flex-col flex-1 bg-[#f4f7f9]">
+    <div className="flex flex-col flex-1 bg-white text-black">
       <Header />
+      <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-6 p-4 md:p-8">
+        {load.kind === "loading" && (
+          <BrutalSection tag="[§CAPSULE — LOADING]">
+            <p className="font-mono text-sm text-gray-500">
+              [{t("view.loading")}]
+            </p>
+          </BrutalSection>
+        )}
 
-      <main className="flex flex-1 justify-center px-6 py-12">
-        <article className="w-full max-w-2xl space-y-8">
-          {load.kind === "loading" && (
-            <div className="text-[#666]">{t("view.loading")}</div>
-          )}
+        {load.kind === "not-found" && (
+          <BrutalSection tag="[§CAPSULE — 404]">
+            <h1 className="text-3xl uppercase tracking-tighter md:text-4xl">
+              {t("view.notFound")}
+            </h1>
+            <p className="mt-3 text-sm text-gray-700 lowercase text-justify">
+              {t("view.notFoundBody")}{" "}
+              <code className="border-2 border-black bg-white px-1 font-mono text-xs">
+                {entityKey}
+              </code>
+            </p>
+            <Link
+              href="/"
+              className="mt-4 inline-block border-2 border-black bg-white px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-widest shadow-[3px_3px_0_rgba(0,0,0,1)] hover:bg-[#00e676]"
+            >
+              [{t("view.notFoundBack")}]
+            </Link>
+          </BrutalSection>
+        )}
 
-          {load.kind === "not-found" && (
-            <div className="space-y-4 rounded-[14px] bg-white p-9 shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
-              <h1 className="font-[family-name:var(--font-barlow)] text-3xl font-black uppercase text-[#0b294d]">
-                {t("view.notFound")}
-              </h1>
-              <p className="text-sm text-[#666]">
-                {t("view.notFoundBody")}{" "}
-                <code className="ml-1 font-[family-name:var(--font-geist-mono)] text-xs text-[#222] bg-[#f4f7f9] px-1.5 py-0.5 rounded">
-                  {entityKey}
-                </code>
-              </p>
-              <Link
-                href="/"
-                className="inline-block text-sm font-bold text-[#0099ff] hover:text-[#0b294d]"
-              >
-                {t("view.notFoundBack")}
-              </Link>
-            </div>
-          )}
-
-          {load.kind === "loaded" && (
-            <CapsuleView
-              capsule={load.capsule}
-              now={now}
-              reveal={reveal}
-              entityKey={entityKey}
-            />
-          )}
-        </article>
-      </main>
+        {load.kind === "loaded" && (
+          <CapsuleView
+            capsule={load.capsule}
+            now={now}
+            reveal={reveal}
+            entityKey={entityKey}
+          />
+        )}
+      </div>
     </div>
   );
 }
@@ -162,300 +143,172 @@ function CapsuleView({
   entityKey: string;
 }) {
   const { t } = useLanguage();
-  const isUnlockTimeReached = now >= capsule.unlockAt;
+  const isUnlocked = now >= capsule.unlockAt;
 
   return (
-    <div className="space-y-6 rounded-[14px] bg-white p-9 shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
-      <div className="flex items-center gap-2">
-        <Badge
-          color={isUnlockTimeReached ? "success" : "warning"}
-          label={
-            isUnlockTimeReached
-              ? t("view.badgeUnlocked")
-              : t("view.badgeLocked")
-          }
-        />
-        <Badge
-          color={capsule.isPublic ? "brand" : "neutral"}
-          label={
-            capsule.isPublic ? t("view.badgePublic") : t("view.badgeUnlisted")
-          }
-        />
-      </div>
+    <>
+      <BrutalSection tag="[§CAPSULE]" tagAccent>
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-12 md:col-span-8">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge accent={isUnlocked}>
+                {isUnlocked ? t("view.badgeUnlocked") : t("view.badgeLocked")}
+              </Badge>
+              <Badge inverted={!capsule.isPublic}>
+                {capsule.isPublic
+                  ? t("view.badgePublic")
+                  : t("view.badgeUnlisted")}
+              </Badge>
+            </div>
+            <h1 className="mt-4 text-3xl uppercase tracking-tighter md:text-5xl">
+              {capsule.title || t("view.untitled")}
+            </h1>
 
-      <h1 className="font-[family-name:var(--font-barlow)] text-4xl font-black uppercase tracking-tight text-[#0b294d]">
-        {capsule.title || t("view.untitled")}
-      </h1>
+            {!isUnlocked && (
+              <Countdown unlockAt={capsule.unlockAt} now={now} t={t} />
+            )}
 
-      {!isUnlockTimeReached && (
-        <Countdown unlockAt={capsule.unlockAt} now={now} />
-      )}
+            <div className="mt-6 border-2 border-black bg-white">
+              <div className="border-b-2 border-black bg-black px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+                [{t("view.contents")}]
+              </div>
+              <div className="p-4 font-mono text-sm">
+                {reveal.kind === "locked" && (
+                  <p className="lowercase text-gray-700">
+                    {t("view.sealed", {
+                      bytes: capsule.ciphertext.length,
+                      round: capsule.unlockRound,
+                    })}
+                  </p>
+                )}
+                {reveal.kind === "decrypting" && (
+                  <p className="text-gray-700">
+                    <span className="bg-black px-1 text-[#00e676]">[…]</span>{" "}
+                    {t("view.decrypting")}
+                  </p>
+                )}
+                {reveal.kind === "revealed" && (
+                  <pre className="whitespace-pre-wrap break-words text-black">
+                    {reveal.plaintext}
+                  </pre>
+                )}
+                {reveal.kind === "error" && (
+                  <p className="text-black">
+                    <span className="bg-black px-1 text-white">[ERROR]</span>{" "}
+                    {t("view.decryptError")} {reveal.message}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
 
-      <div className="rounded-[8px] border border-[#eee] bg-[#f4f7f9]">
-        <div className="border-b border-[#eee] px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#666]">
-          {t("view.contents")}
+          <aside className="col-span-12 border-t-2 border-black pt-4 md:col-span-4 md:border-l-2 md:border-t-0 md:pl-6 md:pt-0">
+            <MetaItem label={t("view.metaCreator")}>
+              <span className="font-mono text-xs break-all">
+                {capsule.creator || t("view.unknown")}
+              </span>
+            </MetaItem>
+            <MetaItem label={t("view.metaOwner")}>
+              <span className="font-mono text-xs break-all">
+                {capsule.owner || t("view.unknown")}
+              </span>
+            </MetaItem>
+            <MetaItem label={t("view.metaUnlockAt")}>
+              <span className="font-mono text-xs">
+                {new Date(capsule.unlockAt).toLocaleString()}
+              </span>
+            </MetaItem>
+            <MetaItem label={t("view.metaUnlockRound")}>
+              <span className="font-mono text-xs">{capsule.unlockRound}</span>
+            </MetaItem>
+            <MetaItem label={t("view.metaEntityKey")}>
+              <a
+                href={explorerEntityUrl(entityKey)}
+                target="_blank"
+                rel="noreferrer"
+                className="break-all border-b-2 border-black font-mono text-xs hover:border-[#00e676] hover:text-[#00e676]"
+              >
+                {entityKey}
+              </a>
+            </MetaItem>
+            <MetaItem label={t("view.metaExpires")}>
+              <span className="font-mono text-xs">
+                {String(capsule.expiresAtBlock)}
+              </span>
+            </MetaItem>
+          </aside>
         </div>
-        <div className="p-4 text-sm">
-          {reveal.kind === "locked" && (
-            <p className="text-[#666] italic">
-              {t("view.sealed", {
-                bytes: capsule.ciphertext.length,
-                round: capsule.unlockRound,
-              })}
-            </p>
-          )}
-          {reveal.kind === "decrypting" && (
-            <p className="text-[#666]">{t("view.decrypting")}</p>
-          )}
-          {reveal.kind === "revealed" && (
-            <pre className="whitespace-pre-wrap break-words font-[family-name:var(--font-geist-mono)] text-sm text-[#222]">
-              {reveal.plaintext}
-            </pre>
-          )}
-          {reveal.kind === "error" && (
-            <p className="text-[#9b2c2c]">
-              {t("view.decryptError")} {reveal.message}
-            </p>
-          )}
-        </div>
-      </div>
-
-      {reveal.kind === "revealed" && (
-        <RevealSection capsuleKey={entityKey} plaintext={reveal.plaintext} />
-      )}
-
-      <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2 text-sm border-t border-[#eee] pt-6">
-        <Meta label={t("view.metaCreator")}>
-          <span className="font-[family-name:var(--font-geist-mono)] text-xs text-[#222]">
-            {capsule.creator || t("view.unknown")}
-          </span>
-        </Meta>
-        <Meta label={t("view.metaOwner")}>
-          <span className="font-[family-name:var(--font-geist-mono)] text-xs text-[#222]">
-            {capsule.owner || t("view.unknown")}
-          </span>
-        </Meta>
-        <Meta label={t("view.metaUnlockAt")}>
-          <span className="text-[#222]">
-            {new Date(capsule.unlockAt).toLocaleString()}
-          </span>
-        </Meta>
-        <Meta label={t("view.metaUnlockRound")}>
-          <span className="font-[family-name:var(--font-geist-mono)] text-xs text-[#222]">
-            {capsule.unlockRound}
-          </span>
-        </Meta>
-        <Meta label={t("view.metaEntityKey")}>
-          <a
-            href={explorerEntityUrl(entityKey)}
-            target="_blank"
-            rel="noreferrer"
-            className="font-[family-name:var(--font-geist-mono)] text-xs text-[#0099ff] hover:text-[#0b294d] break-all"
-          >
-            {entityKey}
-          </a>
-        </Meta>
-        <Meta label={t("view.metaExpires")}>
-          <span className="font-[family-name:var(--font-geist-mono)] text-xs text-[#222]">
-            {String(capsule.expiresAtBlock)}
-          </span>
-        </Meta>
-      </dl>
-    </div>
+      </BrutalSection>
+    </>
   );
 }
 
-/**
- * Reveal section — shows the public reveal record (2nd entity type).
- * - If someone already published a reveal for this capsule, display it.
- * - Otherwise, if wallet connected, offer to publish one.
- */
-function RevealSection({
-  capsuleKey,
-  plaintext,
+function Countdown({
+  unlockAt,
+  now,
+  t,
 }: {
-  capsuleKey: string;
-  plaintext: string;
+  unlockAt: number;
+  now: number;
+  t: ReturnType<typeof useLanguage>["t"];
 }) {
-  const { t } = useLanguage();
-  const { arkivWallet, isReady } = useArkivClients();
-
-  const [reveal, setReveal] = useState<RevealEntity | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [publishing, setPublishing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [lastTxHash, setLastTxHash] = useState<string | null>(null);
-
-  // Fetch the first reveal for this capsule on mount
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const found = await findFirstRevealForCapsule(capsuleKey);
-        if (!cancelled) setReveal(found);
-      } catch (err) {
-        console.error("findFirstReveal failed", err);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [capsuleKey]);
-
-  async function handlePublish() {
-    if (!isReady || !arkivWallet) {
-      setError(t("reveal.errorConnect"));
-      return;
-    }
-    setError(null);
-    setPublishing(true);
-    try {
-      const hash = await sha256Hex(plaintext);
-      const { entityKey, txHash } = await publishReveal({
-        walletClient: arkivWallet,
-        capsuleKey,
-        plaintextHash: hash,
-      });
-      setLastTxHash(txHash);
-      // Optimistic update — re-fetch will fix it if Arkiv state diverges
-      const wallet = await arkivWallet.account.address;
-      setReveal({
-        entityKey,
-        creator: wallet ?? "",
-        capsuleKey,
-        revealedAt: Date.now(),
-        decryptedHash: hash,
-      });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      setError(message);
-    } finally {
-      setPublishing(false);
-    }
-  }
-
+  const ms = Math.max(0, unlockAt - now);
+  const total = Math.floor(ms / 1000);
+  const d = Math.floor(total / 86400);
+  const h = Math.floor((total % 86400) / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
   return (
-    <section className="rounded-[8px] border border-[#0099ff]/20 bg-[#f0f8ff] p-5">
-      <div className="text-xs font-bold uppercase tracking-wider text-[#0099ff]">
-        {t("reveal.section")}
-      </div>
-
-      {loading && (
-        <p className="mt-2 text-sm text-[#666]">{t("common.loading")}</p>
-      )}
-
-      {!loading && reveal && (
-        <div className="mt-3 space-y-1 text-sm">
-          <p className="text-[#222]">
-            {t("reveal.firstBy", {
-              wallet: `${reveal.creator.slice(0, 6)}…${reveal.creator.slice(
-                -4,
-              )}`,
-            })}
-          </p>
-          <p className="text-[#666]">
-            {t("reveal.at", {
-              time: new Date(reveal.revealedAt).toLocaleString(),
-            })}
-          </p>
-          <p className="font-[family-name:var(--font-geist-mono)] text-xs text-[#666] break-all">
-            sha256: {reveal.decryptedHash}
-          </p>
-        </div>
-      )}
-
-      {!loading && !reveal && (
-        <div className="mt-3 space-y-3">
-          <p className="text-sm text-[#666]">{t("reveal.notYet")}</p>
-          <p className="text-xs text-[#666] leading-relaxed">
-            {t("reveal.ctaHint")}
-          </p>
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={handlePublish}
-              disabled={publishing || !isReady}
-              className="inline-flex h-10 items-center justify-center rounded-[6px] bg-[#0b294d] px-5 text-sm font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#0099ff] disabled:bg-[#ddd] disabled:text-[#999]"
-            >
-              {publishing ? t("reveal.publishing") : t("reveal.cta")}
-            </button>
-            {!isReady && (
-              <span className="text-xs text-[#666]">
-                {t("reveal.connectFirst")}
-              </span>
-            )}
+    <div className="mt-6 grid grid-cols-4 gap-0 border-2 border-black">
+      {[
+        ["D", d],
+        ["H", h],
+        ["M", m],
+        ["S", s],
+      ].map(([label, val], i) => (
+        <div
+          key={label as string}
+          className={`flex flex-col items-center p-3 ${i > 0 ? "border-l-2 border-black" : ""}`}
+        >
+          <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+            [{label}]
+          </div>
+          <div className="font-mono text-2xl font-bold tabular-nums text-[#00e676] md:text-3xl">
+            {String(val).padStart(2, "0")}
           </div>
         </div>
-      )}
-
-      {lastTxHash && (
-        <a
-          href={explorerTxUrl(lastTxHash)}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-3 inline-block font-[family-name:var(--font-geist-mono)] text-xs text-[#0099ff] underline hover:text-[#0b294d]"
-        >
-          tx →
-        </a>
-      )}
-
-      {error && (
-        <div className="mt-3 rounded-[6px] border border-[#e53e3e]/30 bg-[#fdecea] px-3 py-2 text-xs text-[#9b2c2c]">
-          {t("reveal.error")} {error}
-        </div>
-      )}
-    </section>
-  );
-}
-
-function Countdown({ unlockAt, now }: { unlockAt: number; now: number }) {
-  const { t } = useLanguage();
-  const remainingMs = Math.max(0, unlockAt - now);
-  const totalSec = Math.floor(remainingMs / 1000);
-  const days = Math.floor(totalSec / 86400);
-  const hours = Math.floor((totalSec % 86400) / 3600);
-  const minutes = Math.floor((totalSec % 3600) / 60);
-  const seconds = totalSec % 60;
-
-  return (
-    <div className="rounded-[8px] border border-[#d69e2e]/30 bg-[#fff8e1] px-4 py-3">
-      <div className="text-xs font-bold uppercase tracking-wider text-[#7b5c00]">
-        {t("view.unlocksIn")}
-      </div>
-      <div className="mt-1 font-[family-name:var(--font-geist-mono)] text-2xl font-bold text-[#7b5c00]">
-        {days > 0 && `${days}d `}
-        {String(hours).padStart(2, "0")}h {String(minutes).padStart(2, "0")}m{" "}
-        {String(seconds).padStart(2, "0")}s
+      ))}
+      <div className="col-span-4 border-t-2 border-black bg-black px-3 py-1 text-center font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+        [{t("view.unlocksIn")}]
       </div>
     </div>
   );
 }
 
 function Badge({
-  color,
-  label,
+  accent,
+  inverted,
+  children,
 }: {
-  color: "success" | "warning" | "brand" | "neutral";
-  label: string;
+  accent?: boolean;
+  inverted?: boolean;
+  children: React.ReactNode;
 }) {
-  const colors = {
-    success: "bg-[#e8f5e9] border-[#28a745]/30 text-[#2e7d32]",
-    warning: "bg-[#fff8e1] border-[#d69e2e]/30 text-[#7b5c00]",
-    brand: "bg-[#0b294d] border-[#0b294d] text-white",
-    neutral: "bg-[#f4f7f9] border-[#ddd] text-[#666]",
-  } as const;
+  const cls = accent
+    ? "bg-[#00e676] text-black"
+    : inverted
+      ? "bg-white text-black border-2 border-black"
+      : "bg-black text-white";
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider ${colors[color]}`}
+      className={`${cls} inline-block px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest`}
     >
-      {label}
+      [{children}]
     </span>
   );
 }
 
-function Meta({
+function MetaItem({
   label,
   children,
 }: {
@@ -463,11 +316,35 @@ function Meta({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <dt className="text-xs font-bold uppercase tracking-wider text-[#666]">
-        {label}
-      </dt>
-      <dd className="mt-1">{children}</dd>
+    <div className="border-b-2 border-black py-3 last:border-b-0">
+      <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+        [{label}]
+      </div>
+      <div className="mt-1">{children}</div>
     </div>
+  );
+}
+
+function BrutalSection({
+  tag,
+  tagAccent,
+  children,
+}: {
+  tag: string;
+  tagAccent?: boolean;
+  children: React.ReactNode;
+}) {
+  const tagClass = tagAccent
+    ? "bg-[#00e676] text-black"
+    : "bg-black text-white";
+  return (
+    <section className="relative border-2 border-black bg-white p-6 md:p-12">
+      <div
+        className={`absolute top-0 left-0 ${tagClass} px-2 py-1 text-[10px] font-bold uppercase tracking-widest`}
+      >
+        {tag}
+      </div>
+      <div className="mt-6">{children}</div>
+    </section>
   );
 }

@@ -1,98 +1,82 @@
 @import "tailwindcss";
 
 /*
- * Veil design tokens.
- * Light theme with navy primary + bright blue accent.
- * Barlow Condensed (display) + Lato (body) + Geist Mono (code/hashes).
+ * Veil design tokens — MonoGrid Newspaper.
+ * Black-on-white editorial + single neon-green accent + JetBrains Mono.
+ * Print-first: hard 2px borders, hard offset shadows, no rounded corners,
+ * no blur, no gradients, no second accent. [BRACKETS] everywhere.
  */
 
 :root {
-  /* Brand — green-dominant with navy as authority text/surface */
-  --color-primary: #1a9e3a; /* deeper green than #28a745 for contrast on light bg */
-  --color-primary-hover: #157a2c; /* even deeper for hover */
-  --color-primary-soft: #e8f5e9; /* tint for backgrounds */
-  --color-secondary: #0b294d; /* navy — headings, dark sections */
-  --color-accent: #0099ff; /* keep blue for info / external links / hashes */
-  --color-accent-soft: #007acc;
+  /* Core palette — that's it. No second accent ever. */
+  --paper: #ffffff;
+  --ink: #000000;
+  --accent: #00e676;
+  --ink-soft: #4b5563; /* body copy */
+  --ink-mute: #9ca3af; /* captions, placeholders */
+  --rule: 2px solid #000000;
 
-  /* Surfaces */
-  --color-bg: #f4f7f9;
-  --color-surface: #ffffff;
-  --color-surface-dark: #1a1f2e;
-
-  /* Text */
-  --color-text: #222222;
-  --color-text-muted: #666666;
-  --color-text-inverse: #ffffff;
-
-  /* Borders */
-  --color-border: #dddddd;
-  --color-border-light: #eeeeee;
-
-  /* Semantic */
-  --color-success: #28a745;
-  --color-success-soft: #e8f5e9;
-  --color-warning: #d69e2e;
-  --color-warning-soft: #fff8e1;
-  --color-danger: #e53e3e;
-  --color-danger-soft: #fdecea;
-
-  /* Radii */
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 14px;
-
-  /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.3);
+  /* Brutal hard offset shadow — no blur, just black behind */
+  --shadow-brutal: 3px 3px 0 rgba(0, 0, 0, 1);
+  --shadow-brutal-lg: 6px 6px 0 rgba(0, 0, 0, 1);
 }
 
 @theme inline {
-  --color-background: var(--color-bg);
-  --color-foreground: var(--color-text);
+  --color-background: var(--paper);
+  --color-foreground: var(--ink);
 
-  /* Map brand tokens to Tailwind utilities */
-  --color-brand: var(--color-primary);
-  --color-brand-hover: var(--color-primary-hover);
-  --color-brand-accent: var(--color-accent);
+  /* Map to Tailwind utilities */
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-accent: var(--accent);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-mute: var(--ink-mute);
 
-  /* Fonts (loaded in layout.tsx via next/font/google) */
-  --font-display: var(--font-barlow);
-  --font-body: var(--font-lato);
-  --font-mono: var(--font-geist-mono);
+  /* Fonts (loaded in layout.tsx) */
+  --font-mono: var(--font-jetbrains);
+  --font-sans: var(--font-inter);
 }
 
 body {
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-lato), system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 14px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Headings use the display font by default */
+/* Text selection uses the accent — feels intentional */
+::selection {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+/* All headings are mono bold uppercase by default */
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-barlow), system-ui, sans-serif;
-  letter-spacing: -0.01em;
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
 }
 
-/* Date / time input pickers: keep icon visible on light backgrounds.
- * On light theme the native icon is already dark — no filter needed. */
+/* Date / time pickers — keep the native icon dark on white */
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="datetime-local"]::-webkit-calendar-picker-indicator,
 input[type="time"]::-webkit-calendar-picker-indicator,
 input[type="month"]::-webkit-calendar-picker-indicator,
 input[type="week"]::-webkit-calendar-picker-indicator {
-  opacity: 0.6;
+  opacity: 0.7;
   cursor: pointer;
   padding: 0 4px;
   transition: opacity 0.15s ease;
 }
-
 input[type="date"]::-webkit-calendar-picker-indicator:hover,
 input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover,
 input[type="time"]::-webkit-calendar-picker-indicator:hover,

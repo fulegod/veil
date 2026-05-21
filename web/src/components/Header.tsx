@@ -11,74 +11,43 @@ export function Header() {
   const router = useRouter();
   const isHome = pathname === "/";
 
+  // Fake "today's edition" issue number for that newspaper feel
+  const issue = String(Math.floor((Date.now() / 86_400_000) % 999)).padStart(
+    3,
+    "0",
+  );
+
   return (
-    <header className="flex items-center justify-between gap-4 px-7 py-5 bg-white border-b border-[#eee] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-      <div className="flex items-center gap-4">
-        {!isHome && (
-          <button
-            type="button"
-            onClick={() => router.back()}
-            aria-label="Go back"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-[6px] border border-[#ddd] bg-white text-[#0b294d] transition-colors hover:border-[#1a9e3a] hover:text-[#1a9e3a]"
+    <header className="border-b-2 border-black bg-white px-4 py-3 md:px-8 md:py-4">
+      <div className="mx-auto flex max-w-[1280px] flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center gap-4">
+          {!isHome && (
+            <button
+              type="button"
+              onClick={() => router.back()}
+              aria-label="Go back"
+              className="border-2 border-black bg-white px-2 py-1 font-mono text-xs font-bold uppercase tracking-widest transition-colors hover:bg-black hover:text-[#00e676]"
+            >
+              [←]
+            </button>
+          )}
+          <Link
+            href="/"
+            className="group inline-flex flex-col gap-0.5"
+            aria-label="Veil — home"
           >
-            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-              <path
-                fill="currentColor"
-                d="M15.41 16.59 10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41Z"
-              />
-            </svg>
-          </button>
-        )}
-        <Link
-          href="/"
-          className="group inline-flex items-center gap-3 transition-colors"
-          aria-label="Veil — home"
-        >
-          {/* Elaborate lockmark — body + shackle + visible keyhole + accent dot */}
-          <svg
-            viewBox="0 0 48 48"
-            width="56"
-            height="56"
-            aria-hidden="true"
-            className="text-[#0b294d] transition-colors group-hover:text-[#1a9e3a]"
-          >
-            {/* Shackle */}
-            <path
-              d="M16 22V14a8 8 0 0 1 16 0v8"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="4"
-              strokeLinecap="round"
-            />
-            {/* Body */}
-            <rect
-              x="10"
-              y="22"
-              width="28"
-              height="22"
-              rx="4"
-              fill="currentColor"
-            />
-            {/* Keyhole */}
-            <circle cx="24" cy="31" r="3" fill="#fff" />
-            <rect x="22.5" y="31" width="3" height="7" rx="1.5" fill="#fff" />
-            {/* Accent dot — "active" indicator in green */}
-            <circle
-              cx="38"
-              cy="14"
-              r="4"
-              fill="#1a9e3a"
-              className="opacity-0 transition-opacity group-hover:opacity-100"
-            />
-          </svg>
-          <span className="font-[family-name:var(--font-barlow)] text-6xl font-black uppercase leading-none tracking-[-0.02em] text-[#0b294d] transition-colors group-hover:text-[#1a9e3a]">
-            Veil
-          </span>
-        </Link>
-      </div>
-      <div className="flex items-center gap-3">
-        <LanguageToggle />
-        <ConnectButton />
+            <span className="font-mono text-3xl font-bold uppercase leading-none tracking-tighter text-black md:text-4xl">
+              VEIL
+            </span>
+            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+              SEAL IT. PROVE IT. ISSUE NO. {issue}
+            </span>
+          </Link>
+        </div>
+        <div className="flex items-center gap-3">
+          <LanguageToggle />
+          <ConnectButton />
+        </div>
       </div>
     </header>
   );

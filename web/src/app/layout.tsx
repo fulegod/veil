@@ -1,32 +1,28 @@
 import type { Metadata } from "next";
-import { Barlow_Condensed, Lato, Geist_Mono } from "next/font/google";
+import { JetBrains_Mono, Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Providers } from "./providers";
 
-const barlow = Barlow_Condensed({
-  variable: "--font-barlow",
+// Mono is the voice. Inter is only used for the occasional long-form essay.
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
   subsets: ["latin"],
-  weight: ["400", "600", "700", "900"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
-const lato = Lato({
-  variable: "--font-lato",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Veil — Encrypted Time Capsules",
+  title: "VEIL — TRUSTLESS TIME CAPSULES",
   description:
-    "Trustless time capsules: encrypt today, automatically reveal in the future. Powered by Arkiv + drand.",
+    "Seal your alpha today. Cryptographic proof you called it first. On-chain, drand-encrypted, verifiable in Braga.",
 };
 
 export default function RootLayout({
@@ -37,14 +33,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${barlow.variable} ${lato.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${jetbrainsMono.variable} ${inter.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col bg-[#f4f7f9] text-[#222]">
-        {/*
-          Silence known-noisy SDK errors before anything else mounts.
-          Must be beforeInteractive so its event listeners register
-          before Next.js dev overlay's own.
-        */}
+      <body className="min-h-full flex flex-col bg-white text-black antialiased selection:bg-[#00e676] selection:text-black">
         <Script src="/error-silencer.js" strategy="beforeInteractive" />
         <Providers>{children}</Providers>
       </body>

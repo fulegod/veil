@@ -6,33 +6,34 @@ import { useAccount } from "wagmi";
 import { Header } from "@/components/Header";
 import { useLanguage } from "@/components/LanguageProvider";
 
-// Real Veil capsule on Braga used as the live example. Created on 2026-05-21,
-// unlocked 9:15 PM same day. Anyone can verify it on the explorer.
+// Real Veil capsule on Braga used as the live example.
 const LIVE_EXAMPLE_KEY =
   "0x91807c370f60f91312267f23a319f2d587b09a20b0cc502287ac1eb2081d403a";
+
+type TFn = ReturnType<typeof useLanguage>["t"];
 
 export default function Home() {
   const { isConnected, address } = useAccount();
   const { t } = useLanguage();
 
   return (
-    <div className="flex flex-col flex-1 bg-[#f4f7f9]">
+    <div className="flex flex-col flex-1 bg-white text-black">
       <Header />
-
-      <HeroSection isConnected={isConnected} address={address} t={t} />
-      <ProblemSection t={t} />
-      <HowItWorksSection t={t} />
-      <ExampleSection t={t} />
-      <UseCasesSection t={t} />
-      <WhyArkivSection t={t} />
-      <TrustSection t={t} />
-      <SiteFooter t={t} />
+      <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-6 p-4 md:p-8">
+        <HeroSection isConnected={isConnected} address={address} t={t} />
+        <ProblemSection t={t} />
+        <HowItWorksSection t={t} />
+        <ExampleSection t={t} />
+        <UseCasesSection t={t} />
+        <WhyArkivSection t={t} />
+        <TrustSection t={t} />
+        <SiteFooter t={t} />
+      </div>
     </div>
   );
 }
 
-// ─── Section: HERO ──────────────────────────────────────────────────────────
-type TFn = ReturnType<typeof useLanguage>["t"];
+// ─── HERO ───────────────────────────────────────────────────────────────────
 
 function HeroSection({
   isConnected,
@@ -44,71 +45,74 @@ function HeroSection({
   t: TFn;
 }) {
   return (
-    <section className="relative overflow-hidden border-b border-[#eee] bg-gradient-to-br from-white via-[#f4f7f9] to-[#eef3f9]">
-      {/* Decorative grid — visible enough to give the page texture */}
-      <div
-        className="absolute inset-0 opacity-[0.18]"
-        style={{
-          backgroundImage:
-            "linear-gradient(#0b294d 1px, transparent 1px), linear-gradient(90deg, #0b294d 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-        aria-hidden
-      />
-      {/* Soft green glow in the corner */}
-      <div
-        className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-[#1a9e3a]/20 blur-3xl"
-        aria-hidden
-      />
-      <div className="relative mx-auto max-w-5xl px-6 py-24 sm:py-32">
-        <p className="font-[family-name:var(--font-geist-mono)] text-xs font-bold uppercase tracking-[0.2em] text-[#1a9e3a]">
-          {t("home.heroEyebrow")}
-        </p>
-        <h1 className="mt-4 font-[family-name:var(--font-barlow)] text-6xl font-black uppercase leading-[0.95] tracking-tight text-[#0b294d] sm:text-7xl md:text-8xl">
-          {t("home.heroTitleA")}
-          <br />
-          <span className="text-[#1a9e3a]">{t("home.heroTitleB")}</span>
-        </h1>
-        <p className="mt-8 max-w-2xl text-lg leading-relaxed text-[#222]">
-          {t("home.heroSubtitle")}
-        </p>
+    <Section tag="[§00 — MASTHEAD]">
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 md:col-span-8">
+          <h1 className="text-5xl font-bold uppercase leading-[0.95] tracking-tighter md:text-7xl lg:text-8xl">
+            {t("home.heroTitleA")}
+            <br />
+            <span className="bg-[#00e676] px-2 [-webkit-box-decoration-break:clone] [box-decoration-break:clone]">
+              {t("home.heroTitleB")}
+            </span>
+          </h1>
+          <p className="mt-6 max-w-2xl text-sm leading-snug text-gray-700 md:text-base">
+            {t("home.heroSubtitle")}
+          </p>
 
-        <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-          {isConnected ? (
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            {isConnected ? (
+              <Link
+                href="/capsule/new"
+                className="border-2 border-black bg-black px-4 py-2 font-mono text-xs font-bold uppercase tracking-widest text-white shadow-[3px_3px_0_rgba(0,0,0,1)] transition-colors hover:bg-[#00e676] hover:text-black md:text-sm"
+              >
+                [{t("home.heroCtaPrimary").toUpperCase()}]
+              </Link>
+            ) : (
+              <span className="border-2 border-dashed border-black bg-white px-4 py-2 font-mono text-xs font-bold uppercase tracking-widest text-gray-500">
+                [{t("home.connectFirst").toUpperCase()}]
+              </span>
+            )}
             <Link
-              href="/capsule/new"
-              className="inline-flex h-12 items-center justify-center rounded-[6px] bg-[#1a9e3a] px-7 text-sm font-bold uppercase tracking-wider text-white shadow-[0_2px_12px_rgba(26,158,58,0.35)] transition-all hover:bg-[#157a2c] hover:shadow-[0_4px_20px_rgba(26,158,58,0.5)]"
+              href="/capsules"
+              className="border-2 border-black bg-white px-4 py-2 font-mono text-xs font-bold uppercase tracking-widest text-black shadow-[3px_3px_0_rgba(0,0,0,1)] transition-colors hover:bg-[#00e676] md:text-sm"
             >
-              {t("home.heroCtaPrimary")}
+              [{t("home.heroCtaSecondary").toUpperCase()}]
             </Link>
-          ) : (
-            <div className="inline-flex h-12 items-center rounded-[6px] border border-dashed border-[#ddd] bg-white px-5 text-sm text-[#666]">
-              {t("home.connectFirst")}
-            </div>
-          )}
-          <Link
-            href="/capsules"
-            className="inline-flex h-12 items-center justify-center rounded-[6px] border-2 border-[#0b294d] bg-transparent px-7 text-sm font-bold uppercase tracking-wider text-[#0b294d] transition-colors hover:bg-[#0b294d] hover:text-white"
-          >
-            {t("home.heroCtaSecondary")}
-          </Link>
+          </div>
         </div>
 
-        <p className="mt-8 font-[family-name:var(--font-geist-mono)] text-xs text-[#666]">
-          {t("home.heroAttribution")}
-        </p>
-
-        {isConnected && address && (
-          <p className="mt-3 font-[family-name:var(--font-geist-mono)] text-xs text-[#999]">
-            {address.slice(0, 6)}…{address.slice(-4)}
+        {/* Right column — masthead meta */}
+        <div className="col-span-12 border-t-2 border-black pt-4 md:col-span-4 md:border-l-2 md:border-t-0 md:pl-6 md:pt-0">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+            [§EYEBROW]
           </p>
-        )}
+          <p className="mt-1 font-mono text-sm font-bold uppercase">
+            {t("home.heroEyebrow")}
+          </p>
+          <p className="mt-6 font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+            [STACK]
+          </p>
+          <p className="mt-1 font-mono text-xs leading-snug text-gray-700">
+            {t("home.heroAttribution")}
+          </p>
+          {isConnected && address && (
+            <>
+              <p className="mt-6 font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                [{t("common.connectedAs").toUpperCase()}]
+              </p>
+              <p className="mt-1 font-mono text-xs text-black">
+                {address.slice(0, 6)}…{address.slice(-4)}
+              </p>
+            </>
+          )}
+        </div>
       </div>
-    </section>
+    </Section>
   );
 }
 
-// ─── Section: THE PROBLEM ───────────────────────────────────────────────────
+// ─── PROBLEM ────────────────────────────────────────────────────────────────
+
 function ProblemSection({ t }: { t: TFn }) {
   const points = [
     { title: t("home.problemPoint1Title"), body: t("home.problemPoint1Body") },
@@ -117,45 +121,39 @@ function ProblemSection({ t }: { t: TFn }) {
   ];
 
   return (
-    <section className="bg-white py-20 border-b border-[#eee]">
-      <div className="mx-auto max-w-5xl px-6">
-        <SectionEyebrow color="danger">
-          {t("home.problemEyebrow")}
-        </SectionEyebrow>
-        <h2 className="mt-3 max-w-3xl font-[family-name:var(--font-barlow)] text-4xl font-black uppercase tracking-tight text-[#0b294d] sm:text-5xl">
-          {t("home.problemTitle")}
-        </h2>
-        <p className="mt-6 max-w-3xl text-base leading-relaxed text-[#666]">
-          {t("home.problemBody")}
-        </p>
-
-        <div className="mt-12 grid gap-6 sm:grid-cols-3">
-          {points.map((p, i) => (
-            <div
-              key={i}
-              className="rounded-[14px] border border-[#fdecea] bg-[#fdecea]/40 p-6"
-            >
-              <div
-                className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#e53e3e] text-sm font-bold text-white"
-                aria-hidden
-              >
-                {i + 1}
-              </div>
-              <h3 className="font-[family-name:var(--font-barlow)] text-xl font-bold uppercase tracking-tight text-[#0b294d]">
-                {p.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#666]">
-                {p.body}
-              </p>
+    <Section tag="[§01 — THE PROBLEM]" tagInverted>
+      <h2 className="text-3xl uppercase tracking-tighter md:text-5xl">
+        {t("home.problemTitle")}
+      </h2>
+      <p className="mt-4 max-w-3xl text-sm leading-snug text-gray-700 text-justify md:text-base">
+        {t("home.problemBody")}
+      </p>
+      <div className="mt-8 grid grid-cols-1 gap-0 border-2 border-black md:grid-cols-3">
+        {points.map((p, i) => (
+          <div
+            key={i}
+            className={`flex flex-col gap-2 p-4 ${
+              i > 0 ? "border-t-2 border-black md:border-l-2 md:border-t-0" : ""
+            }`}
+          >
+            <div className="font-mono text-2xl font-bold tabular-nums text-[#00e676]">
+              {String(i + 1).padStart(2, "0")}
             </div>
-          ))}
-        </div>
+            <h3 className="text-sm font-bold uppercase underline decoration-2 decoration-[#00e676] underline-offset-4">
+              {p.title}
+            </h3>
+            <p className="text-xs leading-snug text-gray-700 lowercase text-justify">
+              {p.body}
+            </p>
+          </div>
+        ))}
       </div>
-    </section>
+    </Section>
   );
 }
 
-// ─── Section: HOW IT WORKS ──────────────────────────────────────────────────
+// ─── HOW IT WORKS ───────────────────────────────────────────────────────────
+
 function HowItWorksSection({ t }: { t: TFn }) {
   const steps = [
     {
@@ -176,176 +174,146 @@ function HowItWorksSection({ t }: { t: TFn }) {
   ];
 
   return (
-    <section className="bg-[#f4f7f9] py-20 border-b border-[#eee]">
-      <div className="mx-auto max-w-5xl px-6">
-        <SectionEyebrow color="brand">{t("home.howEyebrow")}</SectionEyebrow>
-        <h2 className="mt-3 max-w-3xl font-[family-name:var(--font-barlow)] text-4xl font-black uppercase tracking-tight text-[#0b294d] sm:text-5xl">
-          {t("home.howTitle")}
-        </h2>
-
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {steps.map((s, i) => (
-            <div
-              key={i}
-              className="relative rounded-[14px] border border-[#eee] bg-white p-8 shadow-[0_4px_20px_rgba(0,0,0,0.05)]"
-            >
-              <span className="font-[family-name:var(--font-geist-mono)] text-xs font-bold uppercase tracking-[0.2em] text-[#1a9e3a]">
-                {s.tag}
-              </span>
-              <h3 className="mt-3 font-[family-name:var(--font-barlow)] text-2xl font-bold uppercase tracking-tight text-[#0b294d]">
-                {s.title}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-[#666]">
-                {s.body}
-              </p>
-              {i < steps.length - 1 && (
-                <div
-                  className="absolute -right-3 top-1/2 hidden h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full bg-[#1a9e3a] text-white md:flex"
-                  aria-hidden
-                >
-                  <svg viewBox="0 0 24 24" width="14" height="14">
-                    <path fill="currentColor" d="M9 6l6 6-6 6V6z" />
-                  </svg>
-                </div>
-              )}
+    <Section tag="[§02 — HOW IT WORKS]">
+      <h2 className="text-3xl uppercase tracking-tighter md:text-5xl">
+        {t("home.howTitle")}
+      </h2>
+      <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+        {steps.map((s, i) => (
+          <div
+            key={i}
+            className="flex flex-col gap-3 border-l-2 border-black pl-4"
+          >
+            <div className="font-mono text-3xl font-bold tabular-nums text-[#00e676]">
+              {s.tag}
             </div>
-          ))}
-        </div>
+            <div className="font-mono text-sm font-bold uppercase underline decoration-2 decoration-[#00e676] underline-offset-4">
+              [{s.title}]
+            </div>
+            <p className="text-xs leading-snug text-gray-700 lowercase text-justify">
+              {s.body}
+            </p>
+          </div>
+        ))}
       </div>
-    </section>
+    </Section>
   );
 }
 
-// ─── Section: LIVE EXAMPLE ──────────────────────────────────────────────────
+// ─── LIVE EXAMPLE ───────────────────────────────────────────────────────────
+
 function ExampleSection({ t }: { t: TFn }) {
   return (
-    <section className="bg-white py-20 border-b border-[#eee]">
-      <div className="mx-auto max-w-5xl px-6">
-        <SectionEyebrow color="brand">
-          {t("home.exampleEyebrow")}
-        </SectionEyebrow>
-        <h2 className="mt-3 max-w-3xl font-[family-name:var(--font-barlow)] text-4xl font-black uppercase tracking-tight text-[#0b294d] sm:text-5xl">
-          {t("home.exampleTitle")}
-        </h2>
-        <p className="mt-6 max-w-3xl text-base leading-relaxed text-[#666]">
-          {t("home.exampleBody")}
-        </p>
+    <Section tag="[§03 — LIVE EXAMPLE]" tagAccent>
+      <h2 className="text-3xl uppercase tracking-tighter md:text-5xl">
+        {t("home.exampleTitle")}
+      </h2>
+      <p className="mt-4 max-w-3xl text-sm leading-snug text-gray-700 text-justify md:text-base">
+        {t("home.exampleBody")}
+      </p>
 
-        <div className="mt-10 rounded-[14px] border border-[#eee] bg-gradient-to-br from-[#f4f7f9] to-white p-8 shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+      <div className="mt-8 grid grid-cols-1 gap-0 border-2 border-black md:grid-cols-12">
+        <div className="border-b-2 border-black p-4 md:col-span-7 md:border-b-0 md:border-r-2">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center rounded-full border border-[#28a745]/30 bg-[#e8f5e9] px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-[#2e7d32]">
-              Unlocked
-            </span>
-            <span className="inline-flex items-center rounded-full border border-[#0b294d] bg-[#0b294d] px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-white">
-              Public
-            </span>
+            <BracketBadge color="accent">UNLOCKED</BracketBadge>
+            <BracketBadge color="ink">PUBLIC</BracketBadge>
           </div>
-          <h3 className="mt-4 font-[family-name:var(--font-barlow)] text-3xl font-bold uppercase tracking-tight text-[#0b294d]">
+          <h3 className="mt-4 text-2xl uppercase tracking-tighter md:text-3xl">
             TEST
           </h3>
-          <pre className="mt-4 overflow-x-auto rounded-[8px] border border-[#eee] bg-[#f4f7f9] p-4 font-[family-name:var(--font-geist-mono)] text-sm text-[#222]">
+          <pre className="mt-4 overflow-x-auto border-2 border-black bg-white p-3 font-mono text-sm">
             HELLO WORLD XYZ
           </pre>
-          <dl className="mt-6 grid grid-cols-1 gap-3 text-xs sm:grid-cols-2">
-            <div>
-              <dt className="font-bold uppercase tracking-wider text-[#666]">
-                Creator
-              </dt>
-              <dd className="mt-1 font-[family-name:var(--font-geist-mono)] text-[#222]">
-                0x308f31f4…88746d85
-              </dd>
-            </div>
-            <div>
-              <dt className="font-bold uppercase tracking-wider text-[#666]">
-                drand round
-              </dt>
-              <dd className="mt-1 font-[family-name:var(--font-geist-mono)] text-[#222]">
-                28855312
-              </dd>
-            </div>
-          </dl>
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mt-4 flex flex-wrap gap-2">
             <Link
               href={`/capsule/${LIVE_EXAMPLE_KEY}`}
-              className="inline-flex h-10 items-center justify-center rounded-[6px] bg-[#1a9e3a] px-5 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-[#157a2c]"
+              className="border-2 border-black bg-black px-3 py-1.5 font-mono text-[11px] font-bold uppercase tracking-widest text-white shadow-[3px_3px_0_rgba(0,0,0,1)] transition-colors hover:bg-[#00e676] hover:text-black"
             >
-              {t("home.exampleViewCta")}
+              [{t("home.exampleViewCta").toUpperCase()}]
             </Link>
             <Link
               href="/capsules"
-              className="inline-flex h-10 items-center justify-center rounded-[6px] border border-[#0b294d] bg-white px-5 text-xs font-bold uppercase tracking-wider text-[#0b294d] transition-colors hover:bg-[#f4f7f9]"
+              className="border-2 border-black bg-white px-3 py-1.5 font-mono text-[11px] font-bold uppercase tracking-widest text-black shadow-[3px_3px_0_rgba(0,0,0,1)] transition-colors hover:bg-[#00e676]"
             >
-              {t("home.exampleBrowseCta")}
+              [{t("home.exampleBrowseCta").toUpperCase()}]
             </Link>
           </div>
         </div>
+        <div className="grid grid-cols-2 md:col-span-5 md:grid-cols-1">
+          <Stat label="CREATOR" mono>
+            0x308f…6d85
+          </Stat>
+          <Stat label="DRAND ROUND" mono>
+            28855312
+          </Stat>
+        </div>
       </div>
-    </section>
+    </Section>
   );
 }
 
-// ─── Section: USE CASES BEYOND ALPHA ────────────────────────────────────────
+// ─── USE CASES ──────────────────────────────────────────────────────────────
+
 function UseCasesSection({ t }: { t: TFn }) {
   const cases = [
     {
+      tag: "[ALPHA]",
       title: t("home.useCase1Title"),
       body: t("home.useCase1Body"),
-      icon: <ChartIcon />,
     },
     {
+      tag: "[FOUNDER]",
       title: t("home.useCase2Title"),
       body: t("home.useCase2Body"),
-      icon: <RocketIcon />,
     },
     {
+      tag: "[PERSONAL]",
       title: t("home.useCase3Title"),
       body: t("home.useCase3Body"),
-      icon: <EnvelopeIcon />,
     },
     {
+      tag: "[DEAD-MAN]",
       title: t("home.useCase4Title"),
       body: t("home.useCase4Body"),
-      icon: <KeyIcon />,
     },
   ];
 
   return (
-    <section className="bg-[#f4f7f9] py-20 border-b border-[#eee]">
-      <div className="mx-auto max-w-5xl px-6">
-        <SectionEyebrow color="brand">
-          {t("home.useCasesEyebrow")}
-        </SectionEyebrow>
-        <h2 className="mt-3 max-w-3xl font-[family-name:var(--font-barlow)] text-4xl font-black uppercase tracking-tight text-[#0b294d] sm:text-5xl">
-          {t("home.useCasesTitle")}
-        </h2>
-        <p className="mt-6 max-w-3xl text-base leading-relaxed text-[#666]">
-          {t("home.useCasesSubtitle")}
-        </p>
-
-        <div className="mt-12 grid gap-6 sm:grid-cols-2">
-          {cases.map((c, i) => (
-            <div
-              key={i}
-              className="rounded-[14px] border border-[#eee] bg-white p-6 transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]"
-            >
-              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-[8px] bg-[#1a9e3a] text-white">
-                {c.icon}
-              </div>
-              <h3 className="font-[family-name:var(--font-barlow)] text-xl font-bold uppercase tracking-tight text-[#0b294d]">
-                {c.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#666]">
-                {c.body}
-              </p>
+    <Section tag="[§04 — USE CASES]">
+      <h2 className="text-3xl uppercase tracking-tighter md:text-5xl">
+        {t("home.useCasesTitle")}
+      </h2>
+      <p className="mt-4 max-w-3xl text-sm leading-snug text-gray-700 text-justify md:text-base">
+        {t("home.useCasesSubtitle")}
+      </p>
+      <div className="mt-8 grid grid-cols-1 gap-0 border-2 border-black md:grid-cols-2">
+        {cases.map((c, i) => (
+          <div
+            key={i}
+            className={`flex flex-col gap-2 p-5 ${
+              i % 2 === 1
+                ? "border-t-2 border-black md:border-l-2 md:border-t-0"
+                : ""
+            } ${i >= 2 ? "md:border-t-2 md:border-black" : ""}`}
+          >
+            <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+              {c.tag}
             </div>
-          ))}
-        </div>
+            <h3 className="text-base font-bold uppercase tracking-tight">
+              {c.title}
+            </h3>
+            <p className="text-xs leading-snug text-gray-700 lowercase text-justify">
+              {c.body}
+            </p>
+          </div>
+        ))}
       </div>
-    </section>
+    </Section>
   );
 }
 
-// ─── Section: WHY ARKIV ─────────────────────────────────────────────────────
+// ─── WHY ARKIV ──────────────────────────────────────────────────────────────
+
 function WhyArkivSection({ t }: { t: TFn }) {
   const reasons = [
     { title: t("home.why1Title"), body: t("home.why1Body") },
@@ -355,37 +323,31 @@ function WhyArkivSection({ t }: { t: TFn }) {
   ];
 
   return (
-    <section className="bg-[#0b294d] py-20 text-white">
-      <div className="mx-auto max-w-5xl px-6">
-        <SectionEyebrow color="accent">{t("home.whyEyebrow")}</SectionEyebrow>
-        <h2 className="mt-3 max-w-3xl font-[family-name:var(--font-barlow)] text-4xl font-black uppercase tracking-tight text-white sm:text-5xl">
-          {t("home.whyTitle")}
-        </h2>
-
-        <div className="mt-12 grid gap-x-12 gap-y-10 sm:grid-cols-2">
-          {reasons.map((r, i) => (
-            <div key={i} className="relative pl-8">
-              <span
-                className="absolute left-0 top-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#1a9e3a] text-[10px] font-bold text-white"
-                aria-hidden
-              >
-                ✓
-              </span>
-              <h3 className="font-[family-name:var(--font-barlow)] text-lg font-bold uppercase tracking-tight text-white">
-                {r.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/70">
-                {r.body}
-              </p>
-            </div>
-          ))}
-        </div>
+    <Section tag="[§05 — WHY ARKIV]" tagAccent inverted>
+      <h2 className="text-3xl uppercase tracking-tighter text-white md:text-5xl">
+        {t("home.whyTitle")}
+      </h2>
+      <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+        {reasons.map((r, i) => (
+          <div
+            key={i}
+            className="flex flex-col gap-2 border-l-4 border-[#00e676] pl-4"
+          >
+            <h3 className="text-sm font-bold uppercase tracking-tight text-white">
+              [{String(i + 1).padStart(2, "0")}] {r.title}
+            </h3>
+            <p className="text-xs leading-snug text-gray-400 lowercase text-justify">
+              {r.body}
+            </p>
+          </div>
+        ))}
       </div>
-    </section>
+    </Section>
   );
 }
 
-// ─── Section: TRUST SIGNALS ─────────────────────────────────────────────────
+// ─── TRUST SIGNALS ──────────────────────────────────────────────────────────
+
 function TrustSection({ t }: { t: TFn }) {
   const badges = [
     t("home.trust1"),
@@ -395,163 +357,136 @@ function TrustSection({ t }: { t: TFn }) {
   ];
 
   return (
-    <section className="bg-white py-12">
-      <div className="mx-auto max-w-5xl px-6">
-        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-          {badges.map((b, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-2 font-[family-name:var(--font-geist-mono)] text-xs font-bold uppercase tracking-[0.15em] text-[#666]"
-            >
-              <span
-                className="inline-block h-1.5 w-1.5 rounded-full bg-[#1a9e3a]"
-                aria-hidden
-              />
-              {b}
-            </div>
-          ))}
-        </div>
+    <section className="border-2 border-black p-4">
+      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-[10px] font-bold uppercase tracking-widest">
+        {badges.map((b, i) => (
+          <span key={i} className="flex items-center gap-2">
+            <span className="inline-block h-2 w-2 bg-[#00e676]" aria-hidden />
+            {b}
+          </span>
+        ))}
       </div>
     </section>
   );
 }
 
-// ─── Section: FOOTER ────────────────────────────────────────────────────────
+// ─── FOOTER ─────────────────────────────────────────────────────────────────
+
 function SiteFooter({ t }: { t: TFn }) {
   return (
-    <footer className="bg-[#1a1f2e] py-12 text-white/70">
-      <div className="mx-auto max-w-5xl px-6">
-        <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className="flex items-center gap-2.5">
-              <svg
-                viewBox="0 0 24 24"
-                width="32"
-                height="32"
-                aria-hidden
-                className="text-white"
-              >
-                <path
-                  fill="currentColor"
-                  d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5Zm-3 8V7a3 3 0 1 1 6 0v3H9Zm3 4a1.5 1.5 0 0 1 .75 2.8V19a.75.75 0 1 1-1.5 0v-2.2A1.5 1.5 0 0 1 12 14Z"
-                />
-              </svg>
-              <span className="font-[family-name:var(--font-barlow)] text-3xl font-black uppercase leading-none text-white">
-                Veil
-              </span>
-            </div>
-            <p className="mt-3 max-w-sm text-sm text-white/60">
-              {t("home.footerTagline")}
-            </p>
-          </div>
-          <nav className="flex flex-wrap gap-x-6 gap-y-2 text-xs uppercase tracking-wider">
-            <a
-              href="https://github.com/Arkiv-Network/arkiv-ethns-builder-challenge"
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-white"
-            >
-              {t("home.footerLinkRepo")}
-            </a>
-            <a
-              href="https://docs.arkiv.network"
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-white"
-            >
-              {t("home.footerLinkArkiv")}
-            </a>
-            <a
-              href="https://drand.love"
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-white"
-            >
-              {t("home.footerLinkDrand")}
-            </a>
-            <a
-              href="https://forms.arkiv.network/ethns-arkiv-challenge"
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-white"
-            >
-              {t("home.footerLinkChallenge")}
-            </a>
-          </nav>
-        </div>
-        <div className="mt-10 border-t border-white/10 pt-6 text-xs text-white/40">
-          {t("home.footerCopy")}
-        </div>
-      </div>
+    <footer className="mt-4 flex flex-col items-center justify-between gap-4 border-t-2 border-black pt-4 text-xs font-bold uppercase text-gray-500 md:flex-row">
+      <div>{t("home.footerCopy")} · SYS.OP.OK</div>
+      <nav className="flex flex-wrap gap-x-4 gap-y-2">
+        <FooterLink href="https://github.com/Arkiv-Network/arkiv-ethns-builder-challenge">
+          {t("home.footerLinkRepo")}
+        </FooterLink>
+        <FooterLink href="https://docs.arkiv.network">
+          {t("home.footerLinkArkiv")}
+        </FooterLink>
+        <FooterLink href="https://drand.love">
+          {t("home.footerLinkDrand")}
+        </FooterLink>
+        <FooterLink href="https://forms.arkiv.network/ethns-arkiv-challenge">
+          {t("home.footerLinkChallenge")}
+        </FooterLink>
+      </nav>
     </footer>
   );
 }
 
-// ─── Small bits ─────────────────────────────────────────────────────────────
+// ─── Building blocks ────────────────────────────────────────────────────────
 
-function SectionEyebrow({
+function Section({
+  tag,
+  tagAccent,
+  tagInverted,
+  inverted,
   children,
-  color,
 }: {
+  tag: string;
+  tagAccent?: boolean;
+  tagInverted?: boolean;
+  inverted?: boolean;
   children: React.ReactNode;
-  color: "brand" | "danger" | "accent";
 }) {
-  const colors = {
-    brand: "text-[#1a9e3a]",
-    danger: "text-[#e53e3e]",
-    accent: "text-[#1a9e3a]",
-  } as const;
+  const tagClass = tagAccent
+    ? "bg-[#00e676] text-black"
+    : tagInverted
+      ? "bg-white text-black border-r-2 border-b-2 border-black"
+      : "bg-black text-white";
+  const sectionClass = inverted
+    ? "border-2 border-black bg-black p-6 md:p-12 relative"
+    : "border-2 border-black bg-white p-6 md:p-12 relative";
   return (
-    <p
-      className={`font-[family-name:var(--font-geist-mono)] text-xs font-bold uppercase tracking-[0.2em] ${colors[color]}`}
+    <section className={sectionClass}>
+      <div
+        className={`absolute top-0 left-0 ${tagClass} px-2 py-1 text-[10px] uppercase font-bold tracking-widest`}
+      >
+        {tag}
+      </div>
+      <div className="mt-6">{children}</div>
+    </section>
+  );
+}
+
+function BracketBadge({
+  color,
+  children,
+}: {
+  color: "accent" | "ink";
+  children: React.ReactNode;
+}) {
+  const cls =
+    color === "accent" ? "bg-[#00e676] text-black" : "bg-black text-white";
+  return (
+    <span
+      className={`${cls} inline-block px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest`}
     >
-      {children}
-    </p>
+      [{children}]
+    </span>
   );
 }
 
-// ─── Inline icons (no external dep) ─────────────────────────────────────────
-
-function ChartIcon() {
+function Stat({
+  label,
+  mono,
+  children,
+}: {
+  label: string;
+  mono?: boolean;
+  children: React.ReactNode;
+}) {
   return (
-    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M3 3v18h18v-2H5V3H3Zm4 12h2v-6H7v6Zm4 0h2v-9h-2v9Zm4 0h2v-3h-2v3Zm4 0h2V8h-2v7Z"
-      />
-    </svg>
+    <div className="border-b-2 border-black p-4 last:border-b-0 md:p-5">
+      <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+        [{label}]
+      </div>
+      <div
+        className={`mt-1 ${
+          mono ? "font-mono text-xs md:text-sm" : "text-lg font-bold"
+        } break-all text-black`}
+      >
+        {children}
+      </div>
+    </div>
   );
 }
 
-function RocketIcon() {
+function FooterLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
   return (
-    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M14 2c-3 0-6 3-7 5L5 6 3 8l3 2-2 5 2 1 4-2 2 3 2-2-1-3c2-1 5-4 5-7l-4-3Zm0 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"
-      />
-    </svg>
-  );
-}
-
-function EnvelopeIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm0 2v.5l8 5 8-5V6H4Zm16 2.4-7.5 4.7a1 1 0 0 1-1 0L4 8.4V18h16V8.4Z"
-      />
-    </svg>
-  );
-}
-
-function KeyIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M15 2a7 7 0 0 0-6.7 9L2 17.3V22h4.7l1.3-1.3v-2h2v-2h2l2.7-2.7A7 7 0 1 0 15 2Zm2 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"
-      />
-    </svg>
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="border-b-2 border-black text-black no-underline hover:border-[#00e676] hover:text-[#00e676]"
+    >
+      [{children}]
+    </a>
   );
 }
