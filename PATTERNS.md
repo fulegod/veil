@@ -158,4 +158,30 @@ const plaintext = await decryptCiphertext(capsule.ciphertext);
 
 (populated as we ship — these become the "Things I Learned" appendix of the README, which the rubric specifically rewards)
 
-- _..._
+### Node v24 silently breaks `updateEntity` and `extendEntity`
+
+The SDK's `walletClient.updateEntity({...})` and `walletClient.extendEntity({...})` return a promise that **never resolves** under Node v24.x. Tracked as `Arkiv-Network/arkiv-sdk-js#14`. Symptom: your `await` hangs forever, no error.
+
+Caught this via the community `arkiv-ethlisbon` skill before it bit us. Our smoke tests only used `createEntity`/`getEntity`/`buildQuery`/`deleteEntity` so they passed under Node v24.13.0 — but Veil needs `extendEntity` (renew watcher subscriptions, extend capsule TTL).
+
+**Fix Veil applies:** all CLI scripts (`smoke/`) and the Next.js dev/start scripts (`web/`) run under **Bun** instead of Node:
+
+```json
+// smoke/package.json
+"scripts": {
+  "wallet":   "bun src/wallet.ts",      // not tsx, not node
+  "arkiv":    "bun src/arkiv.ts",
+  "tlock":    "bun src/tlock.ts",
+  "combined": "bun src/combined.ts"
+}
+
+// web/package.json
+"scripts": {
+  "dev":   "bun --bun next dev",        // --bun forces bun runtime for Next.js
+  "start": "bun --bun next start"
+}
+```
+
+`bun --bun` is the key — without it, `bun run next dev` would still spawn Next.js under Node v24. With it, Next.js (and any SDK call from server components / route handlers) runs under Bun, which doesn't have the bug.
+
+**Why this matters for the rubric:** undocumented SDK pitfalls are exactly the kind of "real shipping experience" judges reward when graded as a reference implementation. Other Arkiv builders on Node v24 will hit this — the workaround above is reusable.

@@ -4,10 +4,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "wallet": "tsx src/wallet.ts",
-    "arkiv": "tsx src/arkiv.ts",
-    "tlock": "tsx src/tlock.ts",
-    "combined": "tsx src/combined.ts"
+    "wallet": "bun src/wallet.ts",
+    "arkiv": "bun src/arkiv.ts",
+    "tlock": "bun src/tlock.ts",
+    "combined": "bun src/combined.ts"
   },
   "dependencies": {
     "@arkiv-network/sdk": "^0.6.8",
