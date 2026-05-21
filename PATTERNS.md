@@ -158,6 +158,49 @@ const plaintext = await decryptCiphertext(capsule.ciphertext);
 
 (populated as we ship — these become the "Things I Learned" appendix of the README, which the rubric specifically rewards)
 
+### `buildQuery().fetch()` returns **only entity keys** by default
+
+The fluent query API hides a steep default: `.fetch()` does NOT include attributes, metadata (creator/owner), or payload unless you ask for them explicitly. The list page in Veil first appeared empty even though the entities clearly existed in Arkiv — every row showed `title: undefined`, `creator: undefined`, `is_public: undefined`.
+
+```ts
+// ❌ Returns entities with only `key` populated. attributes is empty.
+.where(and([eq("app", "veil"), eq("kind", "capsule")]))
+.limit(20)
+.fetch();
+
+// ✅ Explicitly opt into the hydrated fields you need
+.where(and([eq("app", "veil"), eq("kind", "capsule")]))
+.withAttributes()    // needed for title, unlock_at, is_public, etc.
+.withMetadata()      // needed for $creator and $owner
+.withPayload()       // only if you need the binary payload
+.limit(20)
+.fetch();
+```
+
+Rationale (inferred): the default keeps queries cheap when you only need to enumerate keys (e.g. pagination, existence checks). Pay-as-you-go for the rest.
+
+Bit it bit us hard: silent corruption of the UI with zero error. No type or runtime hint that data was missing. Worth highlighting prominently in any Arkiv tutorial.
+
+### `and()` / `or()` take an array, not varargs
+
+The query combinators `and` and `or` from `@arkiv-network/sdk/query` accept **one array of predicates**, not a variadic list. The error you get otherwise is a confusing `TypeError: predicate.predicates.map is not a function` at query-fetch time — not at the `and()` call — which makes it easy to misdiagnose as a network or schema issue.
+
+```ts
+// ❌ Wrong — silently constructs an invalid Predicate, fails on .fetch()
+.where(and(
+  eq("app", "veil"),
+  eq("kind", "capsule"),
+))
+
+// ✅ Right
+.where(and([
+  eq("app", "veil"),
+  eq("kind", "capsule"),
+]))
+```
+
+Why it slipped past our smoke tests: `smoke/arkiv.ts` only used a single `eq()`, never `and()`. Bug only surfaced when we built `/capsules` (public list page) which needs to filter by PROJECT_ATTRIBUTE + kind simultaneously.
+
 ### Node v24 silently breaks `updateEntity` and `extendEntity`
 
 The SDK's `walletClient.updateEntity({...})` and `walletClient.extendEntity({...})` return a promise that **never resolves** under Node v24.x. Tracked as `Arkiv-Network/arkiv-sdk-js#14`. Symptom: your `await` hangs forever, no error.

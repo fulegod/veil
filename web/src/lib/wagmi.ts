@@ -1,27 +1,55 @@
 /**
- * Wagmi config: usa la chain Braga del SDK de Arkiv.
+ * Wagmi config: Braga chain + lista de wallets reducida.
  *
- * Braga es un viem chain (defineChain), wagmi-compatible nativo.
- * Sin manualmente declarar RPC/explorer — todo viene del SDK.
+ * Decisión: NO usamos `getDefaultConfig` de RainbowKit porque por debajo arrastra
+ * WalletConnect/Reown como connector, que sin `NEXT_PUBLIC_WC_PROJECT_ID` real
+ * tira errores ruidosos en consola (`Connection interrupted`, `403`, etc.).
+ *
+ * En su lugar declaramos manualmente los connectors que SÍ funcionan sin
+ * servicio externo:
+ *   - injected (MetaMask, Rabby, Brave Wallet, etc.)
+ *   - metaMask (módulo dedicado, mejor UX en el modal)
+ *   - coinbase (extension)
+ *
+ * Si en el futuro queremos WalletConnect QR para móviles, basta con setear
+ * NEXT_PUBLIC_WC_PROJECT_ID y agregar `walletConnectWallet` al array.
  */
 
-import { getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { createConfig, http } from "wagmi";
 import { braga } from "@arkiv-network/sdk/chains";
+import { connectorsForWallets } from "@rainbow-me/rainbowkit";
+import {
+  injectedWallet,
+  metaMaskWallet,
+  coinbaseWallet,
+  walletConnectWallet,
+} from "@rainbow-me/rainbowkit/wallets";
 
-const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID;
+const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID?.trim();
+const hasRealProjectId = Boolean(projectId);
 
-if (!projectId && typeof window === "undefined") {
-  // Solo warn en build/dev — no romper si el dev olvidó setearlo
-  // eslint-disable-next-line no-console
-  console.warn(
-    "[wagmi] NEXT_PUBLIC_WC_PROJECT_ID missing. WalletConnect will not work. " +
-      "Get one at https://cloud.walletconnect.com",
-  );
-}
+const connectors = connectorsForWallets(
+  [
+    {
+      groupName: "Recommended",
+      wallets: hasRealProjectId
+        ? [metaMaskWallet, walletConnectWallet, coinbaseWallet, injectedWallet]
+        : [metaMaskWallet, coinbaseWallet, injectedWallet],
+    },
+  ],
+  {
+    appName: "Veil",
+    // Required by the SDK type signature even if WC is not in the wallet list.
+    // RainbowKit only actually uses it when walletConnectWallet is included.
+    projectId: projectId || "veil-dev",
+  },
+);
 
-export const wagmiConfig = getDefaultConfig({
-  appName: "Veil",
-  projectId: projectId || "veil-dev-placeholder",
+export const wagmiConfig = createConfig({
   chains: [braga],
+  connectors,
+  transports: {
+    [braga.id]: http(),
+  },
   ssr: true,
 });

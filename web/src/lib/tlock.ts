@@ -11,7 +11,7 @@
  *  - Combina con Arkiv: payload encriptado vive como entity, atribución inmutable
  */
 
-import { Buffer } from "node:buffer";
+import { Buffer } from "buffer"; // 'buffer' (browser shim) instead of 'node:buffer'
 import {
   timelockEncrypt,
   timelockDecrypt,
@@ -20,6 +20,10 @@ import {
   type HttpChainClient,
   type ChainInfo,
 } from "tlock-js";
+
+// Reusable encoders — browser-native, also exist in Node.
+const utf8Decoder = new TextDecoder("utf-8");
+const utf8Encoder = new TextEncoder();
 
 let cachedClient: HttpChainClient | null = null;
 let cachedInfo: ChainInfo | null = null;
@@ -47,6 +51,11 @@ export async function roundForUnlockAt(unlockAtMs: number): Promise<number> {
 /**
  * Encripta un texto plano contra un unlock time.
  * Retorna ciphertext como Uint8Array (listo para guardar como payload de Arkiv).
+ *
+ * Notes on the Buffer dance: tlock-js's signature requires `Buffer` (it pre-dates
+ * the wider use of Uint8Array). Buffer extends Uint8Array, so wrapping with
+ * `Buffer.from(...)` is the safe path. We do NOT use Buffer for reading the
+ * decrypted output — that path is browser-shim-fragile (see decryptCiphertext).
  */
 export async function encryptForTime(
   plaintext: string,
@@ -59,7 +68,8 @@ export async function encryptForTime(
     getDrandClient(),
   );
   return {
-    ciphertext: new Uint8Array(Buffer.from(armor, "utf-8")),
+    // armor is a string (PEM-like) — encode to UTF-8 bytes for Arkiv storage
+    ciphertext: utf8Encoder.encode(armor),
     round,
     unlockAt: unlockAtMs,
   };
@@ -68,13 +78,47 @@ export async function encryptForTime(
 /**
  * Descifra ciphertext si el round drand ya está disponible.
  * Si todavía no está, tira error (catch en UI para mostrar countdown).
+ *
+ * Includes a hard timeout because some browser-network conditions cause
+ * the underlying fetch to drand to hang silently (no resolve, no reject).
  */
 export async function decryptCiphertext(
   ciphertext: Uint8Array,
+  opts: { timeoutMs?: number } = {},
 ): Promise<string> {
-  const armor = Buffer.from(ciphertext).toString("utf-8");
-  const decrypted = await timelockDecrypt(armor, getDrandClient());
-  return decrypted.toString("utf-8");
+  const timeoutMs = opts.timeoutMs ?? 15_000;
+  const armor = utf8Decoder.decode(ciphertext);
+
+  const decrypted = await withTimeout(
+    timelockDecrypt(armor, getDrandClient()),
+    timeoutMs,
+    `timelockDecrypt did not complete in ${timeoutMs}ms (likely drand fetch hung)`,
+  );
+  return utf8Decoder.decode(decrypted);
+}
+
+/**
+ * Wraps a promise with a hard timeout. Throws if the inner promise neither
+ * resolves nor rejects before `ms` elapses.
+ */
+function withTimeout<T>(
+  promise: Promise<T>,
+  ms: number,
+  message: string,
+): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(message)), ms);
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (err) => {
+        clearTimeout(timer);
+        reject(err);
+      },
+    );
+  });
 }
 
 /**
