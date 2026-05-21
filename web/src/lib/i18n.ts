@@ -22,15 +22,104 @@ const dict = {
     "common.loading": "Loading…",
     "common.toggleLang": "ES",
 
-    // ─── Home ───────────────────────────────────────────────────────────
-    "home.titleA": "Encrypted time capsules.",
-    "home.titleB": "Trustless.",
-    "home.subtitle":
-      "Write something today. Pick a future date. The payload is encrypted against a drand round that doesn't exist yet — nobody can read it before the time you chose, and nobody can stop the reveal.",
-    "home.note": "Stored on Arkiv (Braga). Author attribution is immutable.",
-    "home.ctaCreate": "Create a capsule",
-    "home.ctaBrowse": "Browse public capsules",
-    "home.footer": "Arkiv × ETHNS Builder Challenge — Privacy track",
+    // ─── Home: Hero ─────────────────────────────────────────────────────
+    "home.heroEyebrow": "On-chain proof-of-call",
+    "home.heroTitleA": "Stop editing",
+    "home.heroTitleB": "your track record.",
+    "home.heroSubtitle":
+      "Seal your alpha today. Veil locks it until the date you pick — nobody can read it before, nobody can stop the reveal, nobody can edit the timestamp. Cryptographic proof you called it first.",
+    "home.heroCtaPrimary": "Seal a call",
+    "home.heroCtaSecondary": "See live capsules",
+    "home.heroAttribution":
+      "Encrypted with drand timelock · stored on Arkiv · verifiable on Braga",
+    "home.connectFirst": "Connect your wallet to seal a call.",
+
+    // ─── Home: Problem ──────────────────────────────────────────────────
+    "home.problemEyebrow": "The problem",
+    "home.problemTitle": "Anyone can claim a call after it happens.",
+    "home.problemBody":
+      'Crypto Twitter is full of deleted tweets, edited screenshots, and "I told you so" with no proof. Tipster channels delete losing trades. Influencers cherry-pick their wins. There is no neutral way to verify who said what, when.',
+    "home.problemPoint1Title": "Tweets get deleted.",
+    "home.problemPoint1Body":
+      "The viral call that nailed it last month? Gone if it was wrong.",
+    "home.problemPoint2Title": "Screenshots get edited.",
+    "home.problemPoint2Body":
+      "Photoshop is free. Telegram screenshots prove nothing on their own.",
+    "home.problemPoint3Title": "Timestamps get faked.",
+    "home.problemPoint3Body":
+      '"I called this two months ago" — with no chain-of-custody, just a claim.',
+
+    // ─── Home: How it works ─────────────────────────────────────────────
+    "home.howEyebrow": "How Veil fixes it",
+    "home.howTitle": "Three steps. Zero trust.",
+    "home.howStep1Tag": "01",
+    "home.howStep1Title": "Seal",
+    "home.howStep1Body":
+      "Write your call. Pick the date it should open. Veil encrypts it against a drand beacon round that does not exist yet — and stores it on Arkiv with your wallet as immutable author.",
+    "home.howStep2Tag": "02",
+    "home.howStep2Title": "Wait",
+    "home.howStep2Body":
+      "Nobody can read the body — not us, not Arkiv, not even you can prove the contents to someone else early. The title and timestamp are public so people can see you committed.",
+    "home.howStep3Tag": "03",
+    "home.howStep3Title": "Reveal",
+    "home.howStep3Body":
+      "At your chosen moment, the drand round publishes. The decryption key becomes derivable. Anyone with the link reads the original text. The first decryption can be anchored on-chain as a Reveal entity.",
+
+    // ─── Home: Live example ─────────────────────────────────────────────
+    "home.exampleEyebrow": "See it work",
+    "home.exampleTitle": "A real sealed call on Braga.",
+    "home.exampleBody":
+      "This capsule was sealed earlier with a body that nobody could read until its unlock time. It is now revealed — and the on-chain creator + timestamp + sha-256 of the plaintext are anyone's to verify.",
+    "home.exampleViewCta": "View the capsule →",
+    "home.exampleBrowseCta": "Browse all public capsules",
+
+    // ─── Home: Use cases beyond alpha ───────────────────────────────────
+    "home.useCasesEyebrow": "Beyond alpha",
+    "home.useCasesTitle": "Same primitive, many shapes.",
+    "home.useCasesSubtitle":
+      'Anywhere "who said it first" matters and a trusted party cannot be assumed.',
+    "home.useCase1Title": "Sealed predictions",
+    "home.useCase1Body":
+      "Markets, sports, geopolitics, science. Commit your forecast publicly without revealing it — let history rate you.",
+    "home.useCase2Title": "Founder pre-mortems",
+    "home.useCase2Body":
+      "List the five reasons your startup could fail. Sealed at raise. Revealed at exit or shutdown. Honesty becomes track record.",
+    "home.useCase3Title": "Letters to your future self",
+    "home.useCase3Body":
+      "A note to yourself at 30, your child at 18, your team at the next anniversary. Trustless across years.",
+    "home.useCase4Title": "Dead-man's switch",
+    "home.useCase4Body":
+      "Documents that auto-reveal at a date if you do not extend them. Source protection, succession planning, time-locked disclosures.",
+
+    // ─── Home: Why Arkiv ────────────────────────────────────────────────
+    "home.whyEyebrow": "Why this is only possible on Arkiv",
+    "home.whyTitle": "The pieces no centralized DB can give you.",
+    "home.why1Title": "Immutable authorship",
+    "home.why1Body":
+      "Every entity has a $creator stamped on-chain at creation. Cannot be edited, cannot be spoofed. Sell or transfer ownership later — the original author stays known forever.",
+    "home.why2Title": "Differentiated expirations",
+    "home.why2Body":
+      "Capsules live up to a year past their unlock. Reveal markers live 90 days. Subscriptions auto-renew via extendEntity. Lifecycle as a first-class type, not an afterthought.",
+    "home.why3Title": "Queryable relationships",
+    "home.why3Body":
+      "Reveal entities link to Capsule entities via shared-attribute keys. No foreign keys, no joins — just indexed predicates that resolve in O(log n).",
+    "home.why4Title": "Verifiable, end to end",
+    "home.why4Body":
+      "Every create, update, and delete returns a tx hash on Braga. Anyone can replay the history in the block explorer without trusting Veil at all.",
+
+    // ─── Home: Trust signals ────────────────────────────────────────────
+    "home.trust1": "Open source",
+    "home.trust2": "No server holds keys",
+    "home.trust3": "drand timelock encryption",
+    "home.trust4": "Tx-verifiable on Braga",
+
+    // ─── Home: Footer ───────────────────────────────────────────────────
+    "home.footerTagline": "Trustless time capsules for the on-chain era.",
+    "home.footerLinkRepo": "GitHub",
+    "home.footerLinkArkiv": "Arkiv docs",
+    "home.footerLinkDrand": "drand",
+    "home.footerLinkChallenge": "ETHNS Challenge",
+    "home.footerCopy": "Arkiv × ETHNS Builder Challenge — Privacy track",
 
     // ─── New capsule ────────────────────────────────────────────────────
     "new.title": "New capsule",
@@ -116,15 +205,106 @@ const dict = {
     "common.loading": "Cargando…",
     "common.toggleLang": "EN",
 
-    // ─── Home ───────────────────────────────────────────────────────────
-    "home.titleA": "Cápsulas del tiempo cifradas.",
-    "home.titleB": "Sin confianza.",
-    "home.subtitle":
-      "Escribe algo hoy. Elige una fecha futura. El contenido se cifra contra un round de drand que aún no existe — nadie puede leerlo antes del momento que elegiste, y nadie puede detener la revelación.",
-    "home.note": "Guardado en Arkiv (Braga). La autoría es inmutable.",
-    "home.ctaCreate": "Crear una cápsula",
-    "home.ctaBrowse": "Ver cápsulas públicas",
-    "home.footer": "Arkiv × ETHNS Builder Challenge — Privacy track",
+    // ─── Home: Hero ─────────────────────────────────────────────────────
+    "home.heroEyebrow": "Proof-of-call on-chain",
+    "home.heroTitleA": "Deja de editar",
+    "home.heroTitleB": "tu track record.",
+    "home.heroSubtitle":
+      "Sella tu alpha hoy. Veil la guarda cifrada hasta la fecha que elijas — nadie la lee antes, nadie detiene la revelación, nadie edita el timestamp. Prueba criptográfica de que la llamaste primero.",
+    "home.heroCtaPrimary": "Sellar una call",
+    "home.heroCtaSecondary": "Ver cápsulas en vivo",
+    "home.heroAttribution":
+      "Cifrado con drand timelock · guardado en Arkiv · verificable en Braga",
+    "home.connectFirst": "Conecta tu wallet para sellar una call.",
+
+    // ─── Home: Problem ──────────────────────────────────────────────────
+    "home.problemEyebrow": "El problema",
+    "home.problemTitle":
+      "Cualquiera puede reclamar una call después de que pasa.",
+    "home.problemBody":
+      'Crypto Twitter está lleno de tweets borrados, screenshots editados y "yo te lo dije" sin pruebas. Los canales de tipsters borran sus trades perdedores. Los influencers cherry-pickean sus aciertos. No hay forma neutral de verificar quién dijo qué, cuándo.',
+    "home.problemPoint1Title": "Los tweets se borran.",
+    "home.problemPoint1Body":
+      "Esa call viral que clavó el mes pasado, desaparece si estaba equivocada.",
+    "home.problemPoint2Title": "Los screenshots se editan.",
+    "home.problemPoint2Body":
+      "Photoshop es gratis. Un screenshot de Telegram no prueba nada por sí solo.",
+    "home.problemPoint3Title": "Los timestamps se inventan.",
+    "home.problemPoint3Body":
+      '"Esto lo dije hace dos meses" — sin cadena de custodia, es solo un reclamo.',
+
+    // ─── Home: How it works ─────────────────────────────────────────────
+    "home.howEyebrow": "Cómo Veil lo arregla",
+    "home.howTitle": "Tres pasos. Cero confianza.",
+    "home.howStep1Tag": "01",
+    "home.howStep1Title": "Sellar",
+    "home.howStep1Body":
+      "Escribe tu call. Elige la fecha en que debe abrirse. Veil la cifra contra un round drand que aún no existe — y la guarda en Arkiv con tu wallet como autor inmutable.",
+    "home.howStep2Tag": "02",
+    "home.howStep2Title": "Esperar",
+    "home.howStep2Body":
+      "Nadie puede leer el contenido — ni nosotros, ni Arkiv, ni siquiera tú puedes probarle el contenido a otro antes de tiempo. El título y el timestamp son públicos para que se vea que te comprometiste.",
+    "home.howStep3Tag": "03",
+    "home.howStep3Title": "Revelar",
+    "home.howStep3Body":
+      "En el momento elegido, drand publica el round. La key se vuelve derivable matemáticamente. Cualquiera con el link lee el texto original. La primera desencripción puede anclarse on-chain como entity Reveal.",
+
+    // ─── Home: Live example ─────────────────────────────────────────────
+    "home.exampleEyebrow": "Velo funcionando",
+    "home.exampleTitle": "Una call real sellada en Braga.",
+    "home.exampleBody":
+      "Esta cápsula fue sellada antes con un cuerpo que nadie podía leer hasta su hora de unlock. Ya está revelada — y el creator on-chain, el timestamp y el sha-256 del plaintext son verificables por cualquiera.",
+    "home.exampleViewCta": "Ver la cápsula →",
+    "home.exampleBrowseCta": "Ver todas las cápsulas públicas",
+
+    // ─── Home: Use cases beyond alpha ───────────────────────────────────
+    "home.useCasesEyebrow": "Más allá del alpha",
+    "home.useCasesTitle": "Mismo primitivo, muchas formas.",
+    "home.useCasesSubtitle":
+      'Donde "quién lo dijo primero" importa y no se puede asumir un tercero confiable.',
+    "home.useCase1Title": "Predicciones selladas",
+    "home.useCase1Body":
+      "Mercados, deportes, geopolítica, ciencia. Compromete tu pronóstico públicamente sin revelarlo — que la historia te califique.",
+    "home.useCase2Title": "Pre-mortems de founders",
+    "home.useCase2Body":
+      "Lista las cinco razones por las que tu startup puede fallar. Sellado al levantar. Revelado al exit o al cierre. La honestidad se vuelve track record.",
+    "home.useCase3Title": "Cartas a tu yo futuro",
+    "home.useCase3Body":
+      "Una nota para ti a los 30, tu hijo a los 18, tu equipo en el siguiente aniversario. Sin confianza, a través de los años.",
+    "home.useCase4Title": "Dead-man's switch",
+    "home.useCase4Body":
+      "Documentos que se auto-revelan en una fecha si no los extiendes. Protección de fuentes, planificación sucesoria, divulgaciones programadas.",
+
+    // ─── Home: Why Arkiv ────────────────────────────────────────────────
+    "home.whyEyebrow": "Por qué esto solo es posible en Arkiv",
+    "home.whyTitle": "Las piezas que ninguna DB centralizada da.",
+    "home.why1Title": "Autoría inmutable",
+    "home.why1Body":
+      "Cada entity tiene un $creator sellado on-chain al crearse. No se edita, no se spoofea. Vende o transfiere ownership después — el autor original queda conocido para siempre.",
+    "home.why2Title": "Expiraciones diferenciadas",
+    "home.why2Body":
+      "Las cápsulas viven hasta un año post-unlock. Los markers de Reveal viven 90 días. Las suscripciones se renuevan vía extendEntity. Ciclo de vida como tipo de primera clase, no como afterthought.",
+    "home.why3Title": "Relaciones queryables",
+    "home.why3Body":
+      "Las entities Reveal apuntan a las Capsule via shared-attribute keys. Sin foreign keys, sin joins — solo predicados indexados que resuelven en O(log n).",
+    "home.why4Title": "Verificable, de punta a punta",
+    "home.why4Body":
+      "Cada create, update y delete devuelve un tx hash en Braga. Cualquiera puede replayar la historia en el block explorer sin confiar en Veil para nada.",
+
+    // ─── Home: Trust signals ────────────────────────────────────────────
+    "home.trust1": "Open source",
+    "home.trust2": "Ningún server guarda keys",
+    "home.trust3": "drand timelock encryption",
+    "home.trust4": "Tx-verificable en Braga",
+
+    // ─── Home: Footer ───────────────────────────────────────────────────
+    "home.footerTagline":
+      "Cápsulas del tiempo sin confianza para la era on-chain.",
+    "home.footerLinkRepo": "GitHub",
+    "home.footerLinkArkiv": "Arkiv docs",
+    "home.footerLinkDrand": "drand",
+    "home.footerLinkChallenge": "ETHNS Challenge",
+    "home.footerCopy": "Arkiv × ETHNS Builder Challenge — Privacy track",
 
     // ─── New capsule ────────────────────────────────────────────────────
     "new.title": "Nueva cápsula",

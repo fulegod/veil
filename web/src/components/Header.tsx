@@ -19,7 +19,7 @@ export function Header() {
             type="button"
             onClick={() => router.back()}
             aria-label="Go back"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-[6px] border border-[#ddd] bg-white text-[#0b294d] transition-colors hover:border-[#0099ff] hover:text-[#0099ff]"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-[6px] border border-[#ddd] bg-white text-[#0b294d] transition-colors hover:border-[#1a9e3a] hover:text-[#1a9e3a]"
           >
             <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
               <path
@@ -31,22 +31,47 @@ export function Header() {
         )}
         <Link
           href="/"
-          className="group inline-flex items-center gap-2.5 transition-colors"
+          className="group inline-flex items-center gap-3 transition-colors"
           aria-label="Veil — home"
         >
+          {/* Elaborate lockmark — body + shackle + visible keyhole + accent dot */}
           <svg
-            viewBox="0 0 24 24"
-            width="44"
-            height="44"
+            viewBox="0 0 48 48"
+            width="56"
+            height="56"
             aria-hidden="true"
-            className="text-[#0b294d] group-hover:text-[#0099ff] transition-colors"
+            className="text-[#0b294d] transition-colors group-hover:text-[#1a9e3a]"
           >
+            {/* Shackle */}
             <path
+              d="M16 22V14a8 8 0 0 1 16 0v8"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="4"
+              strokeLinecap="round"
+            />
+            {/* Body */}
+            <rect
+              x="10"
+              y="22"
+              width="28"
+              height="22"
+              rx="4"
               fill="currentColor"
-              d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5Zm-3 8V7a3 3 0 1 1 6 0v3H9Zm3 4a1.5 1.5 0 0 1 .75 2.8V19a.75.75 0 1 1-1.5 0v-2.2A1.5 1.5 0 0 1 12 14Z"
+            />
+            {/* Keyhole */}
+            <circle cx="24" cy="31" r="3" fill="#fff" />
+            <rect x="22.5" y="31" width="3" height="7" rx="1.5" fill="#fff" />
+            {/* Accent dot — "active" indicator in green */}
+            <circle
+              cx="38"
+              cy="14"
+              r="4"
+              fill="#1a9e3a"
+              className="opacity-0 transition-opacity group-hover:opacity-100"
             />
           </svg>
-          <span className="font-[family-name:var(--font-barlow)] text-5xl font-black uppercase tracking-tight leading-none text-[#0b294d] group-hover:text-[#0099ff] transition-colors">
+          <span className="font-[family-name:var(--font-barlow)] text-6xl font-black uppercase leading-none tracking-[-0.02em] text-[#0b294d] transition-colors group-hover:text-[#1a9e3a]">
             Veil
           </span>
         </Link>

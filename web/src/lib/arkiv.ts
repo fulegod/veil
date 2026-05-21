@@ -88,7 +88,9 @@ export async function createCapsule(input: CreateCapsuleInput) {
 export async function getCapsule(
   entityKey: string,
 ): Promise<CapsuleEntity | null> {
-  const entity = await publicClient.getEntity(entityKey);
+  // SDK expects `0x${string}` for hex types; entityKey comes from URL params
+  // as plain string, so we narrow here at the boundary.
+  const entity = await publicClient.getEntity(entityKey as `0x${string}`);
   if (!entity?.payload) return null;
 
   const attrs = Object.fromEntries(

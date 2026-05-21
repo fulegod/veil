@@ -1,15 +1,18 @@
 @import "tailwindcss";
 
 /*
- * Veil design tokens — Polycoach brand applied.
- * Source: extracted from polycoachmw.vercel.app CSS.
+ * Veil design tokens.
+ * Light theme with navy primary + bright blue accent.
+ * Barlow Condensed (display) + Lato (body) + Geist Mono (code/hashes).
  */
 
 :root {
-  /* Brand */
-  --color-primary: #0b294d;
-  --color-primary-hover: #0099ff;
-  --color-accent: #0099ff;
+  /* Brand — green-dominant with navy as authority text/surface */
+  --color-primary: #1a9e3a; /* deeper green than #28a745 for contrast on light bg */
+  --color-primary-hover: #157a2c; /* even deeper for hover */
+  --color-primary-soft: #e8f5e9; /* tint for backgrounds */
+  --color-secondary: #0b294d; /* navy — headings, dark sections */
+  --color-accent: #0099ff; /* keep blue for info / external links / hashes */
   --color-accent-soft: #007acc;
 
   /* Surfaces */
