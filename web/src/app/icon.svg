@@ -2,21 +2,21 @@
   <!-- Rounded square — Arkiv brandmark shape, Veil green -->
   <rect width="64" height="64" rx="10" ry="10" fill="#00e676"/>
 
-  <!-- Left bracket [ — slim vertical bar + short stubs, like Arkiv's -->
+  <!-- Left bracket [ — moved outward, generous gap from V -->
   <path
-    d="M 8 14 L 18 14 L 18 19 L 13 19 L 13 45 L 18 45 L 18 50 L 8 50 Z"
+    d="M 5 14 L 15 14 L 15 19 L 10 19 L 10 45 L 15 45 L 15 50 L 5 50 Z"
     fill="#ffffff"
   />
 
-  <!-- V — geometric chunky, sans-serif, mirrors Arkiv's A weight -->
+  <!-- V — narrower, centered, breathing room on both sides -->
   <path
-    d="M 18 14 L 25 14 L 32 38 L 39 14 L 46 14 L 35 50 L 29 50 Z"
+    d="M 21 14 L 27 14 L 32 37 L 37 14 L 43 14 L 35 50 L 29 50 Z"
     fill="#ffffff"
   />
 
   <!-- Right bracket ] — mirror of left -->
   <path
-    d="M 56 14 L 46 14 L 46 19 L 51 19 L 51 45 L 46 45 L 46 50 L 56 50 Z"
+    d="M 59 14 L 49 14 L 49 19 L 54 19 L 54 45 L 49 45 L 49 50 L 59 50 Z"
     fill="#ffffff"
   />
 </svg>
