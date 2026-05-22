@@ -33,14 +33,36 @@ export function Header() {
           )}
           <Link
             href="/"
-            className="group inline-flex flex-col gap-0.5"
+            className="group inline-flex items-center gap-3"
             aria-label="Veil — home"
           >
-            <span className="font-mono text-3xl font-bold uppercase leading-none tracking-tighter text-black md:text-4xl">
-              VEIL
-            </span>
-            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
-              SEAL IT. PROVE IT. ISSUE NO. {issue}
+            {/* Brandmark — mirrors Arkiv [A] but in Veil green with [V] */}
+            <svg
+              viewBox="0 0 64 64"
+              className="h-12 w-12 shrink-0 md:h-14 md:w-14"
+              aria-hidden
+            >
+              <rect width="64" height="64" rx="10" ry="10" fill="#00e676" />
+              <path
+                d="M 8 14 L 18 14 L 18 19 L 13 19 L 13 45 L 18 45 L 18 50 L 8 50 Z"
+                fill="#ffffff"
+              />
+              <path
+                d="M 18 14 L 25 14 L 32 38 L 39 14 L 46 14 L 35 50 L 29 50 Z"
+                fill="#ffffff"
+              />
+              <path
+                d="M 56 14 L 46 14 L 46 19 L 51 19 L 51 45 L 46 45 L 46 50 L 56 50 Z"
+                fill="#ffffff"
+              />
+            </svg>
+            <span className="inline-flex flex-col gap-0.5">
+              <span className="font-mono text-3xl font-bold uppercase leading-none tracking-tighter text-black md:text-4xl">
+                VEIL
+              </span>
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                SEAL IT. PROVE IT. ISSUE NO. {issue}
+              </span>
             </span>
           </Link>
         </div>
