@@ -511,14 +511,16 @@ function CaseFileSection({ t }: { t: TFn }) {
       label: t("home.caseT1Label"),
       body: t("home.caseT1Body"),
       img: "/story/02-seal.webp",
-      imgAlt: "Wax seal in green being stamped onto a printed chart",
+      imgAlt:
+        "Editorial woodcut illustration — a hand pressing a brass stamp onto a wax seal over a printed chart",
     },
     {
       date: t("home.caseT2Date"),
       label: t("home.caseT2Label"),
       body: t("home.caseT2Body"),
       img: "/story/03-unlock.webp",
-      imgAlt: "Hand opening an envelope with green smoke escaping",
+      imgAlt:
+        "Editorial woodcut illustration — a wax-sealed envelope torn open with ribbons of light and smoke escaping",
     },
     {
       date: t("home.caseT3Date"),
@@ -526,7 +528,7 @@ function CaseFileSection({ t }: { t: TFn }) {
       body: t("home.caseT3Body"),
       img: "/story/04-track.webp",
       imgAlt:
-        "Stack of folders with timestamps stamped in green ink, evidence locker aesthetic",
+        "Editorial woodcut illustration — a stack of archival folders next to a steel filing cabinet, evidence locker aesthetic",
     },
   ];
 
