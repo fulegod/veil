@@ -23,6 +23,7 @@ export default function Home() {
         <HeroSection isConnected={isConnected} address={address} t={t} />
         <ProblemSection t={t} />
         <HowItWorksSection t={t} />
+        <CaseFileSection t={t} />
         <ExampleSection t={t} />
         <UseCasesSection t={t} />
         <WhyArkivSection t={t} />
@@ -205,7 +206,7 @@ function HowItWorksSection({ t }: { t: TFn }) {
 
 function ExampleSection({ t }: { t: TFn }) {
   return (
-    <Section tag="[§03 — LIVE EXAMPLE]" tagAccent>
+    <Section tag="[§04 — LIVE EXAMPLE]" tagAccent>
       <h2 className="text-3xl uppercase tracking-tighter md:text-5xl">
         {t("home.exampleTitle")}
       </h2>
@@ -284,7 +285,7 @@ function UseCasesSection({ t }: { t: TFn }) {
   ];
 
   return (
-    <Section tag="[§04 — USE CASES]">
+    <Section tag="[§05 — USE CASES]">
       <h2 className="text-3xl uppercase tracking-tighter md:text-5xl">
         {t("home.useCasesTitle")}
       </h2>
@@ -333,7 +334,7 @@ function WhyArkivSection({ t }: { t: TFn }) {
   ];
 
   return (
-    <Section tag="[§05 — WHY ARKIV]" tagAccent inverted>
+    <Section tag="[§06 — WHY ARKIV]" tagAccent inverted>
       <h2 className="text-3xl uppercase tracking-tighter text-white md:text-5xl">
         {t("home.whyTitle")}
       </h2>
@@ -498,6 +499,223 @@ function FooterLink({
     >
       [{children}]
     </a>
+  );
+}
+
+// ─── Case File — newspaper-style narrative scenario ────────────────────────
+
+function CaseFileSection({ t }: { t: TFn }) {
+  const tl = [
+    {
+      date: t("home.caseT1Date"),
+      label: t("home.caseT1Label"),
+      body: t("home.caseT1Body"),
+    },
+    {
+      date: t("home.caseT2Date"),
+      label: t("home.caseT2Label"),
+      body: t("home.caseT2Body"),
+    },
+    {
+      date: t("home.caseT3Date"),
+      label: t("home.caseT3Label"),
+      body: t("home.caseT3Body"),
+    },
+  ];
+
+  return (
+    <Section tag="[§03 — CASE FILE]" tagAccent>
+      {/* Newspaper-style stamp row */}
+      <div className="border-b-2 border-black pb-3">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+          {t("home.caseEyebrow")}
+        </p>
+        <p className="mt-1 font-mono text-xs font-bold uppercase tracking-widest">
+          {t("home.caseDate")}
+        </p>
+      </div>
+
+      {/* Headline + lede in two columns like a real broadsheet */}
+      <div className="mt-6 grid grid-cols-12 gap-6">
+        <div className="col-span-12 md:col-span-7">
+          <h2 className="text-3xl uppercase leading-[1.05] tracking-tighter md:text-5xl">
+            {t("home.caseHeadline")}
+          </h2>
+          <p className="mt-4 columns-1 text-sm leading-relaxed text-gray-700 text-justify md:columns-2 md:gap-6 md:text-base">
+            {t("home.caseLede")}
+          </p>
+        </div>
+
+        {/* Side stamp */}
+        <aside className="col-span-12 border-t-2 border-black pt-4 md:col-span-5 md:border-l-2 md:border-t-0 md:pl-6 md:pt-0">
+          <h3 className="font-mono text-xs font-bold uppercase tracking-widest">
+            <span className="bg-[#00e676] px-1 text-black">
+              {t("home.caseSubhead").toUpperCase()}
+            </span>
+          </h3>
+          <p className="mt-3 text-sm leading-relaxed text-gray-700 text-justify">
+            {t("home.caseSubbody")}
+          </p>
+        </aside>
+      </div>
+
+      {/* Timeline */}
+      <div className="mt-8">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+          {t("home.caseTimelineHeader")}
+        </p>
+        <TimelineSVG />
+        <div className="mt-4 grid grid-cols-1 gap-0 border-2 border-black md:grid-cols-3">
+          {tl.map((step, i) => (
+            <div
+              key={i}
+              className={`flex flex-col gap-2 p-4 ${
+                i > 0
+                  ? "border-t-2 border-black md:border-l-2 md:border-t-0"
+                  : ""
+              }`}
+            >
+              <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                {step.date}
+              </div>
+              <div className="font-mono text-xs font-bold uppercase tracking-widest">
+                <span className="bg-black px-1.5 py-0.5 text-[#00e676]">
+                  [{step.label}]
+                </span>
+              </div>
+              <p className="text-xs leading-snug text-gray-700 lowercase text-justify">
+                {step.body}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <p className="mt-6 border-t border-dashed border-gray-400 pt-3 font-mono text-[10px] uppercase tracking-widest text-gray-500">
+        ⚑ {t("home.caseFootnote")}
+      </p>
+    </Section>
+  );
+}
+
+// Pure SVG timeline — 3 nodes connected by a horizontal line with dashed
+// "wait" segment in the middle. All 2px, all black + accent green.
+function TimelineSVG() {
+  return (
+    <svg
+      viewBox="0 0 800 80"
+      className="mt-4 h-20 w-full"
+      preserveAspectRatio="xMidYMid meet"
+      role="img"
+      aria-label="Seal → Unlock → Verify timeline"
+    >
+      {/* main horizontal line */}
+      <line x1="60" y1="40" x2="400" y2="40" stroke="#000" strokeWidth="2" />
+      {/* dashed wait segment */}
+      <line
+        x1="400"
+        y1="40"
+        x2="540"
+        y2="40"
+        stroke="#000"
+        strokeWidth="2"
+        strokeDasharray="6 6"
+      />
+      <line x1="540" y1="40" x2="740" y2="40" stroke="#000" strokeWidth="2" />
+
+      {/* node 1: SEAL — filled black square */}
+      <rect x="50" y="30" width="20" height="20" fill="#000" />
+      <text
+        x="60"
+        y="20"
+        textAnchor="middle"
+        fontFamily="ui-monospace, 'JetBrains Mono', monospace"
+        fontSize="10"
+        fontWeight="700"
+        fill="#000"
+      >
+        [SEAL]
+      </text>
+
+      {/* node 2: UNLOCK — green-filled square w/ black border */}
+      <rect
+        x="390"
+        y="30"
+        width="20"
+        height="20"
+        fill="#00e676"
+        stroke="#000"
+        strokeWidth="2"
+      />
+      <text
+        x="400"
+        y="20"
+        textAnchor="middle"
+        fontFamily="ui-monospace, 'JetBrains Mono', monospace"
+        fontSize="10"
+        fontWeight="700"
+        fill="#000"
+      >
+        [UNLOCK]
+      </text>
+
+      {/* node 3: VERIFY — outlined square */}
+      <rect
+        x="730"
+        y="30"
+        width="20"
+        height="20"
+        fill="#fff"
+        stroke="#000"
+        strokeWidth="2"
+      />
+      <text
+        x="740"
+        y="20"
+        textAnchor="middle"
+        fontFamily="ui-monospace, 'JetBrains Mono', monospace"
+        fontSize="10"
+        fontWeight="700"
+        fill="#000"
+      >
+        [VERIFY]
+      </text>
+
+      {/* label between unlock and verify */}
+      <text
+        x="470"
+        y="65"
+        textAnchor="middle"
+        fontFamily="ui-monospace, 'JetBrains Mono', monospace"
+        fontSize="9"
+        fontWeight="700"
+        fill="#666"
+      >
+        drand publishes
+      </text>
+      <text
+        x="220"
+        y="65"
+        textAnchor="middle"
+        fontFamily="ui-monospace, 'JetBrains Mono', monospace"
+        fontSize="9"
+        fontWeight="700"
+        fill="#666"
+      >
+        ciphertext on Arkiv
+      </text>
+      <text
+        x="640"
+        y="65"
+        textAnchor="middle"
+        fontFamily="ui-monospace, 'JetBrains Mono', monospace"
+        fontSize="9"
+        fontWeight="700"
+        fill="#666"
+      >
+        on-chain reveal
+      </text>
+    </svg>
   );
 }
 

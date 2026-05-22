@@ -107,6 +107,31 @@ const dict = {
     "home.why4Body":
       "Every create, update, and delete returns a tx hash on Braga. Anyone can replay the history in the block explorer without trusting Veil at all.",
 
+    // ─── Home: Case File (real-world story) ─────────────────────────────
+    "home.caseEyebrow": "Case file — a scenario you've seen",
+    "home.caseDate": "December 12, 2024 · 03:47 UTC",
+    "home.caseHeadline": "The 100K tweet that nobody can find anymore",
+    "home.caseLede":
+      'A trader you follow posts a chart: "BTC reaches 100K by end of Q1. Screenshot this." Eighteen thousand retweets in six hours. Three months later, BTC is at 67K. The tweet is gone. The trader now claims they "always said it could go either way." Nobody can prove what they wrote, when.',
+    "home.caseSubhead": "What Veil would have done",
+    "home.caseSubbody":
+      "Had the call been sealed in Veil the night the chart was posted, the on-chain trail would have outlived the deletion. Anyone could query the entity by wallet, see the exact prediction, the exact timestamp, and grade the call without trusting the trader, Twitter, or us. The body would have been unreadable until Q1 closed — so nobody could have copied it. After Q1, anyone could decrypt and judge.",
+    "home.caseTimelineHeader": "[TIMELINE]",
+    "home.caseT1Date": "DEC 12 · 03:47Z",
+    "home.caseT1Label": "SEAL",
+    "home.caseT1Body":
+      "trader writes the call, Veil encrypts it against a future drand round, posts the entity on Arkiv. Title + creator + unlock date are public; body is opaque ciphertext.",
+    "home.caseT2Date": "MAR 31 · 23:59Z",
+    "home.caseT2Label": "UNLOCK",
+    "home.caseT2Body":
+      "drand publishes the round. Decryption key becomes derivable. Anyone with the link reads the exact text the trader committed to. Nobody could have done so even one second earlier.",
+    "home.caseT3Date": "APR 01 onward",
+    "home.caseT3Label": "VERIFY",
+    "home.caseT3Body":
+      "the call is either right or wrong, in the open, no edits possible. Followers can grade. Reputation accrues to wallets, not handles.",
+    "home.caseFootnote":
+      "fictional scenario, exact mechanic this product enables. you can seal one yourself in the next minute.",
+
     // ─── Home: Trust signals ────────────────────────────────────────────
     "home.trust1": "Open source",
     "home.trust2": "No server holds keys",
@@ -290,6 +315,31 @@ const dict = {
     "home.why4Title": "Verificable, de punta a punta",
     "home.why4Body":
       "Cada create, update y delete devuelve un tx hash en Braga. Cualquiera puede replayar la historia en el block explorer sin confiar en Veil para nada.",
+
+    // ─── Home: Case File (escenario real) ───────────────────────────────
+    "home.caseEyebrow": "Caso real — un escenario que ya viste",
+    "home.caseDate": "12 de diciembre, 2024 · 03:47 UTC",
+    "home.caseHeadline": "El tweet de los 100k que ya nadie encuentra",
+    "home.caseLede":
+      'Un trader que sigues publica un gráfico: "BTC llega a 100K antes de fin del Q1. Hagan screenshot esto." 18.000 retweets en seis horas. Tres meses después, BTC está en 67K. El tweet desapareció. El trader ahora dice que "siempre dijo que podía ir para los dos lados". Nadie puede probar qué escribió, ni cuándo.',
+    "home.caseSubhead": "Qué habría hecho Veil",
+    "home.caseSubbody":
+      "Si la call hubiera sido sellada en Veil la noche que se publicó el chart, el rastro on-chain habría sobrevivido al borrado. Cualquiera podría consultar la entity por wallet, ver la predicción exacta, el timestamp exacto, y calificar la call sin confiar en el trader, en Twitter, ni en nosotros. El cuerpo habría sido ilegible hasta que cerrara Q1 — nadie podía copiarlo antes. Después de Q1, cualquiera puede descifrar y juzgar.",
+    "home.caseTimelineHeader": "[CRONOLOGÍA]",
+    "home.caseT1Date": "DIC 12 · 03:47Z",
+    "home.caseT1Label": "SELLAR",
+    "home.caseT1Body":
+      "el trader escribe la call, Veil la cifra contra un round drand futuro, publica la entity en Arkiv. Título + creador + fecha de unlock son públicos; el cuerpo es ciphertext opaco.",
+    "home.caseT2Date": "MAR 31 · 23:59Z",
+    "home.caseT2Label": "ABRIR",
+    "home.caseT2Body":
+      "drand publica el round. La key se vuelve derivable. Cualquiera con el link lee el texto exacto al que el trader se comprometió. Nadie podía hacerlo ni un segundo antes.",
+    "home.caseT3Date": "DESDE ABR 01",
+    "home.caseT3Label": "VERIFICAR",
+    "home.caseT3Body":
+      "la call está bien o mal, a la vista, sin ediciones posibles. Los seguidores califican. La reputación acumula en wallets, no en handles.",
+    "home.caseFootnote":
+      "escenario ficticio, mecanismo exacto que este producto habilita. puedes sellar uno tú mismo en el próximo minuto.",
 
     // ─── Home: Trust signals ────────────────────────────────────────────
     "home.trust1": "Open source",
