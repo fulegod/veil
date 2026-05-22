@@ -109,19 +109,19 @@ const dict = {
 
     // ─── Home: Case File (real-world story) ─────────────────────────────
     "home.caseEyebrow":
-      "Case file — meet Diego, the analyst who got tired of editing his own history",
-    "home.caseByline": "Lima, Peru · paid newsletter · 340 → 890 subscribers",
+      "Case file — meet K-31, an analyst who got tired of editing their own history",
+    "home.caseByline": "Singapore · paid newsletter · 340 → 890 subscribers",
     "home.caseDate": "December 12, 2024 · 03:47 UTC",
     "home.caseHeadline":
-      "Diego stopped trying to be right. He started being verifiable instead.",
+      "K-31 stopped trying to be right. They started being verifiable instead.",
     "home.caseLede":
-      "Diego is a 31-year-old crypto analyst in Lima. Wire-rimmed glasses, kitchen office, 340 paying subscribers at $19/mo. His problem isn't analysis — it's trust. Every call he gets wrong, somebody screenshots it and tags him three weeks later. Every call he gets right, three influencers claim they called it first. His churn is 8% monthly and climbing. The market doesn't reward being right anymore. It rewards being able to prove you were right.",
-    "home.caseSubhead": "The night he sealed his first call",
+      "K-31 is a 31-year-old crypto analyst in Singapore. Wire-rimmed glasses, kitchen office, 340 paying subscribers at $19/mo. Their problem isn't analysis — it's trust. Every call they get wrong, somebody screenshots it and tags them three weeks later. Every call they get right, three influencers claim they called it first. Their churn is 8% monthly and climbing. The market doesn't reward being right anymore. It rewards being able to prove you were right.",
+    "home.caseSubhead": "The night they sealed their first call",
     "home.caseSubbody":
-      "December 12, 2024, 03:47 UTC. Diego writes \"BTC over 95K before January 16\" plus a 600-word thesis: macro setup, on-chain flows, where he's wrong if X happens. He doesn't tweet it. He seals it in Veil instead, public, unlock January 16. The body is encrypted client-side against a future drand round nobody — including Diego — can read yet. The title, his wallet, and the unlock timestamp go on-chain. Everyone can see he committed. Nobody can see what.",
+      "December 12, 2024, 03:47 UTC. K-31 writes \"BTC over 95K before January 16\" plus a 600-word thesis: macro setup, on-chain flows, where they're wrong if X happens. They don't tweet it. They seal it in Veil instead, public, unlock January 16. The body is encrypted client-side against a future drand round nobody — including K-31 — can read yet. The title, their wallet, and the unlock timestamp go on-chain. Everyone can see they committed. Nobody can see what.",
     "home.caseOutcomeHead": "January 16. BTC closes at 92K. Call fails.",
     "home.caseOutcomeBody":
-      "Diego cannot delete it. The cipher unlocks on schedule. The thesis becomes public, verbatim, with the on-chain creation timestamp anyone can verify on Braga. Diego publishes a post: \"I was wrong. Here's why my model missed.\" He expects the worst. His churn that month drops to 3%. Three months later he's at 890 subscribers. The market did not reward being right. It rewarded being unable to lie.",
+      "K-31 cannot delete it. The cipher unlocks on schedule. The thesis becomes public, verbatim, with the on-chain creation timestamp anyone can verify on Braga. K-31 publishes a post: \"I was wrong. Here's why my model missed.\" They expect the worst. Their churn that month drops to 3%. Three months later they're at 890 subscribers. The market did not reward being right. It rewarded being unable to lie.",
     "home.caseTimelineHeader": "[TIMELINE]",
     "home.caseT1Date": "DEC 12 · 03:47Z",
     "home.caseT1Label": "SEAL",
@@ -324,20 +324,19 @@ const dict = {
 
     // ─── Home: Case File (escenario real) ───────────────────────────────
     "home.caseEyebrow":
-      "Caso real — Diego, el analista que se cansó de editar su propio historial",
-    "home.caseByline":
-      "Lima, Perú · newsletter de pago · 340 → 890 suscriptores",
+      "Caso real — K-31, analista que se cansó de editar su propio historial",
+    "home.caseByline": "Singapur · newsletter de pago · 340 → 890 suscriptores",
     "home.caseDate": "12 de diciembre, 2024 · 03:47 UTC",
     "home.caseHeadline":
-      "Diego dejó de intentar tener razón. Empezó a ser verificable.",
+      "K-31 dejó de intentar tener razón. Empezó a ser verificable.",
     "home.caseLede":
-      "Diego es un analista crypto de 31 años en Lima. Lentes de marco metálico, oficina-cocina, 340 suscriptores pagando $19/mes. Su problema no es el análisis — es la confianza. Cada call que falla, alguien le hace screenshot y lo tagea tres semanas después. Cada call que acierta, tres influencers dicen que la llamaron primero. Su churn es 8% mensual y subiendo. El mercado dejó de premiar tener razón. Premia poder probar que tuviste razón.",
+      "K-31 es una analista crypto de 31 años en Singapur. Lentes de marco metálico, oficina-cocina, 340 suscriptores pagando $19/mes. Su problema no es el análisis — es la confianza. Cada call que falla, alguien le hace screenshot y la tagea tres semanas después. Cada call que acierta, tres influencers dicen que la llamaron primero. Su churn es 8% mensual y subiendo. El mercado dejó de premiar tener razón. Premia poder probar que tuviste razón.",
     "home.caseSubhead": "La noche que selló su primera call",
     "home.caseSubbody":
-      '12 de diciembre 2024, 03:47 UTC. Diego escribe "BTC sobre 95K antes del 16 de enero" + 600 palabras de tesis: setup macro, flujos on-chain, dónde está equivocado si X pasa. No la tuitea. La sella en Veil, pública, unlock el 16 de enero. El cuerpo se cifra client-side contra un round drand futuro que nadie — ni Diego — puede leer aún. El título, su wallet y el timestamp de unlock van on-chain. Todos pueden ver que se comprometió. Nadie puede ver con qué.',
+      '12 de diciembre 2024, 03:47 UTC. K-31 escribe "BTC sobre 95K antes del 16 de enero" + 600 palabras de tesis: setup macro, flujos on-chain, dónde está equivocada si X pasa. No la tuitea. La sella en Veil, pública, unlock el 16 de enero. El cuerpo se cifra client-side contra un round drand futuro que nadie — ni K-31 — puede leer aún. El título, su wallet y el timestamp de unlock van on-chain. Todos pueden ver que se comprometió. Nadie puede ver con qué.',
     "home.caseOutcomeHead": "16 de enero. BTC cierra en 92K. La call falla.",
     "home.caseOutcomeBody":
-      'Diego no puede borrarla. El cifrado se abre en horario. La tesis se vuelve pública, palabra por palabra, con el timestamp de creación on-chain que cualquiera puede verificar en Braga. Diego publica un post: "Me equivoqué. Aquí por qué falló mi modelo." Esperaba lo peor. Su churn ese mes baja a 3%. Tres meses después tiene 890 suscriptores. El mercado no premió tener razón. Premió no poder mentir.',
+      'K-31 no puede borrarla. El cifrado se abre en horario. La tesis se vuelve pública, palabra por palabra, con el timestamp de creación on-chain que cualquiera puede verificar en Braga. K-31 publica un post: "Me equivoqué. Aquí por qué falló mi modelo." Esperaba lo peor. Su churn ese mes baja a 3%. Tres meses después tiene 890 suscriptores. El mercado no premió tener razón. Premió no poder mentir.',
     "home.caseTimelineHeader": "[CRONOLOGÍA]",
     "home.caseT1Date": "DIC 12 · 03:47Z",
     "home.caseT1Label": "SELLAR",

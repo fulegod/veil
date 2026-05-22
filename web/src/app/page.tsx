@@ -548,13 +548,13 @@ function CaseFileSection({ t }: { t: TFn }) {
           <div className="border-2 border-black bg-black p-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/story/01-diego.webp"
-              alt="Diego, a 31-year-old crypto analyst, working on his laptop at night in Lima — black and white photograph with neon green glow from the screen"
+              src="/story/01-analyst.webp"
+              alt="K-31, an anonymous crypto analyst silhouetted at a desk in Singapore at night — editorial black-and-white woodcut illustration with neon green accent on the laptop screen"
               className="block w-full h-auto"
             />
           </div>
           <figcaption className="mt-2 font-mono text-[10px] uppercase tracking-widest text-gray-500">
-            ↳ Diego, 03:47 local time. Lima.
+            ↳ K-31, 03:47 local time. Singapore.
           </figcaption>
         </figure>
 
@@ -597,7 +597,7 @@ function CaseFileSection({ t }: { t: TFn }) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/story/04-track.webp"
-            alt="Diego's archived track record — folders with green timestamps anyone can verify"
+            alt="K-31's archived track record — folders with green timestamps anyone can verify"
             className="block w-full h-auto"
           />
         </figure>
