@@ -1,16 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <!-- Black square — the section block -->
-  <rect width="32" height="32" fill="#000000"/>
-  <!-- Bracketed [V] in neon green — pure type, no illustration -->
+  <!-- Rounded green square — Arkiv-mirroring shape, Veil neon green -->
+  <rect width="32" height="32" rx="6" ry="6" fill="#00e676"/>
+  <!-- Bracketed [ V ] in white — pure type, brackets matching Arkiv aesthetic -->
   <text
     x="50%"
     y="54%"
     text-anchor="middle"
     dominant-baseline="middle"
     font-family="ui-monospace, 'JetBrains Mono', monospace"
-    font-size="18"
-    font-weight="700"
-    fill="#00e676"
+    font-size="17"
+    font-weight="800"
+    fill="#ffffff"
     letter-spacing="-0.5"
   >[V]</text>
 </svg>
