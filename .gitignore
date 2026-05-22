@@ -40,5 +40,5 @@ task_plan.md
 #   .claude/skills/     — copied global skills used in this project
 #   PATTERNS.md         — Arkiv patterns demonstrated (scoring boost)
 #   SKILLS.md           — index of skills loaded
-SUBMIT.md
-VIDEO_SCRIPT.md
+#   DEMO.md             — visual walkthrough for judges who don't run locally
+#   screenshots/        — production captures referenced from DEMO.md

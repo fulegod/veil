@@ -510,56 +510,100 @@ function CaseFileSection({ t }: { t: TFn }) {
       date: t("home.caseT1Date"),
       label: t("home.caseT1Label"),
       body: t("home.caseT1Body"),
+      img: "/story/02-seal.webp",
+      imgAlt: "Wax seal in green being stamped onto a printed chart",
     },
     {
       date: t("home.caseT2Date"),
       label: t("home.caseT2Label"),
       body: t("home.caseT2Body"),
+      img: "/story/03-unlock.webp",
+      imgAlt: "Hand opening an envelope with green smoke escaping",
     },
     {
       date: t("home.caseT3Date"),
       label: t("home.caseT3Label"),
       body: t("home.caseT3Body"),
+      img: "/story/04-track.webp",
+      imgAlt:
+        "Stack of folders with timestamps stamped in green ink, evidence locker aesthetic",
     },
   ];
 
   return (
     <Section tag="[§03 — CASE FILE]" tagAccent>
-      {/* Newspaper-style stamp row */}
+      {/* Top stamp row — eyebrow + byline + date */}
       <div className="border-b-2 border-black pb-3">
         <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
           {t("home.caseEyebrow")}
         </p>
         <p className="mt-1 font-mono text-xs font-bold uppercase tracking-widest">
-          {t("home.caseDate")}
+          {t("home.caseByline")} · {t("home.caseDate")}
         </p>
       </div>
 
-      {/* Headline + lede in two columns like a real broadsheet */}
+      {/* Hero portrait + headline + lede — broadsheet feature shape */}
       <div className="mt-6 grid grid-cols-12 gap-6">
+        <figure className="col-span-12 md:col-span-5">
+          <div className="border-2 border-black bg-black p-1">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/story/01-diego.webp"
+              alt="Diego, a 31-year-old crypto analyst, working on his laptop at night in Lima — black and white photograph with neon green glow from the screen"
+              className="block w-full h-auto"
+            />
+          </div>
+          <figcaption className="mt-2 font-mono text-[10px] uppercase tracking-widest text-gray-500">
+            ↳ Diego, 03:47 local time. Lima.
+          </figcaption>
+        </figure>
+
         <div className="col-span-12 md:col-span-7">
-          <h2 className="text-3xl uppercase leading-[1.05] tracking-tighter md:text-5xl">
+          <h2 className="text-3xl uppercase leading-[1.05] tracking-tighter md:text-4xl lg:text-5xl">
             {t("home.caseHeadline")}
           </h2>
           <p className="mt-4 columns-1 text-sm leading-relaxed text-gray-700 text-justify md:columns-2 md:gap-6 md:text-base">
             {t("home.caseLede")}
           </p>
         </div>
-
-        {/* Side stamp */}
-        <aside className="col-span-12 border-t-2 border-black pt-4 md:col-span-5 md:border-l-2 md:border-t-0 md:pl-6 md:pt-0">
-          <h3 className="font-mono text-xs font-bold uppercase tracking-widest">
-            <span className="bg-[#00e676] px-1 text-black">
-              {t("home.caseSubhead").toUpperCase()}
-            </span>
-          </h3>
-          <p className="mt-3 text-sm leading-relaxed text-gray-700 text-justify">
-            {t("home.caseSubbody")}
-          </p>
-        </aside>
       </div>
 
-      {/* Timeline */}
+      {/* Pull-quote-style subhead block */}
+      <div className="mt-8 border-2 border-black bg-white p-5 md:p-8">
+        <h3 className="font-mono text-sm font-bold uppercase tracking-widest md:text-base">
+          <span className="bg-[#00e676] px-1.5 text-black">
+            {t("home.caseSubhead").toUpperCase()}
+          </span>
+        </h3>
+        <p className="mt-4 columns-1 text-sm leading-relaxed text-gray-700 text-justify md:columns-2 md:gap-8 md:text-base">
+          {t("home.caseSubbody")}
+        </p>
+      </div>
+
+      {/* Outcome — high-contrast inverted block */}
+      <div className="mt-8 grid grid-cols-12 gap-0 border-2 border-black">
+        <div className="col-span-12 bg-black p-6 text-white md:col-span-7 md:p-8">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+            [OUTCOME]
+          </p>
+          <h3 className="mt-2 text-2xl uppercase leading-[1.1] tracking-tighter md:text-3xl">
+            {t("home.caseOutcomeHead")}
+          </h3>
+          <p className="mt-4 text-sm leading-relaxed text-gray-300 text-justify md:text-base">
+            {t("home.caseOutcomeBody")}
+          </p>
+        </div>
+        <figure className="col-span-12 border-t-2 border-black md:col-span-5 md:border-l-2 md:border-t-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/story/04-track.webp"
+            alt="Diego's archived track record — folders with green timestamps anyone can verify"
+            className="block w-full h-auto"
+          />
+        </figure>
+      </div>
+
+      {/* Timeline + 3-step photo strip */}
       <div className="mt-8">
         <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
           {t("home.caseTimelineHeader")}
@@ -569,23 +613,31 @@ function CaseFileSection({ t }: { t: TFn }) {
           {tl.map((step, i) => (
             <div
               key={i}
-              className={`flex flex-col gap-2 p-4 ${
+              className={`flex flex-col ${
                 i > 0
                   ? "border-t-2 border-black md:border-l-2 md:border-t-0"
                   : ""
               }`}
             >
-              <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                {step.date}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={step.img}
+                alt={step.imgAlt}
+                className="block aspect-[4/3] w-full object-cover border-b-2 border-black"
+              />
+              <div className="flex flex-col gap-2 p-4">
+                <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                  {step.date}
+                </div>
+                <div className="font-mono text-xs font-bold uppercase tracking-widest">
+                  <span className="bg-black px-1.5 py-0.5 text-[#00e676]">
+                    [{step.label}]
+                  </span>
+                </div>
+                <p className="text-xs leading-snug text-gray-700 lowercase text-justify">
+                  {step.body}
+                </p>
               </div>
-              <div className="font-mono text-xs font-bold uppercase tracking-widest">
-                <span className="bg-black px-1.5 py-0.5 text-[#00e676]">
-                  [{step.label}]
-                </span>
-              </div>
-              <p className="text-xs leading-snug text-gray-700 lowercase text-justify">
-                {step.body}
-              </p>
             </div>
           ))}
         </div>

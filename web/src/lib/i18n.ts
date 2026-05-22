@@ -108,14 +108,20 @@ const dict = {
       "Every create, update, and delete returns a tx hash on Braga. Anyone can replay the history in the block explorer without trusting Veil at all.",
 
     // ─── Home: Case File (real-world story) ─────────────────────────────
-    "home.caseEyebrow": "Case file — a scenario you've seen",
+    "home.caseEyebrow":
+      "Case file — meet Diego, the analyst who got tired of editing his own history",
+    "home.caseByline": "Lima, Peru · paid newsletter · 340 → 890 subscribers",
     "home.caseDate": "December 12, 2024 · 03:47 UTC",
-    "home.caseHeadline": "The 100K tweet that nobody can find anymore",
+    "home.caseHeadline":
+      "Diego stopped trying to be right. He started being verifiable instead.",
     "home.caseLede":
-      'A trader you follow posts a chart: "BTC reaches 100K by end of Q1. Screenshot this." Eighteen thousand retweets in six hours. Three months later, BTC is at 67K. The tweet is gone. The trader now claims they "always said it could go either way." Nobody can prove what they wrote, when.',
-    "home.caseSubhead": "What Veil would have done",
+      "Diego is a 31-year-old crypto analyst in Lima. Wire-rimmed glasses, kitchen office, 340 paying subscribers at $19/mo. His problem isn't analysis — it's trust. Every call he gets wrong, somebody screenshots it and tags him three weeks later. Every call he gets right, three influencers claim they called it first. His churn is 8% monthly and climbing. The market doesn't reward being right anymore. It rewards being able to prove you were right.",
+    "home.caseSubhead": "The night he sealed his first call",
     "home.caseSubbody":
-      "Had the call been sealed in Veil the night the chart was posted, the on-chain trail would have outlived the deletion. Anyone could query the entity by wallet, see the exact prediction, the exact timestamp, and grade the call without trusting the trader, Twitter, or us. The body would have been unreadable until Q1 closed — so nobody could have copied it. After Q1, anyone could decrypt and judge.",
+      "December 12, 2024, 03:47 UTC. Diego writes \"BTC over 95K before January 16\" plus a 600-word thesis: macro setup, on-chain flows, where he's wrong if X happens. He doesn't tweet it. He seals it in Veil instead, public, unlock January 16. The body is encrypted client-side against a future drand round nobody — including Diego — can read yet. The title, his wallet, and the unlock timestamp go on-chain. Everyone can see he committed. Nobody can see what.",
+    "home.caseOutcomeHead": "January 16. BTC closes at 92K. Call fails.",
+    "home.caseOutcomeBody":
+      "Diego cannot delete it. The cipher unlocks on schedule. The thesis becomes public, verbatim, with the on-chain creation timestamp anyone can verify on Braga. Diego publishes a post: \"I was wrong. Here's why my model missed.\" He expects the worst. His churn that month drops to 3%. Three months later he's at 890 subscribers. The market did not reward being right. It rewarded being unable to lie.",
     "home.caseTimelineHeader": "[TIMELINE]",
     "home.caseT1Date": "DEC 12 · 03:47Z",
     "home.caseT1Label": "SEAL",
@@ -317,14 +323,21 @@ const dict = {
       "Cada create, update y delete devuelve un tx hash en Braga. Cualquiera puede replayar la historia en el block explorer sin confiar en Veil para nada.",
 
     // ─── Home: Case File (escenario real) ───────────────────────────────
-    "home.caseEyebrow": "Caso real — un escenario que ya viste",
+    "home.caseEyebrow":
+      "Caso real — Diego, el analista que se cansó de editar su propio historial",
+    "home.caseByline":
+      "Lima, Perú · newsletter de pago · 340 → 890 suscriptores",
     "home.caseDate": "12 de diciembre, 2024 · 03:47 UTC",
-    "home.caseHeadline": "El tweet de los 100k que ya nadie encuentra",
+    "home.caseHeadline":
+      "Diego dejó de intentar tener razón. Empezó a ser verificable.",
     "home.caseLede":
-      'Un trader que sigues publica un gráfico: "BTC llega a 100K antes de fin del Q1. Hagan screenshot esto." 18.000 retweets en seis horas. Tres meses después, BTC está en 67K. El tweet desapareció. El trader ahora dice que "siempre dijo que podía ir para los dos lados". Nadie puede probar qué escribió, ni cuándo.',
-    "home.caseSubhead": "Qué habría hecho Veil",
+      "Diego es un analista crypto de 31 años en Lima. Lentes de marco metálico, oficina-cocina, 340 suscriptores pagando $19/mes. Su problema no es el análisis — es la confianza. Cada call que falla, alguien le hace screenshot y lo tagea tres semanas después. Cada call que acierta, tres influencers dicen que la llamaron primero. Su churn es 8% mensual y subiendo. El mercado dejó de premiar tener razón. Premia poder probar que tuviste razón.",
+    "home.caseSubhead": "La noche que selló su primera call",
     "home.caseSubbody":
-      "Si la call hubiera sido sellada en Veil la noche que se publicó el chart, el rastro on-chain habría sobrevivido al borrado. Cualquiera podría consultar la entity por wallet, ver la predicción exacta, el timestamp exacto, y calificar la call sin confiar en el trader, en Twitter, ni en nosotros. El cuerpo habría sido ilegible hasta que cerrara Q1 — nadie podía copiarlo antes. Después de Q1, cualquiera puede descifrar y juzgar.",
+      '12 de diciembre 2024, 03:47 UTC. Diego escribe "BTC sobre 95K antes del 16 de enero" + 600 palabras de tesis: setup macro, flujos on-chain, dónde está equivocado si X pasa. No la tuitea. La sella en Veil, pública, unlock el 16 de enero. El cuerpo se cifra client-side contra un round drand futuro que nadie — ni Diego — puede leer aún. El título, su wallet y el timestamp de unlock van on-chain. Todos pueden ver que se comprometió. Nadie puede ver con qué.',
+    "home.caseOutcomeHead": "16 de enero. BTC cierra en 92K. La call falla.",
+    "home.caseOutcomeBody":
+      'Diego no puede borrarla. El cifrado se abre en horario. La tesis se vuelve pública, palabra por palabra, con el timestamp de creación on-chain que cualquiera puede verificar en Braga. Diego publica un post: "Me equivoqué. Aquí por qué falló mi modelo." Esperaba lo peor. Su churn ese mes baja a 3%. Tres meses después tiene 890 suscriptores. El mercado no premió tener razón. Premió no poder mentir.',
     "home.caseTimelineHeader": "[CRONOLOGÍA]",
     "home.caseT1Date": "DIC 12 · 03:47Z",
     "home.caseT1Label": "SELLAR",
