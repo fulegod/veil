@@ -19,10 +19,51 @@ const inter = Inter({
   display: "swap",
 });
 
+const SITE_URL = "https://web-eta-hazel-33.vercel.app";
+const TITLE = "VEIL — TRUSTLESS TIME CAPSULES";
+const DESCRIPTION =
+  "Seal your alpha today. Cryptographic proof you called it first. On-chain, drand-encrypted, verifiable in Braga.";
+
 export const metadata: Metadata = {
-  title: "VEIL — TRUSTLESS TIME CAPSULES",
-  description:
-    "Seal your alpha today. Cryptographic proof you called it first. On-chain, drand-encrypted, verifiable in Braga.",
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  applicationName: "Veil",
+  keywords: [
+    "Arkiv",
+    "ETHNS",
+    "drand",
+    "timelock encryption",
+    "time capsule",
+    "alpha calls",
+    "verifiable predictions",
+    "on-chain proof",
+    "Web3 privacy",
+    "decentralized storage",
+  ],
+  authors: [{ name: "fulegod", url: "https://github.com/fulegod" }],
+  creator: "fulegod",
+  publisher: "Veil",
+  category: "technology",
+  // Open Graph & Twitter pull the dynamic image from /opengraph-image.tsx
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: SITE_URL,
+    siteName: "Veil",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+    creator: "@fulegod",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
