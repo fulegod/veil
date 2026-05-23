@@ -642,6 +642,12 @@ function SiteFooter({ t }: { t: TFn }) {
         >
           {t("inh.navLink")}
         </Link>
+        <Link
+          href="/case-files"
+          className="underline decoration-2 decoration-[#00e676] underline-offset-4 hover:text-black"
+        >
+          {t("cf.navLink")}
+        </Link>
         <FooterLink href="https://github.com/fulegod/veil">
           {t("home.footerLinkRepo")}
         </FooterLink>

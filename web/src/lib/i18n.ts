@@ -24,7 +24,27 @@ const dict = {
     "nav.capsules": "Capsules",
     "nav.inheritance": "Inheritance",
 
-    // ─── Diagram labels (narrative parts only; code identifiers stay EN) ─
+    // ─── Case Files page (/case-files) — illustrated narratives ──────────
+    "cf.navLink": "Case files",
+    "cf.pageEyebrow": "Illustrated scenarios",
+    "cf.pageTitle": "Case files.",
+    "cf.pageLede":
+      "The circuit diagrams on the home explain the protocols. These pages show what the protocols feel like in practice. Two case files: one for Capsules (a crypto analyst who stopped editing their record), one for the Inheritance protocol (three pictures of a cryptographic dead-man's switch).",
+    "cf.section1Tag": "[§01 — VERIFIABLE ALPHA]",
+    "cf.section2Tag": "[§02 — INHERITANCE PROTOCOL VISUALIZED]",
+    "cf.section2Eyebrow": "Protocol illustrated",
+    "cf.section2Title": "Three pictures of a cryptographic dead-man's switch.",
+    "cf.section2Lede":
+      "Wax seal + hourglass + envelopes — the same metaphors a notary used a hundred years ago, now encoded as drand timelock and Shamir threshold on a public-database chain.",
+    "cf.proto01Label": "[01 — VAULT]",
+    "cf.proto01Caption":
+      "The vault entity, sealed with a wax sigil. Drand-timelocked at creation; only $owner can call extendEntity to push the unlock further into the future.",
+    "cf.proto02Label": "[02 — HEARTBEAT]",
+    "cf.proto02Caption":
+      "Each heartbeat period, the owner turns the hourglass over (signs an extendEntity tx). The cardiogram keeps pulsing. The drand round target rolls forward; the vault stays sealed.",
+    "cf.proto03Label": "[03 — RECOVERY]",
+    "cf.proto03Caption":
+      "If the owner stops signing, the round publishes. Three of the five named validators open their envelopes, combine their Shamir shares, and the original document reconstructs in the center.",
     "diag.writer": "WRITER",
     "diag.creatorImmutable": "$creator (immutable)",
     "diag.creatorOwner": "$creator + $owner",
@@ -441,7 +461,28 @@ const dict = {
     "nav.capsules": "Cápsulas",
     "nav.inheritance": "Herencia",
 
-    // ─── Labels de diagramas (narrativos; identifiers de código quedan EN) ─
+    // ─── Página Case Files (/case-files) — narrativas ilustradas ────────
+    "cf.navLink": "Casos",
+    "cf.pageEyebrow": "Escenarios ilustrados",
+    "cf.pageTitle": "Casos.",
+    "cf.pageLede":
+      "Los diagramas de circuito en la home explican los protocolos. Estas páginas muestran cómo se sienten los protocolos en la práctica. Dos casos: uno para Cápsulas (una analista crypto que dejó de editar su historial), uno para el protocolo de Herencia (tres imágenes de un interruptor de muerte criptográfico).",
+    "cf.section1Tag": "[§01 — VERIFIABLE ALPHA]",
+    "cf.section2Tag": "[§02 — PROTOCOLO DE HERENCIA VISUALIZADO]",
+    "cf.section2Eyebrow": "Protocolo ilustrado",
+    "cf.section2Title":
+      "Tres imágenes de un interruptor de muerte criptográfico.",
+    "cf.section2Lede":
+      "Sello de cera + reloj de arena + sobres — las mismas metáforas que un notario usaba hace cien años, ahora codificadas como drand timelock y umbral Shamir en una cadena de base de datos pública.",
+    "cf.proto01Label": "[01 — BÓVEDA]",
+    "cf.proto01Caption":
+      "La entity vault, sellada con un sigilo de cera. Cifrada con drand-timelock al crearse; solo $owner puede llamar extendEntity para empujar el unlock al futuro.",
+    "cf.proto02Label": "[02 — HEARTBEAT]",
+    "cf.proto02Caption":
+      "Cada periodo de heartbeat, el dueño voltea el reloj de arena (firma una tx de extendEntity). El cardiograma sigue latiendo. El round drand objetivo se mueve al futuro; la bóveda sigue sellada.",
+    "cf.proto03Label": "[03 — RECUPERACIÓN]",
+    "cf.proto03Caption":
+      "Si el dueño deja de firmar, el round se publica. Tres de los cinco validadores nombrados abren sus sobres, combinan sus shares Shamir, y el documento original se reconstruye en el centro.",
     "diag.writer": "ESCRITOR",
     "diag.creatorImmutable": "$creator (inmutable)",
     "diag.creatorOwner": "$creator + $owner",
