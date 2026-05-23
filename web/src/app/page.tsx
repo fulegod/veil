@@ -209,18 +209,30 @@ function InheritanceSection({ t }: { t: TFn }) {
   const steps = [
     {
       tag: "01",
+      label: "VAULT",
       title: t("home.inhStep1Title"),
       body: t("home.inhStep1Body"),
+      img: "/story/05-vault.webp",
+      imgAlt:
+        "Editorial woodcut illustration of a massive vintage bank vault sealed with chains and a wax sigil",
     },
     {
       tag: "02",
+      label: "HEARTBEAT",
       title: t("home.inhStep2Title"),
       body: t("home.inhStep2Body"),
+      img: "/story/06-heartbeat.webp",
+      imgAlt:
+        "Editorial woodcut illustration of an hourglass being turned by a hand against a cardiogram waveform",
     },
     {
       tag: "03",
+      label: "RECOVER",
       title: t("home.inhStep3Title"),
       body: t("home.inhStep3Body"),
+      img: "/story/07-quorum.webp",
+      imgAlt:
+        "Editorial woodcut illustration of five wax-sealed envelopes, three open with keys, recovered parchment above",
     },
   ];
 
@@ -233,21 +245,21 @@ function InheritanceSection({ t }: { t: TFn }) {
 
   return (
     <Section tag="[§02B — INHERITANCE VAULTS]" tagAccent inverted>
+      {/* Header — eyebrow / title / lede / stats / CTAs */}
       <div className="grid grid-cols-12 gap-6">
-        {/* Left: eyebrow + title + lede */}
-        <div className="col-span-12 md:col-span-7">
+        <div className="col-span-12 md:col-span-8">
           <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
             {t("home.inhEyebrow")}
           </p>
           <h2 className="mt-2 text-3xl uppercase tracking-tighter text-white md:text-5xl lg:text-6xl">
             {t("home.inhTitle")}
           </h2>
-          <p className="mt-5 max-w-xl text-sm leading-snug text-gray-300 text-justify md:text-base">
+          <p className="mt-5 max-w-2xl text-sm leading-snug text-gray-300 text-justify md:text-base">
             {t("home.inhLede")}
           </p>
-
-          {/* Stats row */}
-          <div className="mt-6 flex flex-wrap gap-2">
+        </div>
+        <div className="col-span-12 flex flex-col gap-3 md:col-span-4 md:items-end md:text-right">
+          <div className="flex flex-wrap gap-2 md:justify-end">
             {stats.map((s, i) => (
               <span
                 key={i}
@@ -257,9 +269,7 @@ function InheritanceSection({ t }: { t: TFn }) {
               </span>
             ))}
           </div>
-
-          {/* CTAs */}
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3 md:justify-end">
             <Link
               href="/inheritance/new"
               className="border-2 border-[#00e676] bg-[#00e676] px-5 py-3 font-mono text-sm font-bold uppercase tracking-widest text-black hover:bg-black hover:text-[#00e676]"
@@ -276,32 +286,68 @@ function InheritanceSection({ t }: { t: TFn }) {
             </a>
           </div>
         </div>
+      </div>
 
-        {/* Right: 3-step flow */}
-        <div className="col-span-12 md:col-span-5">
-          <div className="flex flex-col gap-4">
-            {steps.map((s) => (
-              <div
-                key={s.tag}
-                className="border-2 border-[#00e676] bg-black p-4"
-              >
-                <div className="flex items-start gap-3">
-                  <span className="font-mono text-2xl font-bold tabular-nums text-[#00e676]">
-                    {s.tag}
-                  </span>
-                  <div className="flex-1">
-                    <h3 className="font-mono text-sm font-bold uppercase tracking-widest text-white">
-                      [{s.title}]
-                    </h3>
-                    <p className="mt-2 text-xs leading-snug text-gray-300 lowercase text-justify">
-                      {s.body}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
+      {/* Protocol-as-pictures — 3 woodcuts + step text aligned beneath each */}
+      <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+        {steps.map((s) => (
+          <div key={s.tag} className="flex flex-col gap-3">
+            <figure className="border-2 border-[#00e676] bg-black p-1">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={s.img} alt={s.imgAlt} className="block w-full h-auto" />
+            </figure>
+            <div className="flex items-baseline gap-3">
+              <span className="font-mono text-2xl font-bold tabular-nums text-[#00e676]">
+                {s.tag}
+              </span>
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+                [{s.label}]
+              </span>
+            </div>
+            <h3 className="font-mono text-sm font-bold uppercase tracking-widest text-white">
+              {s.title}
+            </h3>
+            <p className="text-xs leading-snug text-gray-300 lowercase text-justify">
+              {s.body}
+            </p>
           </div>
-        </div>
+        ))}
+      </div>
+
+      {/* Protocol diagram — entity relationships as a brutalist ASCII-art map */}
+      <div className="mt-12">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+          [PROTOCOL MAP — ENTITIES + LIFECYCLE]
+        </p>
+        <pre className="mt-3 overflow-x-auto border-2 border-[#00e676] bg-black p-4 font-mono text-[10px] leading-tight text-white md:text-xs md:p-6">
+          {`  $owner ──(createEntity)──▶ ┌──────────────────────────┐
+                              │         VAULT            │ ◀──┐
+                              │   kind = vault           │    │
+                              │   payload = drand(secret)│    │
+                              │   expiresIn = heartbeat  │    │  extendEntity
+                              └────────────┬─────────────┘    │  (only $owner —
+                                           │                  │   PROOF OF LIFE)
+                                           │ vault_key        │
+                              ┌────────────┼────────────┐     │
+                              ▼            ▼            ▼     │
+                       ┌───────────┐ ┌───────────┐ ┌───────────┐
+                       │  SHARE 1  │ │  SHARE 2  │ │  SHARE N  │
+                       │ Shamir M-N│ │ Shamir M-N│ │ Shamir M-N│
+                       │ validator │ │ validator │ │ validator │
+                       └─────┬─────┘ └─────┬─────┘ └─────┬─────┘
+                             │             │             │
+                             └─── M of N validators ─────┘
+                                           │
+                                           ▼
+                              ┌──────────────────────────┐
+                              │   RECOVERED ORIGINAL     │
+                              │   (drand round + Shamir) │
+                              └──────────────────────────┘`}
+        </pre>
+        <p className="mt-3 max-w-3xl font-mono text-[10px] uppercase tracking-widest text-gray-400">
+          two cryptographic gates in series: drand timelock + shamir threshold.
+          recovery needs both to open.
+        </p>
       </div>
     </Section>
   );
