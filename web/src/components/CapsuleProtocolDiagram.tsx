@@ -1,13 +1,10 @@
+"use client";
+
 /**
- * CapsuleProtocolDiagram — SVG circuit diagram of the Capsule protocol.
- * Mirrors InheritanceProtocolDiagram structurally so both diagrams read
- * the same way visually.
- *
- * Boxes  : Writer (owner), Capsule entity, Plaintext (derived), Reveal entity
- * Arrows : createEntity, drand-round-publishes, publishReveal
- * Notes  : two attributes are queryable (unlock_round, unlock_at) — labeled
- *          on the Capsule box. The Reveal links back via capsule_key.
+ * CapsuleProtocolDiagram — SVG circuit diagram, i18n-aware.
  */
+
+import { useLanguage } from "./LanguageProvider";
 
 const GREEN = "#00e676";
 const WHITE = "#ffffff";
@@ -18,6 +15,7 @@ export function CapsuleProtocolDiagram({
 }: {
   className?: string;
 }) {
+  const { t } = useLanguage();
   return (
     <svg
       viewBox="0 0 800 560"
@@ -63,7 +61,7 @@ export function CapsuleProtocolDiagram({
           fontWeight="bold"
           textAnchor="middle"
         >
-          [§ WRITER]
+          [§ {t("diag.writer")}]
         </text>
         <text
           x="120"
@@ -73,7 +71,7 @@ export function CapsuleProtocolDiagram({
           fontSize="11"
           textAnchor="middle"
         >
-          $creator (immutable)
+          {t("diag.creatorImmutable")}
         </text>
       </g>
 
@@ -120,7 +118,7 @@ export function CapsuleProtocolDiagram({
           fontWeight="bold"
           textAnchor="middle"
         >
-          [§ CAPSULE]
+          [§ {t("diag.capsule")}]
         </text>
         <text
           x="340"
@@ -167,11 +165,11 @@ export function CapsuleProtocolDiagram({
           fontWeight="bold"
           textAnchor="middle"
         >
-          GATE — drand timelock
+          {t("diag.gateSingle")}
         </text>
       </g>
 
-      {/* Drand publishes round → arrow down */}
+      {/* arrow down */}
       <g>
         <line
           x1="460"
@@ -189,7 +187,7 @@ export function CapsuleProtocolDiagram({
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
         >
-          drand round N publishes
+          {t("diag.drandPublishes")}
         </text>
         <text
           x="475"
@@ -198,11 +196,11 @@ export function CapsuleProtocolDiagram({
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
         >
-          → key becomes derivable
+          → {t("diag.keyDerivable")}
         </text>
       </g>
 
-      {/* PLAINTEXT box (just a passthrough concept, not an entity) */}
+      {/* PLAINTEXT (dashed) */}
       <g>
         <rect
           x="320"
@@ -223,7 +221,7 @@ export function CapsuleProtocolDiagram({
           fontWeight="bold"
           textAnchor="middle"
         >
-          PLAINTEXT (derivable by anyone)
+          {t("diag.plaintext")}
         </text>
         <text
           x="460"
@@ -233,7 +231,7 @@ export function CapsuleProtocolDiagram({
           fontSize="10"
           textAnchor="middle"
         >
-          no entity — happens in any reader's browser
+          {t("diag.plaintextNote")}
         </text>
       </g>
 
@@ -255,7 +253,7 @@ export function CapsuleProtocolDiagram({
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
         >
-          first decrypter publishes
+          {t("diag.firstDecrypter")}
         </text>
         <text
           x="475"
@@ -264,7 +262,7 @@ export function CapsuleProtocolDiagram({
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
         >
-          a Reveal (only hash, not text)
+          {t("diag.aRevealOnlyHash")}
         </text>
       </g>
 
@@ -288,7 +286,7 @@ export function CapsuleProtocolDiagram({
           fontWeight="bold"
           textAnchor="middle"
         >
-          [§ REVEAL]
+          [§ {t("diag.reveal")}]
         </text>
         <text
           x="300"
@@ -319,7 +317,7 @@ export function CapsuleProtocolDiagram({
         </text>
       </g>
 
-      {/* Side note: timeline */}
+      {/* Timeline */}
       <g>
         <line
           x1="660"
@@ -338,7 +336,7 @@ export function CapsuleProtocolDiagram({
           fontSize="10"
           fontWeight="bold"
         >
-          TIMELINE
+          {t("diag.timeline")}
         </text>
         <text
           x="675"
@@ -356,7 +354,7 @@ export function CapsuleProtocolDiagram({
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
         >
-          seal it
+          {t("diag.tSeal")}
         </text>
         <text
           x="675"
@@ -374,7 +372,7 @@ export function CapsuleProtocolDiagram({
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
         >
-          wait
+          {t("diag.tWait")}
         </text>
         <text
           x="675"
@@ -392,7 +390,7 @@ export function CapsuleProtocolDiagram({
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
         >
-          verify
+          {t("diag.tVerify")}
         </text>
       </g>
     </svg>

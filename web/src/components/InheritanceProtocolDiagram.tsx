@@ -1,16 +1,14 @@
+"use client";
+
 /**
- * InheritanceProtocolDiagram — SVG circuit-style diagram of the Inheritance
- * protocol. Replaces the fragile ASCII-art version that broke in HTML
- * monospace rendering. Pure SVG, no external libs, scales to any width.
+ * InheritanceProtocolDiagram — SVG circuit-style diagram.
  *
- * Boxes  : Vault, Shares (3 + ellipsis for N), Owner, Recovered
- * Arrows : createEntity, vault_key (×3), extendEntity (heartbeat loop),
- *          M-of-N convergence, recovery output
- *
- * Two cryptographic gates visually emphasized:
- *   Gate 1 — drand timelock (text annotation near Vault payload)
- *   Gate 2 — Shamir M-of-N (text annotation near the convergence bracket)
+ * v2: i18n-aware (uses LanguageProvider's `t`) + self-loop redesigned as
+ * a separate boxed action on the right side (was a curve that overlapped
+ * its own labels in the previous version).
  */
+
+import { useLanguage } from "./LanguageProvider";
 
 const GREEN = "#00e676";
 const WHITE = "#ffffff";
@@ -21,9 +19,11 @@ export function InheritanceProtocolDiagram({
 }: {
   className?: string;
 }) {
+  const { t } = useLanguage();
+
   return (
     <svg
-      viewBox="0 0 800 720"
+      viewBox="0 0 900 760"
       className={className}
       role="img"
       aria-labelledby="protocol-diagram-title"
@@ -32,7 +32,6 @@ export function InheritanceProtocolDiagram({
         Inheritance protocol — entities and lifecycle
       </title>
 
-      {/* Arrowhead marker */}
       <defs>
         <marker
           id="arr"
@@ -47,7 +46,7 @@ export function InheritanceProtocolDiagram({
         </marker>
       </defs>
 
-      {/* ─── OWNER ──────────────────────────────────────── */}
+      {/* OWNER */}
       <g>
         <rect
           x="40"
@@ -67,7 +66,7 @@ export function InheritanceProtocolDiagram({
           fontWeight="bold"
           textAnchor="middle"
         >
-          [§ OWNER]
+          [§ {t("diag.owner")}]
         </text>
         <text
           x="120"
@@ -77,11 +76,11 @@ export function InheritanceProtocolDiagram({
           fontSize="11"
           textAnchor="middle"
         >
-          $creator + $owner
+          {t("diag.creatorOwner")}
         </text>
       </g>
 
-      {/* Arrow: OWNER → VAULT (createEntity) */}
+      {/* OWNER → VAULT */}
       <g>
         <line
           x1="200"
@@ -104,7 +103,7 @@ export function InheritanceProtocolDiagram({
         </text>
       </g>
 
-      {/* ─── VAULT ──────────────────────────────────────── */}
+      {/* VAULT */}
       <g>
         <rect
           x="320"
@@ -124,7 +123,7 @@ export function InheritanceProtocolDiagram({
           fontWeight="bold"
           textAnchor="middle"
         >
-          [§ VAULT]
+          [§ {t("diag.vault")}]
         </text>
         <text
           x="340"
@@ -162,7 +161,6 @@ export function InheritanceProtocolDiagram({
         >
           threshold, total_shares
         </text>
-        {/* Gate 1 label */}
         <text
           x="460"
           y="200"
@@ -172,70 +170,83 @@ export function InheritanceProtocolDiagram({
           fontWeight="bold"
           textAnchor="middle"
         >
-          GATE 1 — drand timelock
+          {t("diag.gate1")}
         </text>
       </g>
 
-      {/* extendEntity self-loop on VAULT */}
+      {/* ── HEARTBEAT control box on the right of the VAULT ── */}
       <g>
-        <path
-          d="M 600 80 Q 720 80 720 130 Q 720 180 600 180"
-          fill="none"
+        {/* arrow VAULT → control box (top) */}
+        <line
+          x1="600"
+          y1="90"
+          x2="660"
+          y2="90"
           stroke={GREEN}
           strokeWidth={STROKE}
           markerEnd="url(#arr)"
         />
+        {/* arrow control box → VAULT (bottom) */}
+        <line
+          x1="660"
+          y1="170"
+          x2="600"
+          y2="170"
+          stroke={GREEN}
+          strokeWidth={STROKE}
+          markerEnd="url(#arr)"
+        />
+        {/* control box */}
+        <rect
+          x="660"
+          y="50"
+          width="200"
+          height="160"
+          fill="black"
+          stroke={GREEN}
+          strokeWidth={STROKE}
+        />
         <text
-          x="730"
-          y="100"
+          x="760"
+          y="80"
+          fill={GREEN}
+          fontFamily="ui-monospace, JetBrains Mono, monospace"
+          fontSize="12"
+          fontWeight="bold"
+          textAnchor="middle"
+        >
+          {t("diag.extendEntity")}
+        </text>
+        <text
+          x="760"
+          y="108"
+          fill={GREEN}
+          fontFamily="ui-monospace, JetBrains Mono, monospace"
+          fontSize="11"
+          fontWeight="bold"
+          textAnchor="middle"
+        >
+          {t("diag.proofOfLife")}
+        </text>
+        <text
+          x="760"
+          y="138"
           fill={WHITE}
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
           textAnchor="middle"
         >
-          extend
+          ({t("diag.ownerOnly")})
         </text>
         <text
-          x="730"
-          y="115"
+          x="760"
+          y="170"
           fill={WHITE}
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
           textAnchor="middle"
         >
-          Entity
-        </text>
-        <text
-          x="730"
-          y="145"
-          fill={GREEN}
-          fontFamily="ui-monospace, JetBrains Mono, monospace"
-          fontSize="9"
-          fontWeight="bold"
-          textAnchor="middle"
-        >
-          PROOF
-        </text>
-        <text
-          x="730"
-          y="158"
-          fill={GREEN}
-          fontFamily="ui-monospace, JetBrains Mono, monospace"
-          fontSize="9"
-          fontWeight="bold"
-          textAnchor="middle"
-        >
-          OF LIFE
-        </text>
-        <text
-          x="730"
-          y="175"
-          fill={WHITE}
-          fontFamily="ui-monospace, JetBrains Mono, monospace"
-          fontSize="9"
-          textAnchor="middle"
-        >
-          ($owner only)
+          {t("diag.heartbeatReset")}
         </text>
       </g>
 
@@ -245,7 +256,7 @@ export function InheritanceProtocolDiagram({
           x1="380"
           y1="220"
           x2="180"
-          y2="310"
+          y2="330"
           stroke={GREEN}
           strokeWidth={STROKE}
           markerEnd="url(#arr)"
@@ -254,7 +265,7 @@ export function InheritanceProtocolDiagram({
           x1="460"
           y1="220"
           x2="400"
-          y2="310"
+          y2="330"
           stroke={GREEN}
           strokeWidth={STROKE}
           markerEnd="url(#arr)"
@@ -263,33 +274,33 @@ export function InheritanceProtocolDiagram({
           x1="540"
           y1="220"
           x2="620"
-          y2="310"
+          y2="330"
           stroke={GREEN}
           strokeWidth={STROKE}
           markerEnd="url(#arr)"
         />
         <text
           x="460"
-          y="270"
+          y="278"
           fill={WHITE}
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
           textAnchor="middle"
         >
-          shared-attribute key: vault_key
+          {t("diag.sharedAttr")}
         </text>
       </g>
 
-      {/* ─── 3 SHARE boxes ──────────────────────────────── */}
+      {/* 3 SHARE boxes */}
       {[
-        { x: 100, label: "SHARE 1", val: "validator A" },
-        { x: 320, label: "SHARE 2", val: "validator B" },
-        { x: 540, label: "SHARE N", val: "validator …" },
+        { x: 100, label: `${t("diag.share")} 1`, val: "validator A" },
+        { x: 320, label: `${t("diag.share")} 2`, val: "validator B" },
+        { x: 540, label: `${t("diag.share")} N`, val: "validator …" },
       ].map((s) => (
         <g key={s.label}>
           <rect
             x={s.x}
-            y="310"
+            y="330"
             width="160"
             height="100"
             fill="black"
@@ -298,7 +309,7 @@ export function InheritanceProtocolDiagram({
           />
           <text
             x={s.x + 80}
-            y="338"
+            y="358"
             fill={GREEN}
             fontFamily="ui-monospace, JetBrains Mono, monospace"
             fontSize="11"
@@ -309,7 +320,7 @@ export function InheritanceProtocolDiagram({
           </text>
           <text
             x={s.x + 80}
-            y="362"
+            y="382"
             fill={WHITE}
             fontFamily="ui-monospace, JetBrains Mono, monospace"
             fontSize="10"
@@ -319,17 +330,17 @@ export function InheritanceProtocolDiagram({
           </text>
           <text
             x={s.x + 80}
-            y="380"
+            y="400"
             fill={WHITE}
             fontFamily="ui-monospace, JetBrains Mono, monospace"
             fontSize="10"
             textAnchor="middle"
           >
-            Shamir piece
+            {t("diag.shamirPiece")}
           </text>
           <text
             x={s.x + 80}
-            y="398"
+            y="418"
             fill={WHITE}
             fontFamily="ui-monospace, JetBrains Mono, monospace"
             fontSize="10"
@@ -344,33 +355,17 @@ export function InheritanceProtocolDiagram({
       <g>
         <line
           x1="180"
-          y1="430"
+          y1="450"
           x2="620"
-          y2="430"
+          y2="450"
           stroke={GREEN}
           strokeWidth={STROKE}
         />
         <line
           x1="180"
-          y1="410"
+          y1="430"
           x2="180"
-          y2="430"
-          stroke={GREEN}
-          strokeWidth={STROKE}
-        />
-        <line
-          x1="400"
-          y1="410"
-          x2="400"
-          y2="430"
-          stroke={GREEN}
-          strokeWidth={STROKE}
-        />
-        <line
-          x1="620"
-          y1="410"
-          x2="620"
-          y2="430"
+          y2="450"
           stroke={GREEN}
           strokeWidth={STROKE}
         />
@@ -378,40 +373,56 @@ export function InheritanceProtocolDiagram({
           x1="400"
           y1="430"
           x2="400"
-          y2="490"
+          y2="450"
+          stroke={GREEN}
+          strokeWidth={STROKE}
+        />
+        <line
+          x1="620"
+          y1="430"
+          x2="620"
+          y2="450"
+          stroke={GREEN}
+          strokeWidth={STROKE}
+        />
+        <line
+          x1="400"
+          y1="450"
+          x2="400"
+          y2="520"
           stroke={GREEN}
           strokeWidth={STROKE}
           markerEnd="url(#arr)"
         />
         <text
           x="400"
-          y="450"
+          y="475"
           fill={GREEN}
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="11"
           fontWeight="bold"
           textAnchor="middle"
         >
-          M of N validators cooperate
+          {t("diag.mOfNcooperate")}
         </text>
         <text
           x="400"
-          y="468"
+          y="492"
           fill={GREEN}
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
           fontWeight="bold"
           textAnchor="middle"
         >
-          GATE 2 — Shamir threshold
+          {t("diag.gate2")}
         </text>
       </g>
 
-      {/* ─── RECOVERED ──────────────────────────────────── */}
+      {/* RECOVERED */}
       <g>
         <rect
           x="280"
-          y="500"
+          y="530"
           width="240"
           height="80"
           fill={GREEN}
@@ -420,51 +431,51 @@ export function InheritanceProtocolDiagram({
         />
         <text
           x="400"
-          y="528"
+          y="558"
           fill="black"
           fontFamily="ui-monospace, JetBrains Mono, monospace"
-          fontSize="14"
+          fontSize="13"
           fontWeight="bold"
           textAnchor="middle"
         >
-          [§ RECOVERED ORIGINAL]
+          [§ {t("diag.recoveredOriginal")}]
         </text>
         <text
           x="400"
-          y="550"
+          y="580"
           fill="black"
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="11"
           textAnchor="middle"
         >
-          drand round published
+          {t("diag.drandRoundPublished")}
         </text>
         <text
           x="400"
-          y="566"
+          y="596"
           fill="black"
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="11"
           textAnchor="middle"
         >
-          + Shamir reconstructed
+          {t("diag.shamirReconstructed")}
         </text>
       </g>
 
-      {/* Legend / annotation footer */}
+      {/* Legend / footer */}
       <g>
         <line
           x1="40"
-          y1="620"
-          x2="760"
-          y2="620"
+          y1="650"
+          x2="860"
+          y2="650"
           stroke={GREEN}
           strokeWidth={1}
           strokeDasharray="4 4"
         />
         <text
           x="40"
-          y="650"
+          y="680"
           fill={GREEN}
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
@@ -474,7 +485,7 @@ export function InheritanceProtocolDiagram({
         </text>
         <text
           x="40"
-          y="672"
+          y="702"
           fill={WHITE}
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
@@ -483,7 +494,7 @@ export function InheritanceProtocolDiagram({
         </text>
         <text
           x="40"
-          y="690"
+          y="720"
           fill={WHITE}
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
@@ -492,12 +503,12 @@ export function InheritanceProtocolDiagram({
         </text>
         <text
           x="40"
-          y="708"
+          y="738"
           fill={WHITE}
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
         >
-          recovery requires BOTH gates open: drand timelock + Shamir threshold
+          recovery = drand timelock + Shamir threshold (both must open)
         </text>
       </g>
     </svg>

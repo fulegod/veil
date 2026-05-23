@@ -18,9 +18,13 @@
 
 import { useEffect, useState } from "react";
 
+import { useLanguage } from "./LanguageProvider";
+
 const GREEN = "#00e676";
 
 export function HeroVisual({ className = "" }: { className?: string }) {
+  const { t } = useLanguage();
+
   // Drand-round-style counter — pure visual gimmick to suggest "time passing"
   const [round, setRound] = useState(28902472);
   useEffect(() => {
@@ -90,7 +94,7 @@ export function HeroVisual({ className = "" }: { className?: string }) {
         fontWeight="bold"
         textAnchor="middle"
       >
-        [DRAND ROUND]
+        [{t("diag.drandRound")}]
       </text>
       <text
         x="200"
@@ -114,7 +118,7 @@ export function HeroVisual({ className = "" }: { className?: string }) {
         fontWeight="bold"
         textAnchor="middle"
       >
-        [SEALED · BRAGA]
+        [{t("diag.sealedBraga")}]
       </text>
       <text
         x="200"
@@ -125,7 +129,7 @@ export function HeroVisual({ className = "" }: { className?: string }) {
         textAnchor="middle"
         opacity="0.7"
       >
-        proof-of-call · proof-of-life
+        {t("diag.proofTagline")}
       </text>
 
       {/* Side labels */}
@@ -137,7 +141,7 @@ export function HeroVisual({ className = "" }: { className?: string }) {
         fontSize="9"
         fontWeight="bold"
       >
-        SEAL
+        {t("diag.sealLeft")}
       </text>
       <text
         x="345"
@@ -147,7 +151,7 @@ export function HeroVisual({ className = "" }: { className?: string }) {
         fontSize="9"
         fontWeight="bold"
       >
-        OPEN
+        {t("diag.openRight")}
       </text>
 
       {/* Central seal — solid square with [V] mark */}
