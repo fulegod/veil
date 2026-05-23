@@ -21,6 +21,8 @@ const dict = {
     "common.creator": "creator",
     "common.loading": "Loading…",
     "common.toggleLang": "ES",
+    "nav.capsules": "Capsules",
+    "nav.inheritance": "Inheritance",
 
     // ─── Home: Hero ─────────────────────────────────────────────────────
     "home.heroEyebrow": "On-chain proof-of-call",
@@ -322,6 +324,8 @@ const dict = {
     "common.creator": "creador",
     "common.loading": "Cargando…",
     "common.toggleLang": "EN",
+    "nav.capsules": "Cápsulas",
+    "nav.inheritance": "Herencia",
 
     // ─── Home: Hero ─────────────────────────────────────────────────────
     "home.heroEyebrow": "Proof-of-call on-chain",
