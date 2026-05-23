@@ -264,3 +264,272 @@ export async function sha256Hex(text: string): Promise<string> {
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
 }
+
+// ─── Vault + Share operations (Inheritance feature) ─────────────────────────
+//
+// Vault = the parent entity for an inheritance setup. Holds the drand-encrypted
+// secret as its payload. Its expiresIn IS the heartbeat — every time the owner
+// proves they're alive (calls extendEntity), the timer resets.
+//
+// Share = N child entities, one per validator. Each holds one Shamir share.
+// Linked to Vault via shared-attribute key `vault_key`.
+//
+// Patterns demonstrated:
+//  - Third + fourth entity type
+//  - `extendEntity` for heartbeat (only $owner can call it)
+//  - Differentiated expirations: Vault = heartbeat+buffer; Share = ~forever
+//  - Range query: by heartbeat_at numeric attribute (find "stale" vaults)
+//  - Shared-attribute relationship: Share.vault_key → Vault.entityKey
+//  - $creator immutable (the original setter — proves who set up the inheritance)
+//  - $owner mutable (can transfer the inheritance plan to another wallet before death)
+
+export interface CreateVaultInput {
+  walletClient: ArkivWalletClient;
+  ciphertext: Uint8Array; // drand-timelocked secret bytes
+  unlockRound: number; // drand round when secret becomes decryptable
+  heartbeatAt: number; // ms-epoch when this vault expires if not extended
+  title: string;
+  threshold: number; // M of N
+  totalShares: number; // N
+}
+
+export interface VaultEntity {
+  entityKey: string;
+  creator: string;
+  owner: string;
+  ciphertext: Uint8Array;
+  unlockRound: number;
+  heartbeatAt: number;
+  title: string;
+  threshold: number;
+  totalShares: number;
+  expiresAtBlock: bigint | number;
+}
+
+/**
+ * Create a Vault entity holding the drand-encrypted secret.
+ * The `expiresIn` matches the heartbeat: if owner doesn't extend, vault dies
+ * and the share entities (which point at it) become "orphaned" — at which
+ * point validators can combine their shares + the drand-published round to
+ * recover the secret.
+ */
+export async function createVault(input: CreateVaultInput) {
+  // Heartbeat in seconds + 30-day buffer so recovery has time to happen.
+  const heartbeatSecondsFromNow =
+    Math.ceil((input.heartbeatAt - Date.now()) / 1000) + 30 * 24 * 3600;
+
+  return input.walletClient.createEntity({
+    payload: input.ciphertext,
+    contentType: "application/x-tlock-armor",
+    attributes: [
+      PROJECT_ATTRIBUTE,
+      { key: "kind", value: ENTITY_KIND.VAULT },
+      { key: "title", value: input.title },
+      { key: "unlock_round", value: input.unlockRound },
+      { key: "heartbeat_at", value: input.heartbeatAt },
+      { key: "threshold", value: input.threshold },
+      { key: "total_shares", value: input.totalShares },
+    ],
+    expiresIn: ExpirationTime.fromSeconds(heartbeatSecondsFromNow),
+  });
+}
+
+export interface CreateShareInput {
+  walletClient: ArkivWalletClient;
+  vaultKey: string;
+  shareIndex: number; // 1..N
+  validatorAddress: string; // wallet of the intended validator (lowercased)
+  shareHex: string; // hex-encoded Shamir share
+}
+
+/**
+ * Create a single Share entity linked to a Vault.
+ * The share is stored as a `string` attribute (hex) AND in payload as raw bytes
+ * — attribute makes it queryable, payload preserves byte-exact reconstruction.
+ *
+ * Shares live ~10 years (effectively forever for the inheritance use case).
+ * They survive even if the Vault expires — that's the whole point.
+ */
+export async function createShare(input: CreateShareInput) {
+  // Payload = raw share bytes (hex decoded) for byte-exact retrieval.
+  const shareBytes = new Uint8Array(input.shareHex.length / 2);
+  for (let i = 0; i < shareBytes.length; i++) {
+    shareBytes[i] = parseInt(input.shareHex.slice(i * 2, i * 2 + 2), 16);
+  }
+
+  return input.walletClient.createEntity({
+    payload: shareBytes,
+    contentType: "application/octet-stream",
+    attributes: [
+      PROJECT_ATTRIBUTE,
+      { key: "kind", value: ENTITY_KIND.SHARE },
+      { key: "vault_key", value: input.vaultKey },
+      { key: "share_index", value: input.shareIndex },
+      { key: "validator_address", value: input.validatorAddress.toLowerCase() },
+    ],
+    // ~10 years — shares must outlive any reasonable heartbeat.
+    expiresIn: ExpirationTime.fromSeconds(10 * 365 * 24 * 3600),
+  });
+}
+
+/**
+ * Heartbeat — owner proves they're still alive by extending the vault entity.
+ * Only the current $owner can call this (Arkiv enforces). Resets the
+ * countdown to inactivity-based recovery.
+ *
+ * `additionalSeconds` typically = heartbeat preset in seconds (3m, 6m, 1y).
+ */
+export async function extendVault(
+  walletClient: ArkivWalletClient,
+  vaultKey: string,
+  additionalSeconds: number,
+) {
+  return walletClient.extendEntity(vaultKey as `0x${string}`, {
+    extendBy: ExpirationTime.fromSeconds(additionalSeconds),
+  });
+}
+
+/**
+ * Get a single Vault by its entity key.
+ */
+export async function getVault(entityKey: string): Promise<VaultEntity | null> {
+  const entity = await publicClient.getEntity(entityKey as `0x${string}`);
+  if (!entity?.payload) return null;
+
+  const attrs = Object.fromEntries(
+    entity.attributes.map((a) => [a.key, a.value]),
+  );
+
+  // Defensive: only return if it's actually a vault entity
+  if (attrs.kind !== ENTITY_KIND.VAULT) return null;
+
+  return {
+    entityKey,
+    creator: entity.creator ?? "",
+    owner: entity.owner ?? "",
+    ciphertext: new Uint8Array(entity.payload),
+    unlockRound: Number(attrs.unlock_round),
+    heartbeatAt: Number(attrs.heartbeat_at),
+    title: String(attrs.title ?? ""),
+    threshold: Number(attrs.threshold),
+    totalShares: Number(attrs.total_shares),
+    expiresAtBlock: entity.expiresAtBlock ?? 0,
+  };
+}
+
+export interface ShareEntity {
+  entityKey: string;
+  creator: string;
+  vaultKey: string;
+  shareIndex: number;
+  validatorAddress: string;
+  sharePayload: Uint8Array;
+}
+
+/**
+ * Get all Shares pointing at a given Vault, sorted by share_index.
+ * Relationship is via the `vault_key` shared-attribute key — Arkiv's
+ * pattern for foreign-key-like joins.
+ */
+export async function getSharesForVault(
+  vaultKey: string,
+): Promise<ShareEntity[]> {
+  const result = await publicClient
+    .buildQuery()
+    .where(
+      and([
+        eq(PROJECT_ATTRIBUTE.key, PROJECT_ATTRIBUTE.value),
+        eq("kind", ENTITY_KIND.SHARE),
+        eq("vault_key", vaultKey),
+      ]),
+    )
+    .withAttributes()
+    .withMetadata()
+    .withPayload() // need the bytes to reconstruct
+    .limit(20)
+    .fetch();
+
+  return result.entities
+    .map(
+      (e: {
+        key: string;
+        creator?: string;
+        attributes: { key: string; value: string | number }[];
+        payload?: Uint8Array | null;
+      }) => {
+        const attrs = Object.fromEntries(
+          e.attributes.map((a) => [a.key, a.value]),
+        );
+        return {
+          entityKey: e.key,
+          creator: e.creator ?? "",
+          vaultKey: String(attrs.vault_key ?? ""),
+          shareIndex: Number(attrs.share_index) || 0,
+          validatorAddress: String(attrs.validator_address ?? ""),
+          sharePayload: e.payload
+            ? new Uint8Array(e.payload)
+            : new Uint8Array(),
+        };
+      },
+    )
+    .sort((a, b) => a.shareIndex - b.shareIndex);
+}
+
+/**
+ * List vaults created by a given owner. Used in /inheritance dashboard.
+ */
+export async function listVaultsForOwner(ownerAddress: string) {
+  // Note: Arkiv's `$owner` is queryable but the API surface varies — we filter
+  // client-side from the project-scoped list for now (small N expected).
+  const result = await publicClient
+    .buildQuery()
+    .where(
+      and([
+        eq(PROJECT_ATTRIBUTE.key, PROJECT_ATTRIBUTE.value),
+        eq("kind", ENTITY_KIND.VAULT),
+      ]),
+    )
+    .withAttributes()
+    .withMetadata()
+    .limit(50)
+    .fetch();
+
+  const target = ownerAddress.toLowerCase();
+  return result.entities.filter(
+    (e: { owner?: string }) => (e.owner ?? "").toLowerCase() === target,
+  );
+}
+
+/**
+ * List vaults where a given address is one of the validators (via Share entities).
+ * Used in /inheritance dashboard for the "vaults I can help recover" view.
+ */
+export async function listVaultsForValidator(validatorAddress: string) {
+  const result = await publicClient
+    .buildQuery()
+    .where(
+      and([
+        eq(PROJECT_ATTRIBUTE.key, PROJECT_ATTRIBUTE.value),
+        eq("kind", ENTITY_KIND.SHARE),
+        eq("validator_address", validatorAddress.toLowerCase()),
+      ]),
+    )
+    .withAttributes()
+    .withMetadata()
+    .limit(50)
+    .fetch();
+
+  // Dedupe vault keys — a validator could in theory have shares in multiple vaults
+  const vaultKeys = Array.from(
+    new Set(
+      result.entities
+        .map((e: { attributes: { key: string; value: string | number }[] }) => {
+          const attr = e.attributes.find((a) => a.key === "vault_key");
+          return attr ? String(attr.value) : null;
+        })
+        .filter((k: string | null): k is string => !!k),
+    ),
+  );
+
+  return vaultKeys;
+}

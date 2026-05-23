@@ -14,6 +14,9 @@ export const ENTITY_KIND = {
   CAPSULE: "capsule",
   REVEAL: "reveal",
   WATCHER: "watcher",
+  // Inheritance feature — dead-man's switch with Shamir M-of-N
+  VAULT: "vault",
+  SHARE: "share",
 } as const;
 
 export type EntityKind = (typeof ENTITY_KIND)[keyof typeof ENTITY_KIND];
