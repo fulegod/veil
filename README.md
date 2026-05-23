@@ -133,6 +133,31 @@ The full write-up with code snippets is in [`PATTERNS.md`](./PATTERNS.md). Brief
 | 7   | **Multi-kind composition** — 4 entity kinds (Capsule / Reveal / Vault / Share) wired by indexed attributes | `ENTITY_KIND` in `config.ts`                          |
 | 8   | **Cryptographic threshold on top** — Shamir M-of-N split across Share entities, recoverable only by quorum | `lib/inheritance.ts` + `/inheritance/[key]/recover`   |
 
+## End-to-end evidence on Braga
+
+The `smoke/src/inheritance-e2e.ts` script runs the **full Inheritance feature against real Arkiv** — encrypt with drand, split with Shamir, write 1 Vault + 5 Share entities, query each one back, wait for the drand round, recombine 3-of-5 shares and assert plaintext matches. Run it yourself with `cd smoke && bun run inheritance`.
+
+Output from the run on 2026-05-23:
+
+```
+✅ Vault entity: 0x9224e57d6af73b320b06c8eae4f223b220254f04200c7d4b54b966bd63497a6e
+   Vault tx:     0xb9a789a20925a4d53bf20e7231c5a467fc514ea401f6e43356285da9da97feb3
+   Share #1 tx:  0x1ebc515446f8a5292166614c00cea84520427c6d0590d4b4ea45e4f5cee419e9
+   Share #2 tx:  0xbb126b19d19d9750b72c7cfe39bbdea3419782687226df1f0cde36d70ce41b6d
+   Share #3 tx:  0x85849515e803d61a727b414e2d3453a9bacf99905efd8e91f874e140e9c868a4
+   Share #4 tx:  0x63b27508e524c985b9a8baa6575cc0f8f6cae60e14c3264fa36fc4416046c56f
+   Share #5 tx:  0xe1a24362ebca91aa5e7ac66aa3fd1e052b6c9848ea2b2dd5213a82bfca62942f
+
+✓ getEntity returns vault with correct attrs
+✓ getSharesForVault returns 5 shares (sorted by share_index)
+✓ listVaultsForValidator finds vault from validator 3's perspective
+✓ Recovered secret matches original after 3-of-5 Shamir combine
+```
+
+The vault entity is browsable at [explorer.braga.hoodi.arkiv.network/entity/0x9224…7a6e](https://explorer.braga.hoodi.arkiv.network/entity/0x9224e57d6af73b320b06c8eae4f223b220254f04200c7d4b54b966bd63497a6e) — the `PROJECT_ATTRIBUTE`, `kind=vault`, `threshold=3`, `total_shares=5` etc. are all visible on-chain. The 5 share entities link to it via the `vault_key` attribute.
+
+This is the evidence that the feature works against the real Braga network, not just in a unit test.
+
 ## Things I learned about Arkiv while building this
 
 Documented in [`PATTERNS.md` § "Things I learned"](./PATTERNS.md#quirks-i-learned-about-arkiv-while-building-veil) for the next builder who hits the same. Highlights:

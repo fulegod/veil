@@ -7,11 +7,13 @@
     "wallet": "bun src/wallet.ts",
     "arkiv": "bun src/arkiv.ts",
     "tlock": "bun src/tlock.ts",
-    "combined": "bun src/combined.ts"
+    "combined": "bun src/combined.ts",
+    "inheritance": "bun src/inheritance-e2e.ts"
   },
   "dependencies": {
     "@arkiv-network/sdk": "^0.6.8",
     "dotenv": "^16.4.5",
+    "shamirs-secret-sharing": "^2.0.1",
     "tlock-js": "^0.9.0"
   },
   "devDependencies": {

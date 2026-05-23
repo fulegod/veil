@@ -7,6 +7,7 @@
       "dependencies": {
         "@arkiv-network/sdk": "^0.6.8",
         "dotenv": "^16.4.5",
+        "shamirs-secret-sharing": "^2.0.1",
         "tlock-js": "^0.9.0",
       },
       "devDependencies": {
@@ -198,6 +199,8 @@
     "picocolors": ["picocolors@1.1.1", "", {}, "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA=="],
 
     "punycode.js": ["punycode.js@2.3.1", "", {}, "sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA=="],
+
+    "shamirs-secret-sharing": ["shamirs-secret-sharing@2.0.1", "", {}, "sha512-gB2iE9Wb7BXfO+ExUU+i7/fdjOK7h4+Mtp9ZGRjmdGSeUq3czN+f/gX2KsKJdebXwG09D3SCRH0aqHmEuR2P6A=="],
 
     "tlock-js": ["tlock-js@0.9.0", "", { "dependencies": { "@noble/curves": "^1.4.0", "@noble/hashes": "^1.4.0", "@stablelib/chacha20poly1305": "^1.0.1", "buffer": "^6.0.3", "drand-client": "1.2.5" } }, "sha512-qxBJQ2mP/opLKjqFbbr64uCYs4Y/wQb8ogFRAhYuHE1AO/sIY0iU0PFV4hqZ0HTorMTpQgbjgdjmTUpigrGp3A=="],
 
