@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 
 import { CapsuleProtocolDiagram } from "@/components/CapsuleProtocolDiagram";
 import { Header } from "@/components/Header";
+import { HeroVisual } from "@/components/HeroVisual";
 import { InheritanceProtocolDiagram } from "@/components/InheritanceProtocolDiagram";
 import { useLanguage } from "@/components/LanguageProvider";
 
@@ -48,8 +49,12 @@ function HeroSection({
   return (
     <Section tag="[§00 — MASTHEAD]">
       <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-12 md:col-span-8">
-          <h1 className="text-5xl font-bold uppercase tracking-tighter md:text-7xl lg:text-8xl">
+        {/* Left column — copy + CTAs */}
+        <div className="col-span-12 md:col-span-7">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+            {t("home.heroEyebrow")}
+          </p>
+          <h1 className="mt-3 text-5xl font-bold uppercase tracking-tighter md:text-7xl lg:text-8xl">
             <span className="block leading-[1] pb-2">
               {t("home.heroTitleA")}
             </span>
@@ -81,32 +86,33 @@ function HeroSection({
               [{t("home.heroCtaSecondary").toUpperCase()}]
             </Link>
           </div>
+
+          {/* Stack/connection meta — collapsed under copy on mobile */}
+          <div className="mt-8 grid grid-cols-1 gap-4 border-t-2 border-black pt-6 md:grid-cols-2">
+            <div>
+              <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                [STACK]
+              </p>
+              <p className="mt-1 font-mono text-xs leading-snug text-gray-700">
+                {t("home.heroAttribution")}
+              </p>
+            </div>
+            {isConnected && address && (
+              <div>
+                <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                  [{t("common.connectedAs").toUpperCase()}]
+                </p>
+                <p className="mt-1 font-mono text-xs text-black">
+                  {address.slice(0, 6)}…{address.slice(-4)}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Right column — masthead meta */}
-        <div className="col-span-12 border-t-2 border-black pt-4 md:col-span-4 md:border-l-2 md:border-t-0 md:pl-6 md:pt-0">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
-            [§EYEBROW]
-          </p>
-          <p className="mt-1 font-mono text-sm font-bold uppercase">
-            {t("home.heroEyebrow")}
-          </p>
-          <p className="mt-6 font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
-            [STACK]
-          </p>
-          <p className="mt-1 font-mono text-xs leading-snug text-gray-700">
-            {t("home.heroAttribution")}
-          </p>
-          {isConnected && address && (
-            <>
-              <p className="mt-6 font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                [{t("common.connectedAs").toUpperCase()}]
-              </p>
-              <p className="mt-1 font-mono text-xs text-black">
-                {address.slice(0, 6)}…{address.slice(-4)}
-              </p>
-            </>
-          )}
+        {/* Right column — animated SVG hero visual */}
+        <div className="col-span-12 flex items-center md:col-span-5 md:border-l-2 md:border-black md:pl-6">
+          <HeroVisual className="block h-auto w-full" />
         </div>
       </div>
     </Section>

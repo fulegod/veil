@@ -24,12 +24,11 @@ const dict = {
     "nav.capsules": "Capsules",
     "nav.inheritance": "Inheritance",
 
-    // ─── Home: Hero ─────────────────────────────────────────────────────
-    "home.heroEyebrow": "On-chain proof-of-call",
-    "home.heroTitleA": "Stop editing",
-    "home.heroTitleB": "your track record.",
+    "home.heroEyebrow": "On-chain time-locked secrets",
+    "home.heroTitleA": "Seal it today.",
+    "home.heroTitleB": "Open it on time.",
     "home.heroSubtitle":
-      "Seal it today. Veil locks any message — a crypto call, a cold-storage seed, a will — until a future date you pick (or until your heartbeat goes silent and your validators recover it). Nobody can peek, nobody can stop the reveal, nobody can edit the timestamp. Cryptographic proof, custody-free.",
+      "Veil locks any message — a crypto call, a cold-storage seed, a will — until a future date you pick (or until your heartbeat goes silent and your validators recover it). Nobody can peek, nobody can stop the reveal, nobody can edit the timestamp. Cryptographic proof, custody-free.",
     "home.heroCtaPrimary": "Seal a call",
     "home.heroCtaSecondary": "See live capsules",
     "home.heroAttribution":
@@ -355,11 +354,11 @@ const dict = {
     "nav.inheritance": "Herencia",
 
     // ─── Home: Hero ─────────────────────────────────────────────────────
-    "home.heroEyebrow": "Proof-of-call on-chain",
-    "home.heroTitleA": "Deja de editar",
-    "home.heroTitleB": "tu track record.",
+    "home.heroEyebrow": "Secretos con candado temporal on-chain",
+    "home.heroTitleA": "Séllalo hoy.",
+    "home.heroTitleB": "Ábrelo a tiempo.",
     "home.heroSubtitle":
-      "Séllalo hoy. Veil cifra cualquier mensaje — una call crypto, una seed de cold-storage, un testamento — hasta una fecha futura que elijas (o hasta que tu heartbeat se quede en silencio y tus validadores lo recuperen). Nadie puede leerlo, nadie detiene la revelación, nadie edita el timestamp. Prueba criptográfica, sin custodia.",
+      "Veil cifra cualquier mensaje — una call crypto, una seed de cold-storage, un testamento — hasta una fecha futura que elijas (o hasta que tu heartbeat se quede en silencio y tus validadores lo recuperen). Nadie puede leerlo, nadie detiene la revelación, nadie edita el timestamp. Prueba criptográfica, sin custodia.",
     "home.heroCtaPrimary": "Sellar una call",
     "home.heroCtaSecondary": "Ver cápsulas en vivo",
     "home.heroAttribution":
