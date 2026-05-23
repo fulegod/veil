@@ -179,6 +179,40 @@ function CapsulesSection({ t }: { t: TFn }) {
         </div>
       </div>
 
+      {/* Concept photo strip — metaphorical visualization above the technical diagram */}
+      <div className="mt-10">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+          [CONCEPT — IN PICTURES]
+        </p>
+        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
+          {[
+            {
+              src: "/story/02-seal.webp",
+              label: "01 · SEAL",
+              alt: "Wax seal stamping a price chart — editorial woodcut",
+            },
+            {
+              src: "/story/03-unlock.webp",
+              label: "02 · WAIT",
+              alt: "Sealed envelope being opened, smoke escaping — editorial woodcut",
+            },
+            {
+              src: "/story/04-track.webp",
+              label: "03 · VERIFY",
+              alt: "Stack of archival folders with timestamps — editorial woodcut",
+            },
+          ].map((p) => (
+            <figure key={p.src} className="border-2 border-black bg-black p-1">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={p.src} alt={p.alt} className="block w-full h-auto" />
+              <figcaption className="bg-white p-2 font-mono text-[10px] font-bold uppercase tracking-widest text-black">
+                {p.label}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+
       {/* Protocol diagram — SVG */}
       <div className="mt-10">
         <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
@@ -355,7 +389,44 @@ function InheritanceSection({ t }: { t: TFn }) {
         </div>
       </div>
 
-      {/* Protocol diagram — SVG circuit (replaces the fragile ASCII version) */}
+      {/* Concept photo strip — metaphorical visualization above the technical diagram */}
+      <div className="mt-10">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+          [CONCEPT — IN PICTURES]
+        </p>
+        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
+          {[
+            {
+              src: "/story/05-vault.webp",
+              label: "01 · VAULT",
+              alt: "Massive vault sealed with chains and a wax sigil — editorial woodcut",
+            },
+            {
+              src: "/story/06-heartbeat.webp",
+              label: "02 · HEARTBEAT",
+              alt: "Hourglass turned by a hand against a cardiogram waveform — editorial woodcut",
+            },
+            {
+              src: "/story/07-quorum.webp",
+              label: "03 · RECOVER",
+              alt: "Five wax-sealed envelopes, three opened with brass keys, recovered parchment above — editorial woodcut",
+            },
+          ].map((p) => (
+            <figure
+              key={p.src}
+              className="border-2 border-[#00e676] bg-black p-1"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={p.src} alt={p.alt} className="block w-full h-auto" />
+              <figcaption className="bg-black p-2 font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+                {p.label}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+
+      {/* Protocol diagram — SVG circuit */}
       <div className="mt-10">
         <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
           [PROTOCOL MAP — ENTITIES + LIFECYCLE]
