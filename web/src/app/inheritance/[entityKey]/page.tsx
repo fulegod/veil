@@ -203,6 +203,30 @@ export default function VaultViewPage({
             </div>
           </div>
 
+          {/* Concept banner photo — matches the vault state */}
+          <figure className="mt-8 border-2 border-black bg-black p-1">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={
+                expired ? "/story/07-quorum.webp" : "/story/06-heartbeat.webp"
+              }
+              alt={
+                expired
+                  ? "Five wax-sealed envelopes, three opened with brass keys — editorial woodcut"
+                  : "Hourglass turned by a hand against a cardiogram waveform — editorial woodcut"
+              }
+              className="block w-full h-auto max-h-[320px] object-cover"
+            />
+            <figcaption className="bg-black p-3 font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+              [§{" "}
+              {(expired
+                ? t("inh.bannerExpiredCaption")
+                : t("inh.bannerAliveCaption")
+              ).toUpperCase()}
+              ]
+            </figcaption>
+          </figure>
+
           {/* Contextual narrative banner — explains the current state in plain language */}
           <div
             className={`mt-8 border-2 p-4 md:p-5 ${

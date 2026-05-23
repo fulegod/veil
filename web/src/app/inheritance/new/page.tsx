@@ -188,6 +188,18 @@ export default function NewInheritancePage() {
             }
           }}
         />
+        {/* Concept banner — the vault you're about to create, visualized */}
+        <figure className="border-2 border-black bg-black p-1">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/story/05-vault.webp"
+            alt="Massive vault sealed with chains and a wax sigil — editorial woodcut"
+            className="block w-full h-auto max-h-[380px] object-cover"
+          />
+          <figcaption className="bg-black p-3 font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+            [§ {t("inh.bannerNewCaption").toUpperCase()}]
+          </figcaption>
+        </figure>
         <section className="border-2 border-black bg-white p-6 md:p-12 relative">
           <div className="absolute top-0 left-0 bg-black text-white px-2 py-1 text-[10px] uppercase font-bold tracking-widest">
             [§INH — NEW VAULT]

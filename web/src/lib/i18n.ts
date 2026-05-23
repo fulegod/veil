@@ -419,6 +419,12 @@ const dict = {
       "The owner stopped signing past the heartbeat window. Any M of N validators can now combine their shares to reconstruct the original secret.",
     "inh.viewSharesHint":
       "These wallets each received one Shamir share. When M of them coordinate, the secret can be reconstructed. The shares are stored on Arkiv but useless on their own.",
+    "inh.bannerNewCaption": "What you're about to create",
+    "inh.bannerAliveCaption": "Your vault, sealed — heartbeat keeping it shut",
+    "inh.bannerExpiredCaption":
+      "Recovery is open — M of N validators can now act",
+    "inh.bannerRecoverCaption":
+      "Combine M of N shares to reconstruct the original",
     "inh.listEyebrow": "Inheritance",
     "inh.listTitle": "Vaults under your watch",
     "inh.listSubtitle":
@@ -861,6 +867,13 @@ const dict = {
       "El dueño dejó de firmar más allá del periodo de heartbeat. Cualquier M de N validadores ya pueden combinar sus shares para reconstruir el secreto original.",
     "inh.viewSharesHint":
       "Estas wallets recibieron cada una una share de Shamir. Cuando M de ellas se coordinan, el secreto se reconstruye. Las shares están guardadas en Arkiv pero por sí solas no sirven.",
+    "inh.bannerNewCaption": "Lo que estás por crear",
+    "inh.bannerAliveCaption":
+      "Tu bóveda, sellada — el heartbeat la mantiene cerrada",
+    "inh.bannerExpiredCaption":
+      "Recuperación abierta — M de N validadores pueden actuar",
+    "inh.bannerRecoverCaption":
+      "Combina M de N shares para reconstruir el original",
     "inh.listEyebrow": "Herencia",
     "inh.listTitle": "Bóvedas bajo tu vigilancia",
     "inh.listSubtitle":

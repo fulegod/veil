@@ -156,6 +156,19 @@ export default function RecoverPage({
             </p>
           </div>
 
+          {/* Concept banner — the quorum moment, visualized */}
+          <figure className="mt-6 border-2 border-black bg-black p-1">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/story/07-quorum.webp"
+              alt="Five wax-sealed envelopes, three opened with brass keys, recovered parchment above — editorial woodcut"
+              className="block w-full h-auto max-h-[320px] object-cover"
+            />
+            <figcaption className="bg-black p-3 font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+              [§ {t("inh.bannerRecoverCaption").toUpperCase()}]
+            </figcaption>
+          </figure>
+
           {/* Share picker */}
           <div className="mt-8">
             <h2 className="font-mono text-sm font-bold uppercase tracking-widest">
