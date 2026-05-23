@@ -27,7 +27,7 @@ const dict = {
     "home.heroTitleA": "Stop editing",
     "home.heroTitleB": "your track record.",
     "home.heroSubtitle":
-      "Seal your alpha today. Veil locks it until the date you pick — nobody can read it before, nobody can stop the reveal, nobody can edit the timestamp. Cryptographic proof you called it first.",
+      "Seal it today. Veil locks any message — a crypto call, a cold-storage seed, a will — until a future date you pick (or until your heartbeat goes silent and your validators recover it). Nobody can peek, nobody can stop the reveal, nobody can edit the timestamp. Cryptographic proof, custody-free.",
     "home.heroCtaPrimary": "Seal a call",
     "home.heroCtaSecondary": "See live capsules",
     "home.heroAttribution":
@@ -328,7 +328,7 @@ const dict = {
     "home.heroTitleA": "Deja de editar",
     "home.heroTitleB": "tu track record.",
     "home.heroSubtitle":
-      "Sella tu alpha hoy. Veil la guarda cifrada hasta la fecha que elijas — nadie la lee antes, nadie detiene la revelación, nadie edita el timestamp. Prueba criptográfica de que la llamaste primero.",
+      "Séllalo hoy. Veil cifra cualquier mensaje — una call crypto, una seed de cold-storage, un testamento — hasta una fecha futura que elijas (o hasta que tu heartbeat se quede en silencio y tus validadores lo recuperen). Nadie puede leerlo, nadie detiene la revelación, nadie edita el timestamp. Prueba criptográfica, sin custodia.",
     "home.heroCtaPrimary": "Sellar una call",
     "home.heroCtaSecondary": "Ver cápsulas en vivo",
     "home.heroAttribution":

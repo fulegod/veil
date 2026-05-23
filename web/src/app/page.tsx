@@ -526,7 +526,19 @@ function SiteFooter({ t }: { t: TFn }) {
     <footer className="mt-4 flex flex-col items-center justify-between gap-4 border-t-2 border-black pt-4 text-xs font-bold uppercase text-gray-500 md:flex-row">
       <div>{t("home.footerCopy")} · SYS.OP.OK</div>
       <nav className="flex flex-wrap gap-x-4 gap-y-2">
-        <FooterLink href="https://github.com/Arkiv-Network/arkiv-ethns-builder-challenge">
+        <Link
+          href="/capsules"
+          className="underline decoration-2 decoration-[#00e676] underline-offset-4 hover:text-black"
+        >
+          {t("home.exampleBrowseCta")}
+        </Link>
+        <Link
+          href="/inheritance"
+          className="underline decoration-2 decoration-[#00e676] underline-offset-4 hover:text-black"
+        >
+          {t("inh.navLink")}
+        </Link>
+        <FooterLink href="https://github.com/fulegod/veil">
           {t("home.footerLinkRepo")}
         </FooterLink>
         <FooterLink href="https://docs.arkiv.network">
