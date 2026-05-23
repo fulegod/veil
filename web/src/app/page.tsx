@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useAccount } from "wagmi";
 
 import { Header } from "@/components/Header";
+import { InheritanceProtocolDiagram } from "@/components/InheritanceProtocolDiagram";
 import { useLanguage } from "@/components/LanguageProvider";
 
 // Real Veil capsule on Braga used as the live example.
@@ -212,27 +213,18 @@ function InheritanceSection({ t }: { t: TFn }) {
       label: "VAULT",
       title: t("home.inhStep1Title"),
       body: t("home.inhStep1Body"),
-      img: "/story/05-vault.webp",
-      imgAlt:
-        "Editorial woodcut illustration of a massive vintage bank vault sealed with chains and a wax sigil",
     },
     {
       tag: "02",
       label: "HEARTBEAT",
       title: t("home.inhStep2Title"),
       body: t("home.inhStep2Body"),
-      img: "/story/06-heartbeat.webp",
-      imgAlt:
-        "Editorial woodcut illustration of an hourglass being turned by a hand against a cardiogram waveform",
     },
     {
       tag: "03",
       label: "RECOVER",
       title: t("home.inhStep3Title"),
       body: t("home.inhStep3Body"),
-      img: "/story/07-quorum.webp",
-      imgAlt:
-        "Editorial woodcut illustration of five wax-sealed envelopes, three open with keys, recovered parchment above",
     },
   ];
 
@@ -245,7 +237,7 @@ function InheritanceSection({ t }: { t: TFn }) {
 
   return (
     <Section tag="[§02B — INHERITANCE VAULTS]" tagAccent inverted>
-      {/* Header — eyebrow / title / lede / stats / CTAs */}
+      {/* Header — eyebrow / title / lede */}
       <div className="grid grid-cols-12 gap-6">
         <div className="col-span-12 md:col-span-8">
           <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
@@ -269,35 +261,28 @@ function InheritanceSection({ t }: { t: TFn }) {
               </span>
             ))}
           </div>
-          <div className="flex flex-wrap gap-3 md:justify-end">
-            <Link
-              href="/inheritance/new"
-              className="border-2 border-[#00e676] bg-[#00e676] px-5 py-3 font-mono text-sm font-bold uppercase tracking-widest text-black hover:bg-black hover:text-[#00e676]"
-            >
-              [{t("home.inhCtaPrimary").toUpperCase()}]
-            </Link>
-            <a
-              href="https://github.com/fulegod/veil/blob/dev/PATTERNS.md"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="border-2 border-white bg-black px-5 py-3 font-mono text-sm font-bold uppercase tracking-widest text-white hover:bg-white hover:text-black"
-            >
-              [{t("home.inhCtaSecondary").toUpperCase()}]
-            </a>
-          </div>
         </div>
       </div>
 
-      {/* Protocol-as-pictures — 3 woodcuts + step text aligned beneath each */}
+      {/* Protocol diagram — SVG circuit (replaces the fragile ASCII version) */}
+      <div className="mt-10">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+          [PROTOCOL MAP — ENTITIES + LIFECYCLE]
+        </p>
+        <div className="mt-3 border-2 border-[#00e676] bg-black p-3 md:p-6">
+          <InheritanceProtocolDiagram className="block h-auto w-full" />
+        </div>
+      </div>
+
+      {/* 3-step flow text — the diagram's narrative companion */}
       <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
         {steps.map((s) => (
-          <div key={s.tag} className="flex flex-col gap-3">
-            <figure className="border-2 border-[#00e676] bg-black p-1">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={s.img} alt={s.imgAlt} className="block w-full h-auto" />
-            </figure>
+          <div
+            key={s.tag}
+            className="flex flex-col gap-2 border-l-2 border-[#00e676] pl-4"
+          >
             <div className="flex items-baseline gap-3">
-              <span className="font-mono text-2xl font-bold tabular-nums text-[#00e676]">
+              <span className="font-mono text-3xl font-bold tabular-nums text-[#00e676]">
                 {s.tag}
               </span>
               <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
@@ -314,40 +299,22 @@ function InheritanceSection({ t }: { t: TFn }) {
         ))}
       </div>
 
-      {/* Protocol diagram — entity relationships as a brutalist ASCII-art map */}
-      <div className="mt-12">
-        <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
-          [PROTOCOL MAP — ENTITIES + LIFECYCLE]
-        </p>
-        <pre className="mt-3 overflow-x-auto border-2 border-[#00e676] bg-black p-4 font-mono text-[10px] leading-tight text-white md:text-xs md:p-6">
-          {`  $owner ──(createEntity)──▶ ┌──────────────────────────┐
-                              │         VAULT            │ ◀──┐
-                              │   kind = vault           │    │
-                              │   payload = drand(secret)│    │
-                              │   expiresIn = heartbeat  │    │  extendEntity
-                              └────────────┬─────────────┘    │  (only $owner —
-                                           │                  │   PROOF OF LIFE)
-                                           │ vault_key        │
-                              ┌────────────┼────────────┐     │
-                              ▼            ▼            ▼     │
-                       ┌───────────┐ ┌───────────┐ ┌───────────┐
-                       │  SHARE 1  │ │  SHARE 2  │ │  SHARE N  │
-                       │ Shamir M-N│ │ Shamir M-N│ │ Shamir M-N│
-                       │ validator │ │ validator │ │ validator │
-                       └─────┬─────┘ └─────┬─────┘ └─────┬─────┘
-                             │             │             │
-                             └─── M of N validators ─────┘
-                                           │
-                                           ▼
-                              ┌──────────────────────────┐
-                              │   RECOVERED ORIGINAL     │
-                              │   (drand round + Shamir) │
-                              └──────────────────────────┘`}
-        </pre>
-        <p className="mt-3 max-w-3xl font-mono text-[10px] uppercase tracking-widest text-gray-400">
-          two cryptographic gates in series: drand timelock + shamir threshold.
-          recovery needs both to open.
-        </p>
+      {/* CTAs */}
+      <div className="mt-10 flex flex-wrap gap-3">
+        <Link
+          href="/inheritance"
+          className="border-2 border-[#00e676] bg-[#00e676] px-6 py-4 font-mono text-base font-bold uppercase tracking-widest text-black hover:bg-black hover:text-[#00e676]"
+        >
+          [{t("home.inhCtaPrimary").toUpperCase()} →]
+        </Link>
+        <a
+          href="https://github.com/fulegod/veil/blob/dev/PATTERNS.md"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="border-2 border-white bg-black px-6 py-4 font-mono text-base font-bold uppercase tracking-widest text-white hover:bg-white hover:text-black"
+        >
+          [{t("home.inhCtaSecondary").toUpperCase()}]
+        </a>
       </div>
     </Section>
   );
