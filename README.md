@@ -19,9 +19,13 @@ Crypto Twitter is full of deleted tweets, edited screenshots and "I told you so"
 
 ## What Veil does
 
-Veil lets you **seal a message today** that nobody — not Veil, not Arkiv, not the network — can read until the date you choose. At that moment the message becomes readable to anyone with the link. The author and the original timestamp are anchored on-chain and cannot be edited.
+Veil ships **two products on the same primitive**:
 
-This is not "another encryption demo". It is the smallest correct primitive for **commitment-without-disclosure**: I commit publicly to a statement; I prove its content later; in between, nobody can peek and nobody can stop the reveal.
+1. **Capsules** — seal a message today that nobody can read until the date you choose. At unlock time the message becomes public; the author and the original timestamp are anchored on-chain and cannot be edited. The use case: _verifiable alpha_ — make a crypto call publicly, prove later that you called it first, with nothing to delete or screenshot-edit.
+
+2. **Inheritance Vaults** — a **cryptographic dead-man's switch**. Seal a secret today (seed phrase, key, document) that becomes recoverable by **M of N validators** if you stop signing a "heartbeat" transaction for a chosen period (3m / 6m / 1y). No custody, no platform. The use case: _digital estate planning_ — your cold-storage doesn't die with you, but it also can't be stolen by any single party.
+
+Both are instances of the same primitive: **commitment-without-disclosure with verifiable lifecycle**. The first picks "time" as the unlock trigger; the second picks "absence of life-signal" and adds Shamir threshold sharing on top.
 
 ## How it works
 
@@ -40,6 +44,31 @@ This is not "another encryption demo". It is the smallest correct primitive for 
 ```
 
 The cryptography under the hood is [**timelock encryption via drand**](https://drand.love/blog/2023/10/03/timelock-encryption/) on the [`@arkiv-network/sdk`](https://www.npmjs.com/package/@arkiv-network/sdk) for storage + attribution + queryability. Wallet signing through MetaMask / wagmi.
+
+### Inheritance Vaults — same primitive, additional layer
+
+```
+[1] SEAL                       [2] HEARTBEAT                  [3] RECOVER
+  ─────────────────────────      ─────────────────────────      ─────────────────────────
+  • write secret                 • owner periodically calls     • owner stops signing
+  • pick threshold (M-of-N)        extendEntity on the Vault    • drand publishes the
+  • pick heartbeat (3m/6m/1y)      → expiresIn resets             round → vault is
+  • pick N validator wallets     • this is the "I'm alive"        decryptable
+  • client encrypts secret         signal                       • any M of N validators
+    against a drand round at     • drand round target rolls       fetch their shares from
+    now + heartbeat                forward with each extension    Arkiv and combine them
+  • secret is split via          • nobody can decrypt during    • Shamir reconstructs the
+    Shamir M-of-N                  this period                    original plaintext
+  • 1 Vault entity + N Share
+    entities written to Arkiv
+```
+
+Two failure modes both work:
+
+- **Owner alive** → keeps extending → drand round target stays in the future → secret stays sealed forever
+- **Owner silent past heartbeat** → drand publishes the round → vault expires → M validators can recover
+
+The validators don't need any custodial infrastructure. The whole system is just: drand timelock + Shamir splits + Arkiv entities with diverging expirations. No multisig, no escrow.
 
 ## Why this is only possible on Arkiv
 
@@ -65,10 +94,17 @@ ethns-builder/
 │   │   │   ├── capsule/
 │   │   │   │   ├── new/page.tsx  ← seal flow
 │   │   │   │   └── [entityKey]/page.tsx  ← view + auto-decrypt + reveal
-│   │   │   └── capsules/page.tsx ← public feed
+│   │   │   ├── capsules/page.tsx ← public feed
+│   │   │   └── inheritance/      ← dead-man's switch with Shamir M-of-N
+│   │   │       ├── page.tsx              ← dashboard (mine + as validator)
+│   │   │       ├── new/page.tsx          ← create vault flow
+│   │   │       └── [entityKey]/
+│   │   │           ├── page.tsx          ← view + heartbeat extend button
+│   │   │           └── recover/page.tsx  ← M-of-N share combiner
 │   │   ├── lib/
 │   │   │   ├── arkiv.ts          ← typed wrappers, PROJECT_ATTRIBUTE enforced
 │   │   │   ├── tlock.ts          ← encrypt / decrypt / drand client
+│   │   │   ├── inheritance.ts    ← Shamir SSS + heartbeat presets
 │   │   │   ├── wagmi.ts          ← chains + connectors
 │   │   │   ├── config.ts         ← PROJECT_ATTRIBUTE + entity kinds + explorer URLs
 │   │   │   └── i18n.ts           ← typed EN/ES dictionary
@@ -86,13 +122,16 @@ ethns-builder/
 
 The full write-up with code snippets is in [`PATTERNS.md`](./PATTERNS.md). Briefly:
 
-| #   | Pattern                                                                                                 | Where in code                                    |
-| --- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| 1   | **`PROJECT_ATTRIBUTE` on every create AND every query** — non-negotiable on a shared public DB          | `lib/config.ts` + every helper in `lib/arkiv.ts` |
-| 2   | **`$creator` (immutable) vs `$owner` (mutable)** — used distinctly so capsule sale doesn't erase author | `Capsule.$creator` ≠ `Reveal.$creator`           |
-| 3   | **Differentiated `expiresIn` per entity kind** — Capsule lives 1y post-unlock, Reveal 90d               | `lib/arkiv.ts` `createCapsule` / `publishReveal` |
-| 4   | **Relationships via shared-attribute keys** — `Reveal.capsule_key → Capsule.entityKey`, no foreign keys | `findFirstRevealForCapsule()`                    |
-| 5   | **Timelock encryption on top of Arkiv** — drand round number stored as queryable numeric attribute      | `lib/tlock.ts` + `Capsule.unlock_round`          |
+| #   | Pattern                                                                                                    | Where in code                                         |
+| --- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| 1   | **`PROJECT_ATTRIBUTE` on every create AND every query** — non-negotiable on a shared public DB             | `lib/config.ts` + every helper in `lib/arkiv.ts`      |
+| 2   | **`$creator` (immutable) vs `$owner` (mutable)** — used distinctly so capsule sale doesn't erase author    | `Capsule.$creator` ≠ `Reveal.$creator`                |
+| 3   | **Differentiated `expiresIn` per entity kind** — Capsule 1y, Reveal 90d, Vault = heartbeat, Share ~10y     | `lib/arkiv.ts` per-helper `expiresIn`                 |
+| 4   | **Relationships via shared-attribute keys** — `Reveal.capsule_key`, `Share.vault_key`, no foreign keys     | `findFirstRevealForCapsule()` + `getSharesForVault()` |
+| 5   | **Timelock encryption on top of Arkiv** — drand round number stored as queryable numeric attribute         | `lib/tlock.ts` + `unlock_round` attribute             |
+| 6   | **`extendEntity` as a living "heartbeat"** — only `$owner` can call; absence of call = entity expires      | `extendVault()` + `/inheritance/[key]` button         |
+| 7   | **Multi-kind composition** — 4 entity kinds (Capsule / Reveal / Vault / Share) wired by indexed attributes | `ENTITY_KIND` in `config.ts`                          |
+| 8   | **Cryptographic threshold on top** — Shamir M-of-N split across Share entities, recoverable only by quorum | `lib/inheritance.ts` + `/inheritance/[key]/recover`   |
 
 ## Things I learned about Arkiv while building this
 

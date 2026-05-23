@@ -142,6 +142,97 @@ const plaintext = await decryptCiphertext(capsule.ciphertext);
 
 ---
 
+## Pattern 6 — `extendEntity` as a heartbeat (Inheritance Vaults)
+
+**The mechanic:** Arkiv's `extendEntity(entityKey, { extendBy })` is normally framed as "renew a subscription". Veil uses it for something more interesting — as a **proof-of-life signal**.
+
+A `Vault` entity stores a drand-timelocked secret. Its `expiresIn` is set to the heartbeat period (3 / 6 / 12 months). Only `$owner` can extend, and extending pushes both:
+
+- the Arkiv expiration forward
+- (conceptually) the drand round target forward (next heartbeat re-encrypts on extend, future work)
+
+```ts
+// /inheritance/[key]/page.tsx — owner-only button
+async function handleExtend() {
+  await extendVault(arkivWallet, vault.entityKey, heartbeatDays * 24 * 3600);
+}
+
+// lib/arkiv.ts
+export async function extendVault(walletClient, vaultKey, additionalSeconds) {
+  return walletClient.extendEntity(vaultKey, {
+    extendBy: ExpirationTime.fromSeconds(additionalSeconds),
+  });
+}
+```
+
+**Why this is novel:** the _absence_ of an on-chain action becomes a signal. The validator UI polls the vault — if its `heartbeatAt` is past `Date.now()`, recovery is enabled. No oracle, no off-chain monitor, no centralized "is the user alive?" service. Just an entity that quietly expires.
+
+**Crucial detail:** `extendEntity` is owner-locked. A heir or attacker can't accidentally "keep alive" a vault on behalf of a missing user. The signal is honest by construction.
+
+---
+
+## Pattern 7 — Multi-kind composition (4 entity kinds, one schema)
+
+Veil ships **four entity kinds** in the same Arkiv project, all namespaced by `app: "veil"`:
+
+| Kind      | Purpose                                  | Lifetime            | Linked via                          |
+| --------- | ---------------------------------------- | ------------------- | ----------------------------------- |
+| `capsule` | Time-locked message                      | 1y post-unlock      | `entityKey`                         |
+| `reveal`  | "Was decrypted first by this wallet at…" | 90 days post-create | `capsule_key` → `Capsule.entityKey` |
+| `vault`   | Inheritance container, drand-locked      | = heartbeat         | `entityKey`                         |
+| `share`   | One Shamir share per validator           | ~10 years           | `vault_key` → `Vault.entityKey`     |
+
+Each helper in `lib/arkiv.ts` stamps `PROJECT_ATTRIBUTE` + a `kind` discriminator, and every query filters by both:
+
+```ts
+.where(
+  and([
+    eq(PROJECT_ATTRIBUTE.key, PROJECT_ATTRIBUTE.value),
+    eq("kind", ENTITY_KIND.SHARE),
+    eq("vault_key", vaultKey),
+  ]),
+)
+```
+
+**Why this matters:** Arkiv has no schemas, no tables. A naive integration just dumps everything in one kind and filters client-side. Veil treats `kind` as a first-class discriminator, gets indexed lookups per kind, and uses the second-class shared-attribute key to traverse "joins" — the closest Arkiv has to foreign keys without paying for them.
+
+---
+
+## Pattern 8 — Shamir M-of-N on top of timelock (threshold cryptography over Arkiv)
+
+The inheritance flow combines two _independent_ cryptographic constraints in series:
+
+1. **drand timelock**: the secret bytes cannot be derived before the heartbeat round publishes.
+2. **Shamir M-of-N**: even once the round publishes and the ciphertext is decryptable, the secret was first split before encryption — so any single decrypted share is useless.
+
+```ts
+// lib/inheritance.ts — split before encrypting (MVP variant stores both)
+const shares = splitSecret(plaintext, threshold, total); // Uint8Array[N]
+
+// /inheritance/new/page.tsx — write N share entities + 1 vault
+const vault = await createVault({ ciphertext: tlocked(plaintext), ... });
+for (let i = 0; i < total; i++) {
+  await createShare({
+    walletClient,
+    vaultKey: vault.entityKey,
+    shareIndex: i + 1,
+    validatorAddress: validators[i],
+    shareHex: shareToHex(shares[i]),
+  });
+}
+```
+
+**Recovery requires both gates open:**
+
+- heartbeat must have lapsed (drand round must be published — gate 1)
+- ≥ M validators must coordinate to pick their `Share` entities (gate 2)
+
+**Why on Arkiv specifically:** the N share entities are each independently indexed by `validator_address` (string attr) and `vault_key` (shared-attribute relationship). A validator can query "all vaults where I'm named" in a single range query. No central registry, no off-chain "who's a validator of what" service. The graph lives in the indexes.
+
+**Threat model note (MVP):** shares are stored in plaintext-as-payload. The cryptographic threshold comes from Shamir + drand, not from per-share encryption. v2 would ECIES-encrypt each share against the validator's recovered pubkey, so even reading a share requires the validator's wallet signature.
+
+---
+
 ## Anti-patterns Veil deliberately avoids
 
 | Anti-pattern                                   | Why it costs scoring                                               |
