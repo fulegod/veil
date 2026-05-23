@@ -282,6 +282,8 @@ export function InheritanceProtocolDiagram({
           strokeWidth={STROKE}
           markerEnd="url(#arr)"
         />
+        {/* Black background rect to mask arrows under the label */}
+        <rect x="310" y="266" width="300" height="18" fill="black" />
         <text
           x="460"
           y="278"
@@ -412,6 +414,8 @@ export function InheritanceProtocolDiagram({
           strokeWidth={STROKE}
           markerEnd="url(#arr)"
         />
+        {/* Black background rect masks the vertical arrow under the labels */}
+        <rect x="180" y="461" width="440" height="40" fill="black" />
         <text
           x="400"
           y="475"
