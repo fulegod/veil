@@ -17,7 +17,23 @@ export const ENTITY_KIND = {
   // Inheritance feature — dead-man's switch with Shamir M-of-N
   VAULT: "vault",
   SHARE: "share",
+  // Programmable triggers — email delivery, transfers, doc drops on expiry
+  ACTION: "action",
 } as const;
+
+/**
+ * Action types supported by the programmable trigger layer.
+ * Each Action entity references a Vault via `vault_key` and fires when
+ * the vault's heartbeat lapses past the action's `trigger_offset_ms`.
+ */
+export const ACTION_TYPE = {
+  EMAIL_WARNING: "email_warning", // pre-expiry reminder to the owner
+  EMAIL_DELIVERY: "email_delivery", // deliver content to recipients on expiry
+  TRANSFER: "transfer", // on-chain transfer to a wallet
+  DOC_DROP: "doc_drop", // release IPFS-hosted document URL
+} as const;
+
+export type ActionType = (typeof ACTION_TYPE)[keyof typeof ACTION_TYPE];
 
 export type EntityKind = (typeof ENTITY_KIND)[keyof typeof ENTITY_KIND];
 

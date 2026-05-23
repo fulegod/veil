@@ -3,5 +3,11 @@
   "framework": "nextjs",
   "installCommand": "bun install",
   "buildCommand": "next build",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "crons": [
+    {
+      "path": "/api/cron/check-vaults",
+      "schedule": "0 * * * *"
+    }
+  ]
 }

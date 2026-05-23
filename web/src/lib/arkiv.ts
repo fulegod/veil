@@ -15,7 +15,12 @@ import { createPublicClient, http } from "@arkiv-network/sdk";
 import { braga } from "@arkiv-network/sdk/chains";
 import { eq, and } from "@arkiv-network/sdk/query";
 import { ExpirationTime, jsonToPayload } from "@arkiv-network/sdk/utils";
-import { PROJECT_ATTRIBUTE, ENTITY_KIND, type EntityKind } from "./config";
+import {
+  PROJECT_ATTRIBUTE,
+  ENTITY_KIND,
+  type EntityKind,
+  type ActionType,
+} from "./config";
 
 // Re-export type for hook consumers. We don't tighten the import path because
 // the SDK's wallet client type is generic over (transport, chain, account).
@@ -532,4 +537,206 @@ export async function listVaultsForValidator(validatorAddress: string) {
   );
 
   return vaultKeys;
+}
+
+// ─── Action operations (programmable triggers) ──────────────────────────────
+//
+// An Action is a tiny entity linked to a Vault that describes "what should
+// happen at a specific point in the vault's lifecycle". The cron job in
+// /api/cron/check-vaults reads pending actions, fires them, then marks
+// notified_at via updateEntity so they don't fire twice.
+//
+// Pattern demonstrated:
+//  - 5th entity kind, same relationship pattern (vault_key shared-attribute)
+//  - `notified_at` mutated via updateEntity (only $owner can — Arkiv enforces)
+//  - Range-queryable by trigger_at (numeric) for efficient cron scans
+//  - Differentiated expiration: actions live as long as the vault + 90d buffer
+
+export interface CreateActionInput {
+  walletClient: ArkivWalletClient;
+  vaultKey: string;
+  actionType: ActionType;
+  triggerAtMs: number; // ms-epoch when this action should fire
+  destination: string; // email address, wallet address, or IPFS hash
+  message: string; // user-facing message body (will be email subject/body)
+}
+
+export interface ActionEntity {
+  entityKey: string;
+  creator: string;
+  vaultKey: string;
+  actionType: ActionType;
+  triggerAt: number;
+  destination: string;
+  message: string;
+  notifiedAt: number; // 0 = not yet fired
+}
+
+/**
+ * Create an Action attached to a Vault. The cron job polls these every hour.
+ */
+export async function createAction(input: CreateActionInput) {
+  // Actions outlive the vault by 90 days so reveals are auditable after expiry
+  return input.walletClient.createEntity({
+    payload: jsonToPayload({
+      message: input.message,
+      destination: input.destination,
+    }),
+    contentType: "application/json",
+    attributes: [
+      PROJECT_ATTRIBUTE,
+      { key: "kind", value: ENTITY_KIND.ACTION },
+      { key: "vault_key", value: input.vaultKey },
+      { key: "action_type", value: input.actionType },
+      { key: "trigger_at", value: input.triggerAtMs },
+      { key: "destination", value: input.destination },
+      { key: "notified_at", value: 0 }, // 0 sentinel = not yet fired
+    ],
+    expiresIn: ExpirationTime.fromDays(365 * 2), // 2 years
+  });
+}
+
+/**
+ * Fetch all Actions for a vault. Used in the vault view to show the schedule.
+ */
+export async function getActionsForVault(
+  vaultKey: string,
+): Promise<ActionEntity[]> {
+  const result = await publicClient
+    .buildQuery()
+    .where(
+      and([
+        eq(PROJECT_ATTRIBUTE.key, PROJECT_ATTRIBUTE.value),
+        eq("kind", ENTITY_KIND.ACTION),
+        eq("vault_key", vaultKey),
+      ]),
+    )
+    .withAttributes()
+    .withMetadata()
+    .withPayload()
+    .limit(50)
+    .fetch();
+
+  return result.entities.map(
+    (e: {
+      key: string;
+      creator?: string;
+      attributes: { key: string; value: string | number }[];
+      payload?: Uint8Array | null;
+    }) => {
+      const attrs = Object.fromEntries(
+        e.attributes.map((a) => [a.key, a.value]),
+      );
+      let message = "";
+      let destination = String(attrs.destination ?? "");
+      if (e.payload) {
+        try {
+          const parsed = JSON.parse(new TextDecoder().decode(e.payload));
+          message = String(parsed.message ?? "");
+          destination = String(parsed.destination ?? destination);
+        } catch {
+          /* ignore */
+        }
+      }
+      return {
+        entityKey: e.key,
+        creator: e.creator ?? "",
+        vaultKey: String(attrs.vault_key ?? ""),
+        actionType: String(attrs.action_type ?? "") as ActionType,
+        triggerAt: Number(attrs.trigger_at) || 0,
+        destination,
+        message,
+        notifiedAt: Number(attrs.notified_at) || 0,
+      };
+    },
+  );
+}
+
+/**
+ * Lists ALL pending actions across the entire project that need to fire now.
+ * Used by the cron job. Filters: notified_at == 0 AND trigger_at <= now.
+ *
+ * Note: client-side filter on notified_at because Arkiv's query API doesn't
+ * have a direct "not equals" predicate — fine at Veil's scale.
+ */
+export async function listPendingActions(
+  nowMs: number,
+): Promise<ActionEntity[]> {
+  const result = await publicClient
+    .buildQuery()
+    .where(
+      and([
+        eq(PROJECT_ATTRIBUTE.key, PROJECT_ATTRIBUTE.value),
+        eq("kind", ENTITY_KIND.ACTION),
+      ]),
+    )
+    .withAttributes()
+    .withMetadata()
+    .withPayload()
+    .limit(200)
+    .fetch();
+
+  return result.entities
+    .map(
+      (e: {
+        key: string;
+        creator?: string;
+        attributes: { key: string; value: string | number }[];
+        payload?: Uint8Array | null;
+      }) => {
+        const attrs = Object.fromEntries(
+          e.attributes.map((a) => [a.key, a.value]),
+        );
+        let message = "";
+        let destination = String(attrs.destination ?? "");
+        if (e.payload) {
+          try {
+            const parsed = JSON.parse(new TextDecoder().decode(e.payload));
+            message = String(parsed.message ?? "");
+            destination = String(parsed.destination ?? destination);
+          } catch {
+            /* ignore */
+          }
+        }
+        return {
+          entityKey: e.key,
+          creator: e.creator ?? "",
+          vaultKey: String(attrs.vault_key ?? ""),
+          actionType: String(attrs.action_type ?? "") as ActionType,
+          triggerAt: Number(attrs.trigger_at) || 0,
+          destination,
+          message,
+          notifiedAt: Number(attrs.notified_at) || 0,
+        };
+      },
+    )
+    .filter((a) => a.notifiedAt === 0 && a.triggerAt <= nowMs);
+}
+
+/**
+ * Mark an action as fired so the cron doesn't process it again.
+ * NOTE: updateEntity is full-replace in Arkiv (not patch) — we re-stamp ALL
+ * attributes, only changing notified_at.
+ */
+export async function markActionNotified(
+  walletClient: ArkivWalletClient,
+  action: ActionEntity,
+  firedAtMs: number,
+) {
+  return walletClient.updateEntity(action.entityKey as `0x${string}`, {
+    payload: jsonToPayload({
+      message: action.message,
+      destination: action.destination,
+    }),
+    contentType: "application/json",
+    attributes: [
+      PROJECT_ATTRIBUTE,
+      { key: "kind", value: ENTITY_KIND.ACTION },
+      { key: "vault_key", value: action.vaultKey },
+      { key: "action_type", value: action.actionType },
+      { key: "trigger_at", value: action.triggerAt },
+      { key: "destination", value: action.destination },
+      { key: "notified_at", value: firedAtMs },
+    ],
+  });
 }
