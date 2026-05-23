@@ -109,6 +109,33 @@ const dict = {
     "home.why4Body":
       "Every create, update, and delete returns a tx hash on Braga. Anyone can replay the history in the block explorer without trusting Veil at all.",
 
+    // ─── Home: Capsules section (first product, circuit-led) ────────────
+    "home.capEyebrow": "Product 1 — verifiable alpha",
+    "home.capTitle": "Capsules.",
+    "home.capLede":
+      "Write a message today, encrypt it against a drand round that does not exist yet, store it on Arkiv with your wallet as the immutable creator. At the unlock date the round publishes; the plaintext becomes derivable to anyone with the link. The first decrypter can anchor a Reveal entity — a public, hash-only proof of decryption — so the record of WHO decrypted WHEN sits on-chain too.",
+    "home.capStat1": "drand timelock",
+    "home.capStat2": "reveal entity",
+    "home.capStat3": "public feed",
+    "home.capStat4": "$creator immutable",
+    "home.capStep1Title": "Seal",
+    "home.capStep1Body":
+      "client encrypts plaintext against drand round N. Capsule entity goes on-chain with payload + unlock_round + creator. nothing readable until round N is published.",
+    "home.capStep2Title": "Wait",
+    "home.capStep2Body":
+      "drand mainnet publishes rounds on a schedule. nobody can speed it up. title and creator are public so commitment is visible without disclosure.",
+    "home.capStep3Title": "Verify",
+    "home.capStep3Body":
+      "round publishes → key derivable in any reader's browser → plaintext recovered. first reader can publish a Reveal entity carrying only the sha-256, anchoring attribution on-chain.",
+    "home.capCtaPrimary": "See live capsules",
+
+    // ─── Home: Launch app banner — between the two product sections and Why ─
+    "home.launchEyebrow": "The product",
+    "home.launchTitle": "Open Veil.",
+    "home.launchBody":
+      "Both products live in the same app. One nav, two sections. The capsule feed is the public face. Inheritance vaults are private to their owner + their chosen validators. You stay in control of which one you use, and when.",
+    "home.launchCta": "Launch app",
+
     // ─── Home: Inheritance Vaults (second product) ───────────────────────
     "home.inhEyebrow": "Beyond timestamps",
     "home.inhTitle": "Some secrets must survive you.",
@@ -412,6 +439,33 @@ const dict = {
     "home.why4Title": "Verificable, de punta a punta",
     "home.why4Body":
       "Cada create, update y delete devuelve un tx hash en Braga. Cualquiera puede replayar la historia en el block explorer sin confiar en Veil para nada.",
+
+    // ─── Home: Capsules section (primer producto, liderado por circuito) ─
+    "home.capEyebrow": "Producto 1 — verifiable alpha",
+    "home.capTitle": "Cápsulas.",
+    "home.capLede":
+      "Escribes un mensaje hoy, se cifra contra un round drand que aún no existe, se guarda en Arkiv con tu wallet como creador inmutable. En la fecha de unlock el round se publica; el plaintext se vuelve derivable para cualquiera con el link. El primer lector puede anclar una entity Reveal — prueba pública de descifrado, solo hash — para que el registro de QUIÉN descifró CUÁNDO también quede on-chain.",
+    "home.capStat1": "drand timelock",
+    "home.capStat2": "entity reveal",
+    "home.capStat3": "feed público",
+    "home.capStat4": "$creator inmutable",
+    "home.capStep1Title": "Sellar",
+    "home.capStep1Body":
+      "el cliente cifra el plaintext contra el round drand N. La entity Capsule va on-chain con payload + unlock_round + creator. nada es legible hasta que el round N se publique.",
+    "home.capStep2Title": "Esperar",
+    "home.capStep2Body":
+      "drand mainnet publica rounds en horario. nadie puede acelerarlo. título y creador son públicos para que el compromiso sea visible sin revelar el contenido.",
+    "home.capStep3Title": "Verificar",
+    "home.capStep3Body":
+      "el round se publica → la key es derivable en el browser de cualquier lector → se recupera el plaintext. el primer lector puede publicar una entity Reveal con solo el sha-256, anclando la atribución on-chain.",
+    "home.capCtaPrimary": "Ver cápsulas en vivo",
+
+    // ─── Home: Launch app banner — entre los dos productos y Why Arkiv ──
+    "home.launchEyebrow": "El producto",
+    "home.launchTitle": "Abrir Veil.",
+    "home.launchBody":
+      "Los dos productos viven en la misma app. Una nav, dos secciones. El feed de cápsulas es la cara pública. Las bóvedas de herencia son privadas para su dueño + sus validadores elegidos. Tú controlas cuál usar, y cuándo.",
+    "home.launchCta": "Lanzar app",
 
     // ─── Home: Inheritance Vaults (segundo producto) ─────────────────────
     "home.inhEyebrow": "Más allá de los timestamps",

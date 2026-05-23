@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useAccount } from "wagmi";
 
+import { CapsuleProtocolDiagram } from "@/components/CapsuleProtocolDiagram";
 import { Header } from "@/components/Header";
 import { InheritanceProtocolDiagram } from "@/components/InheritanceProtocolDiagram";
 import { useLanguage } from "@/components/LanguageProvider";
@@ -22,12 +23,9 @@ export default function Home() {
       <Header />
       <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-6 p-4 md:p-8">
         <HeroSection isConnected={isConnected} address={address} t={t} />
-        <ProblemSection t={t} />
-        <HowItWorksSection t={t} />
+        <CapsulesSection t={t} />
         <InheritanceSection t={t} />
-        <CaseFileSection t={t} />
-        <ExampleSection t={t} />
-        <UseCasesSection t={t} />
+        <LaunchAppBanner t={t} />
         <WhyArkivSection t={t} />
         <TrustSection t={t} />
         <SiteFooter t={t} />
@@ -115,39 +113,96 @@ function HeroSection({
   );
 }
 
-// ─── PROBLEM ────────────────────────────────────────────────────────────────
+// ─── CAPSULES (first product, circuit-led) ──────────────────────────────────
 
-function ProblemSection({ t }: { t: TFn }) {
-  const points = [
-    { title: t("home.problemPoint1Title"), body: t("home.problemPoint1Body") },
-    { title: t("home.problemPoint2Title"), body: t("home.problemPoint2Body") },
-    { title: t("home.problemPoint3Title"), body: t("home.problemPoint3Body") },
+function CapsulesSection({ t }: { t: TFn }) {
+  const steps = [
+    {
+      tag: "01",
+      label: "SEAL",
+      title: t("home.capStep1Title"),
+      body: t("home.capStep1Body"),
+    },
+    {
+      tag: "02",
+      label: "WAIT",
+      title: t("home.capStep2Title"),
+      body: t("home.capStep2Body"),
+    },
+    {
+      tag: "03",
+      label: "VERIFY",
+      title: t("home.capStep3Title"),
+      body: t("home.capStep3Body"),
+    },
+  ];
+
+  const stats = [
+    t("home.capStat1"),
+    t("home.capStat2"),
+    t("home.capStat3"),
+    t("home.capStat4"),
   ];
 
   return (
-    <Section tag="[§01 — THE PROBLEM]" tagInverted>
-      <h2 className="text-3xl uppercase tracking-tighter md:text-5xl">
-        {t("home.problemTitle")}
-      </h2>
-      <p className="mt-4 max-w-3xl text-sm leading-snug text-gray-700 text-justify md:text-base">
-        {t("home.problemBody")}
-      </p>
-      <div className="mt-8 grid grid-cols-1 gap-0 border-2 border-black md:grid-cols-3">
-        {points.map((p, i) => (
+    <Section tag="[§01 — CAPSULES]">
+      {/* Header */}
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 md:col-span-8">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+            {t("home.capEyebrow")}
+          </p>
+          <h2 className="mt-2 text-3xl uppercase tracking-tighter text-black md:text-5xl lg:text-6xl">
+            {t("home.capTitle")}
+          </h2>
+          <p className="mt-5 max-w-2xl text-sm leading-snug text-gray-700 text-justify md:text-base">
+            {t("home.capLede")}
+          </p>
+        </div>
+        <div className="col-span-12 flex flex-col gap-3 md:col-span-4 md:items-end md:text-right">
+          <div className="flex flex-wrap gap-2 md:justify-end">
+            {stats.map((s, i) => (
+              <span
+                key={i}
+                className="border-2 border-black bg-white px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-black"
+              >
+                [{s}]
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Protocol diagram — SVG */}
+      <div className="mt-10">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+          [PROTOCOL MAP — ENTITIES + LIFECYCLE]
+        </p>
+        <div className="mt-3 border-2 border-black bg-black p-3 md:p-6">
+          <CapsuleProtocolDiagram className="block h-auto w-full" />
+        </div>
+      </div>
+
+      {/* 3-step narrative beneath the diagram */}
+      <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+        {steps.map((s) => (
           <div
-            key={i}
-            className={`flex flex-col gap-2 p-4 ${
-              i > 0 ? "border-t-2 border-black md:border-l-2 md:border-t-0" : ""
-            }`}
+            key={s.tag}
+            className="flex flex-col gap-2 border-l-2 border-black pl-4"
           >
-            <div className="font-mono text-2xl font-bold tabular-nums text-[#00e676]">
-              {String(i + 1).padStart(2, "0")}
+            <div className="flex items-baseline gap-3">
+              <span className="font-mono text-3xl font-bold tabular-nums text-[#00e676]">
+                {s.tag}
+              </span>
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                [{s.label}]
+              </span>
             </div>
-            <h3 className="text-sm font-bold uppercase underline decoration-2 decoration-[#00e676] underline-offset-4">
-              {p.title}
+            <h3 className="font-mono text-sm font-bold uppercase tracking-widest text-black underline decoration-2 decoration-[#00e676] underline-offset-4">
+              {s.title}
             </h3>
             <p className="text-xs leading-snug text-gray-700 lowercase text-justify">
-              {p.body}
+              {s.body}
             </p>
           </div>
         ))}
@@ -156,9 +211,39 @@ function ProblemSection({ t }: { t: TFn }) {
   );
 }
 
-// ─── HOW IT WORKS ───────────────────────────────────────────────────────────
+// ─── LAUNCH APP — separator between the two product circuit sections and the rest ─
 
-function HowItWorksSection({ t }: { t: TFn }) {
+function LaunchAppBanner({ t }: { t: TFn }) {
+  return (
+    <Section tag="[§03 — LAUNCH]" tagAccent>
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 md:col-span-8">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+            {t("home.launchEyebrow")}
+          </p>
+          <h2 className="mt-2 text-4xl uppercase tracking-tighter md:text-6xl lg:text-7xl">
+            {t("home.launchTitle")}
+          </h2>
+          <p className="mt-5 max-w-2xl text-sm leading-snug text-gray-700 text-justify md:text-base">
+            {t("home.launchBody")}
+          </p>
+        </div>
+        <div className="col-span-12 flex items-end md:col-span-4 md:justify-end">
+          <Link
+            href="/capsules"
+            className="w-full border-4 border-black bg-[#00e676] px-6 py-6 text-center font-mono text-2xl font-bold uppercase tracking-widest text-black hover:bg-black hover:text-[#00e676] md:w-auto md:px-10 md:py-8 md:text-3xl"
+          >
+            [{t("home.launchCta").toUpperCase()} →]
+          </Link>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+// ─── ORPHAN — kept temporarily until the new sections fully replace these ──
+
+function _UnusedHowItWorksSection({ t }: { t: TFn }) {
   const steps = [
     {
       tag: t("home.howStep1Tag"),
