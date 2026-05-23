@@ -23,6 +23,7 @@ export default function Home() {
         <HeroSection isConnected={isConnected} address={address} t={t} />
         <ProblemSection t={t} />
         <HowItWorksSection t={t} />
+        <InheritanceSection t={t} />
         <CaseFileSection t={t} />
         <ExampleSection t={t} />
         <UseCasesSection t={t} />
@@ -202,6 +203,110 @@ function HowItWorksSection({ t }: { t: TFn }) {
   );
 }
 
+// ─── INHERITANCE VAULTS (second product) ────────────────────────────────────
+
+function InheritanceSection({ t }: { t: TFn }) {
+  const steps = [
+    {
+      tag: "01",
+      title: t("home.inhStep1Title"),
+      body: t("home.inhStep1Body"),
+    },
+    {
+      tag: "02",
+      title: t("home.inhStep2Title"),
+      body: t("home.inhStep2Body"),
+    },
+    {
+      tag: "03",
+      title: t("home.inhStep3Title"),
+      body: t("home.inhStep3Body"),
+    },
+  ];
+
+  const stats = [
+    t("home.inhStat1"),
+    t("home.inhStat2"),
+    t("home.inhStat3"),
+    t("home.inhStat4"),
+  ];
+
+  return (
+    <Section tag="[§02B — INHERITANCE VAULTS]" tagAccent inverted>
+      <div className="grid grid-cols-12 gap-6">
+        {/* Left: eyebrow + title + lede */}
+        <div className="col-span-12 md:col-span-7">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+            {t("home.inhEyebrow")}
+          </p>
+          <h2 className="mt-2 text-3xl uppercase tracking-tighter text-white md:text-5xl lg:text-6xl">
+            {t("home.inhTitle")}
+          </h2>
+          <p className="mt-5 max-w-xl text-sm leading-snug text-gray-300 text-justify md:text-base">
+            {t("home.inhLede")}
+          </p>
+
+          {/* Stats row */}
+          <div className="mt-6 flex flex-wrap gap-2">
+            {stats.map((s, i) => (
+              <span
+                key={i}
+                className="border-2 border-[#00e676] bg-black px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]"
+              >
+                [{s}]
+              </span>
+            ))}
+          </div>
+
+          {/* CTAs */}
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href="/inheritance/new"
+              className="border-2 border-[#00e676] bg-[#00e676] px-5 py-3 font-mono text-sm font-bold uppercase tracking-widest text-black hover:bg-black hover:text-[#00e676]"
+            >
+              [{t("home.inhCtaPrimary").toUpperCase()}]
+            </Link>
+            <a
+              href="https://github.com/fulegod/veil/blob/dev/PATTERNS.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border-2 border-white bg-black px-5 py-3 font-mono text-sm font-bold uppercase tracking-widest text-white hover:bg-white hover:text-black"
+            >
+              [{t("home.inhCtaSecondary").toUpperCase()}]
+            </a>
+          </div>
+        </div>
+
+        {/* Right: 3-step flow */}
+        <div className="col-span-12 md:col-span-5">
+          <div className="flex flex-col gap-4">
+            {steps.map((s) => (
+              <div
+                key={s.tag}
+                className="border-2 border-[#00e676] bg-black p-4"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="font-mono text-2xl font-bold tabular-nums text-[#00e676]">
+                    {s.tag}
+                  </span>
+                  <div className="flex-1">
+                    <h3 className="font-mono text-sm font-bold uppercase tracking-widest text-white">
+                      [{s.title}]
+                    </h3>
+                    <p className="mt-2 text-xs leading-snug text-gray-300 lowercase text-justify">
+                      {s.body}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
 // ─── LIVE EXAMPLE ───────────────────────────────────────────────────────────
 
 function ExampleSection({ t }: { t: TFn }) {
@@ -263,24 +368,33 @@ function UseCasesSection({ t }: { t: TFn }) {
       title: t("home.useCase1Title"),
       body: t("home.useCase1Body"),
       icon: <IconChart />,
+      href: undefined as string | undefined,
+      live: false,
     },
     {
       tag: "[FOUNDER]",
       title: t("home.useCase2Title"),
       body: t("home.useCase2Body"),
       icon: <IconRocket />,
+      href: undefined,
+      live: false,
     },
     {
       tag: "[PERSONAL]",
       title: t("home.useCase3Title"),
       body: t("home.useCase3Body"),
       icon: <IconEnvelope />,
+      href: undefined,
+      live: false,
     },
     {
       tag: "[DEAD-MAN]",
       title: t("home.useCase4Title"),
       body: t("home.useCase4Body"),
       icon: <IconClockKey />,
+      // The only live-built case — clickable, badge it.
+      href: "/inheritance",
+      live: true,
     },
   ];
 
@@ -293,31 +407,55 @@ function UseCasesSection({ t }: { t: TFn }) {
         {t("home.useCasesSubtitle")}
       </p>
       <div className="mt-8 grid grid-cols-1 gap-0 border-2 border-black md:grid-cols-2">
-        {cases.map((c, i) => (
-          <div
-            key={i}
-            className={`group flex flex-col gap-3 p-5 transition-colors hover:bg-[#00e676]/10 ${
-              i % 2 === 1
-                ? "border-t-2 border-black md:border-l-2 md:border-t-0"
-                : ""
-            } ${i >= 2 ? "md:border-t-2 md:border-black" : ""}`}
-          >
-            <div className="flex items-center justify-between gap-3">
-              <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
-                {c.tag}
+        {cases.map((c, i) => {
+          const borderClasses = `${
+            i % 2 === 1
+              ? "border-t-2 border-black md:border-l-2 md:border-t-0"
+              : ""
+          } ${i >= 2 ? "md:border-t-2 md:border-black" : ""}`;
+          const baseClasses = `group flex flex-col gap-3 p-5 transition-colors hover:bg-[#00e676]/10 ${borderClasses}`;
+
+          const content = (
+            <>
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+                    {c.tag}
+                  </div>
+                  {c.live && (
+                    <span className="border-2 border-black bg-[#00e676] px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest text-black">
+                      LIVE
+                    </span>
+                  )}
+                </div>
+                <div className="h-10 w-10 border-2 border-black bg-white p-1.5 text-black transition-colors group-hover:bg-black group-hover:text-[#00e676]">
+                  {c.icon}
+                </div>
               </div>
-              <div className="h-10 w-10 border-2 border-black bg-white p-1.5 text-black transition-colors group-hover:bg-black group-hover:text-[#00e676]">
-                {c.icon}
-              </div>
+              <h3 className="text-base font-bold uppercase tracking-tight">
+                {c.title}
+                {c.live && (
+                  <span className="ml-2 font-mono text-xs font-bold text-[#00e676]">
+                    →
+                  </span>
+                )}
+              </h3>
+              <p className="text-xs leading-snug text-gray-700 lowercase text-justify">
+                {c.body}
+              </p>
+            </>
+          );
+
+          return c.href ? (
+            <Link key={i} href={c.href} className={baseClasses}>
+              {content}
+            </Link>
+          ) : (
+            <div key={i} className={baseClasses}>
+              {content}
             </div>
-            <h3 className="text-base font-bold uppercase tracking-tight">
-              {c.title}
-            </h3>
-            <p className="text-xs leading-snug text-gray-700 lowercase text-justify">
-              {c.body}
-            </p>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </Section>
   );

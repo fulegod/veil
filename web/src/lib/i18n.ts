@@ -87,9 +87,9 @@ const dict = {
     "home.useCase3Title": "Letters to your future self",
     "home.useCase3Body":
       "A note to yourself at 30, your child at 18, your team at the next anniversary. Trustless across years.",
-    "home.useCase4Title": "Dead-man's switch",
+    "home.useCase4Title": "Inheritance vaults",
     "home.useCase4Body":
-      "Documents that auto-reveal at a date if you do not extend them. Source protection, succession planning, time-locked disclosures.",
+      "Documents that auto-recover to M of N validators if you stop signing. Cold-storage succession, source protection, time-locked disclosures. Now built — open the vault.",
 
     // ─── Home: Why Arkiv ────────────────────────────────────────────────
     "home.whyEyebrow": "Why this is only possible on Arkiv",
@@ -106,6 +106,27 @@ const dict = {
     "home.why4Title": "Verifiable, end to end",
     "home.why4Body":
       "Every create, update, and delete returns a tx hash on Braga. Anyone can replay the history in the block explorer without trusting Veil at all.",
+
+    // ─── Home: Inheritance Vaults (second product) ───────────────────────
+    "home.inhEyebrow": "Beyond timestamps",
+    "home.inhTitle": "Some secrets must survive you.",
+    "home.inhLede":
+      "Cold-storage seeds. Custodial keys. The PDF in a safe nobody can open. The same primitive that locks a call until a future date can lock a secret until you stop signing — and then release it to a quorum of validators you chose. No custody. No platform risk. Just math and a heartbeat.",
+    "home.inhStep1Title": "Seal",
+    "home.inhStep1Body":
+      "Pick a threshold (2-of-3, 3-of-5, 5-of-7), a heartbeat period (3 / 6 / 12 months), and N validator wallets. The secret is drand-timelocked and Shamir-split. One Vault entity + N Share entities go on-chain.",
+    "home.inhStep2Title": "Heartbeat",
+    "home.inhStep2Body":
+      "While you're alive, you call extendEntity on the Vault every period. Only the $owner can do this — a third party can't keep a missing user's vault alive. Each extension pushes the drand round target forward. Nobody can decrypt during this window.",
+    "home.inhStep3Title": "Recover",
+    "home.inhStep3Body":
+      "If you stop signing, the heartbeat lapses. The drand round publishes. Any M of your N validators can fetch their share entities from Arkiv and combine them. The original secret is reconstructed. The exit is automatic, custody-free, and impossible to grief.",
+    "home.inhStat1": "M-of-N quorum",
+    "home.inhStat2": "drand timelock",
+    "home.inhStat3": "3 / 6 / 12 mo heartbeat",
+    "home.inhStat4": "zero custody",
+    "home.inhCtaPrimary": "Open inheritance vaults",
+    "home.inhCtaSecondary": "Read the patterns",
 
     // ─── Home: Case File (real-world story) ─────────────────────────────
     "home.caseEyebrow":
@@ -368,9 +389,9 @@ const dict = {
     "home.useCase3Title": "Cartas a tu yo futuro",
     "home.useCase3Body":
       "Una nota para ti a los 30, tu hijo a los 18, tu equipo en el siguiente aniversario. Sin confianza, a través de los años.",
-    "home.useCase4Title": "Dead-man's switch",
+    "home.useCase4Title": "Bóvedas de herencia",
     "home.useCase4Body":
-      "Documentos que se auto-revelan en una fecha si no los extiendes. Protección de fuentes, planificación sucesoria, divulgaciones programadas.",
+      "Documentos que se auto-recuperan a M de N validadores si dejas de firmar. Sucesión de cold-storage, protección de fuentes, divulgaciones programadas. Ya construido — abre la bóveda.",
 
     // ─── Home: Why Arkiv ────────────────────────────────────────────────
     "home.whyEyebrow": "Por qué esto solo es posible en Arkiv",
@@ -387,6 +408,27 @@ const dict = {
     "home.why4Title": "Verificable, de punta a punta",
     "home.why4Body":
       "Cada create, update y delete devuelve un tx hash en Braga. Cualquiera puede replayar la historia en el block explorer sin confiar en Veil para nada.",
+
+    // ─── Home: Inheritance Vaults (segundo producto) ─────────────────────
+    "home.inhEyebrow": "Más allá de los timestamps",
+    "home.inhTitle": "Algunos secretos deben sobrevivirte.",
+    "home.inhLede":
+      "Seeds de cold-storage. Claves custodiales. El PDF en una caja fuerte que nadie puede abrir. El mismo primitivo que sella una call hasta una fecha futura puede sellar un secreto hasta que dejes de firmar — y entonces liberarlo a un quórum de validadores que tú elegiste. Sin custodia. Sin riesgo de plataforma. Solo matemática y un heartbeat.",
+    "home.inhStep1Title": "Sellar",
+    "home.inhStep1Body":
+      "Elige un umbral (2-de-3, 3-de-5, 5-de-7), un periodo de heartbeat (3 / 6 / 12 meses) y N wallets validadoras. El secreto se cifra con drand timelock y se divide con Shamir. Una entity Vault + N entities Share van on-chain.",
+    "home.inhStep2Title": "Heartbeat",
+    "home.inhStep2Body":
+      "Mientras estés vivo, llamas extendEntity sobre la Vault cada periodo. Solo el $owner puede — un tercero no puede mantener viva una vault de un usuario desaparecido. Cada extensión empuja el round drand hacia el futuro. Nadie puede descifrar en este intervalo.",
+    "home.inhStep3Title": "Recuperar",
+    "home.inhStep3Body":
+      "Si dejas de firmar, el heartbeat expira. El round drand se publica. Cualquier M de tus N validadores pueden traer sus shares desde Arkiv y combinarlas. El secreto original se reconstruye. La salida es automática, sin custodia, imposible de bloquear.",
+    "home.inhStat1": "Quórum M-de-N",
+    "home.inhStat2": "drand timelock",
+    "home.inhStat3": "Heartbeat 3 / 6 / 12 mo",
+    "home.inhStat4": "Cero custodia",
+    "home.inhCtaPrimary": "Abrir bóvedas de herencia",
+    "home.inhCtaSecondary": "Leer los patrones",
 
     // ─── Home: Case File (escenario real) ───────────────────────────────
     "home.caseEyebrow":

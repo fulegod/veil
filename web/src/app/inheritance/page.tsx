@@ -130,6 +130,12 @@ export default function InheritanceDashboardPage() {
             </p>
           )}
 
+          {/* Concept primer — only shown when there are no vaults to see */}
+          {isConnected &&
+            !loading &&
+            mine.length === 0 &&
+            asValidator.length === 0 && <ConceptPrimer t={t} />}
+
           {/* Two columns */}
           <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2">
             <VaultColumn
@@ -151,6 +157,83 @@ export default function InheritanceDashboardPage() {
           </div>
         </section>
       </div>
+    </div>
+  );
+}
+
+/**
+ * ConceptPrimer — explanatory block + mockup card shown when the user has
+ * no vaults yet (neither as owner nor as validator). The point is to make
+ * the page useful to a judge who lands here without seed data.
+ */
+function ConceptPrimer({
+  t,
+}: {
+  t: (k: never, vars?: Record<string, string | number>) => string;
+}) {
+  return (
+    <div className="mt-8 border-2 border-black bg-black p-6 md:p-8">
+      <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+        [HOW IT WORKS]
+      </p>
+      <h2 className="mt-2 text-2xl uppercase tracking-tighter text-white md:text-3xl">
+        {/* @ts-expect-error loose t signature */}
+        {t("home.inhTitle")}
+      </h2>
+      <p className="mt-3 max-w-2xl text-xs leading-snug text-gray-300 md:text-sm">
+        {/* @ts-expect-error loose t signature */}
+        {t("home.inhLede")}
+      </p>
+
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+        {(["inhStep1", "inhStep2", "inhStep3"] as const).map((step, idx) => (
+          <div key={step} className="border-2 border-[#00e676] bg-black p-4">
+            <div className="flex items-start gap-3">
+              <span className="font-mono text-2xl font-bold tabular-nums text-[#00e676]">
+                {String(idx + 1).padStart(2, "0")}
+              </span>
+              <div className="flex-1">
+                <h3 className="font-mono text-sm font-bold uppercase tracking-widest text-white">
+                  [{/* @ts-expect-error loose t signature */}
+                  {t(`home.${step}Title`)}]
+                </h3>
+                <p className="mt-2 text-[11px] leading-snug text-gray-300 lowercase text-justify">
+                  {/* @ts-expect-error loose t signature */}
+                  {t(`home.${step}Body`)}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Mockup vault card — shows what a real vault looks like */}
+      <div className="mt-8">
+        <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-400">
+          [PREVIEW — your vault will look like this]
+        </p>
+        <div className="mt-3 border-2 border-[#00e676] bg-white p-4">
+          <div className="flex items-start justify-between gap-2">
+            <span className="font-mono text-sm font-bold uppercase tracking-tight text-black">
+              Cold-storage seed (Ledger Nano)
+            </span>
+            <span className="border-2 border-black bg-[#00e676] px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest text-black">
+              ALIVE
+            </span>
+          </div>
+          <div className="mt-1 font-mono text-[10px] uppercase tracking-widest text-gray-600">
+            3-of-5 · 180d 0h to next heartbeat
+          </div>
+        </div>
+      </div>
+
+      <Link
+        href="/inheritance/new"
+        className="mt-8 inline-block border-2 border-[#00e676] bg-[#00e676] px-5 py-3 font-mono text-sm font-bold uppercase tracking-widest text-black hover:bg-black hover:text-[#00e676]"
+      >
+        {/* @ts-expect-error loose t signature */}[
+        {t("inh.listNewCta").toUpperCase()}]
+      </Link>
     </div>
   );
 }
