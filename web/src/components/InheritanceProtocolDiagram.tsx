@@ -504,7 +504,7 @@ export function InheritanceProtocolDiagram({
           fontSize="10"
           fontWeight="bold"
         >
-          [LEGEND]
+          [{t("diag.legend")}]
         </text>
         <text
           x="40"
@@ -513,7 +513,7 @@ export function InheritanceProtocolDiagram({
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
         >
-          → on-chain tx (Arkiv createEntity / extendEntity)
+          {t("diag.legendArrow")}
         </text>
         <text
           x="40"
@@ -522,7 +522,7 @@ export function InheritanceProtocolDiagram({
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
         >
-          shared-attribute key links entities (no FKs in Arkiv)
+          {t("diag.legendSharedAttr")}
         </text>
         <text
           x="40"
@@ -531,7 +531,7 @@ export function InheritanceProtocolDiagram({
           fontFamily="ui-monospace, JetBrains Mono, monospace"
           fontSize="10"
         >
-          recovery = drand timelock + Shamir threshold (both must open)
+          {t("diag.legendRecovery")}
         </text>
       </g>
     </svg>

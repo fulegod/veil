@@ -81,6 +81,12 @@ const dict = {
     "diag.sealedBraga": "SEALED · BRAGA",
     "diag.proofTagline": "proof-of-call · proof-of-life",
     "diag.drandRound": "DRAND ROUND",
+    "diag.legend": "LEGEND",
+    "diag.legendArrow": "→ on-chain tx (Arkiv createEntity / extendEntity)",
+    "diag.legendSharedAttr":
+      "shared-attribute key links entities (no FKs in Arkiv)",
+    "diag.legendRecovery":
+      "recovery = drand timelock + Shamir threshold (both must open)",
 
     "home.heroEyebrow": "On-chain time-locked secrets",
     "home.heroTitleA": "Seal it today.",
@@ -525,6 +531,12 @@ const dict = {
     "diag.sealedBraga": "SELLADO · BRAGA",
     "diag.proofTagline": "prueba-de-call · prueba-de-vida",
     "diag.drandRound": "ROUND DRAND",
+    "diag.legend": "LEYENDA",
+    "diag.legendArrow": "→ tx on-chain (Arkiv createEntity / extendEntity)",
+    "diag.legendSharedAttr":
+      "clave-atributo-compartido enlaza entities (no hay FKs en Arkiv)",
+    "diag.legendRecovery":
+      "recuperación = drand timelock + umbral Shamir (ambas deben abrir)",
 
     // ─── Home: Hero ─────────────────────────────────────────────────────
     "home.heroEyebrow": "Secretos con candado temporal on-chain",
