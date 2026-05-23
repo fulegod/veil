@@ -4,6 +4,7 @@
  * CapsuleProtocolDiagram — SVG circuit diagram, i18n-aware.
  */
 
+import { InlineIcon } from "./BrutalistIcons";
 import { useLanguage } from "./LanguageProvider";
 
 const GREEN = "#00e676";
@@ -52,8 +53,9 @@ export function CapsuleProtocolDiagram({
           stroke={GREEN}
           strokeWidth={STROKE}
         />
+        <InlineIcon name="person" x={50} y={70} size={28} color={GREEN} />
         <text
-          x="120"
+          x="135"
           y="88"
           fill={GREEN}
           fontFamily="ui-monospace, JetBrains Mono, monospace"
@@ -64,7 +66,7 @@ export function CapsuleProtocolDiagram({
           [§ {t("diag.writer")}]
         </text>
         <text
-          x="120"
+          x="135"
           y="106"
           fill={WHITE}
           fontFamily="ui-monospace, JetBrains Mono, monospace"
@@ -109,8 +111,9 @@ export function CapsuleProtocolDiagram({
           stroke={GREEN}
           strokeWidth={STROKE}
         />
+        <InlineIcon name="lock" x={335} y={52} size={24} color={GREEN} />
         <text
-          x="460"
+          x="475"
           y="68"
           fill={GREEN}
           fontFamily="ui-monospace, JetBrains Mono, monospace"
@@ -277,8 +280,9 @@ export function CapsuleProtocolDiagram({
           stroke={GREEN}
           strokeWidth={STROKE}
         />
+        <InlineIcon name="envelope" x={295} y={442} size={24} color="black" />
         <text
-          x="460"
+          x="475"
           y="458"
           fill="black"
           fontFamily="ui-monospace, JetBrains Mono, monospace"

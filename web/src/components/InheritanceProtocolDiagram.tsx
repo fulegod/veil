@@ -8,6 +8,7 @@
  * its own labels in the previous version).
  */
 
+import { InlineIcon } from "./BrutalistIcons";
 import { useLanguage } from "./LanguageProvider";
 
 const GREEN = "#00e676";
@@ -57,8 +58,9 @@ export function InheritanceProtocolDiagram({
           stroke={GREEN}
           strokeWidth={STROKE}
         />
+        <InlineIcon name="person" x={50} y={50} size={28} color={GREEN} />
         <text
-          x="120"
+          x="135"
           y="68"
           fill={GREEN}
           fontFamily="ui-monospace, JetBrains Mono, monospace"
@@ -69,7 +71,7 @@ export function InheritanceProtocolDiagram({
           [§ {t("diag.owner")}]
         </text>
         <text
-          x="120"
+          x="135"
           y="86"
           fill={WHITE}
           fontFamily="ui-monospace, JetBrains Mono, monospace"
@@ -114,8 +116,9 @@ export function InheritanceProtocolDiagram({
           stroke={GREEN}
           strokeWidth={STROKE}
         />
+        <InlineIcon name="vault" x={335} y={52} size={24} color={GREEN} />
         <text
-          x="460"
+          x="475"
           y="68"
           fill={GREEN}
           fontFamily="ui-monospace, JetBrains Mono, monospace"
@@ -291,7 +294,7 @@ export function InheritanceProtocolDiagram({
         </text>
       </g>
 
-      {/* 3 SHARE boxes */}
+      {/* 3 SHARE boxes — each shows an envelope (the share) handed to a person (validator) */}
       {[
         { x: 100, label: `${t("diag.share")} 1`, val: "validator A" },
         { x: 320, label: `${t("diag.share")} 2`, val: "validator B" },
@@ -306,6 +309,21 @@ export function InheritanceProtocolDiagram({
             fill="black"
             stroke={GREEN}
             strokeWidth={STROKE}
+          />
+          {/* envelope + person glyph pair — visualises "share handed to validator" */}
+          <InlineIcon
+            name="envelope"
+            x={s.x + 10}
+            y={342}
+            size={20}
+            color={GREEN}
+          />
+          <InlineIcon
+            name="person"
+            x={s.x + 130}
+            y={342}
+            size={20}
+            color={WHITE}
           />
           <text
             x={s.x + 80}
@@ -429,8 +447,9 @@ export function InheritanceProtocolDiagram({
           stroke={GREEN}
           strokeWidth={STROKE}
         />
+        <InlineIcon name="document" x={295} y={542} size={24} color="black" />
         <text
-          x="400"
+          x="412"
           y="558"
           fill="black"
           fontFamily="ui-monospace, JetBrains Mono, monospace"

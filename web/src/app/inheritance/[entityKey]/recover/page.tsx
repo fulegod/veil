@@ -18,6 +18,11 @@
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
 
+import {
+  EnvelopeGlyph,
+  KeyGlyph,
+  PersonGlyph,
+} from "@/components/BrutalistIcons";
 import { Header } from "@/components/Header";
 import { useLanguage } from "@/components/LanguageProvider";
 import {
@@ -180,12 +185,28 @@ export default function RecoverPage({
                           className="mt-1 h-4 w-4 border-2 border-black accent-black"
                         />
                         <div className="flex-1">
-                          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-black">
-                            SHARE #{s.shareIndex}
-                          </p>
-                          <p className="break-all font-mono text-xs text-black">
-                            {s.validatorAddress}
-                          </p>
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-black">
+                              SHARE #{s.shareIndex}
+                            </p>
+                            {isSelected ? (
+                              <KeyGlyph size={18} className="text-black" />
+                            ) : (
+                              <EnvelopeGlyph
+                                size={18}
+                                className="text-[#00e676]"
+                              />
+                            )}
+                          </div>
+                          <div className="mt-1 flex items-center gap-2">
+                            <PersonGlyph
+                              size={24}
+                              className="shrink-0 text-black"
+                            />
+                            <p className="break-all font-mono text-xs text-black">
+                              {s.validatorAddress}
+                            </p>
+                          </div>
                           <a
                             href={explorerEntityUrl(s.entityKey)}
                             target="_blank"

@@ -12,6 +12,7 @@ import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { useAccount } from "wagmi";
 
+import { EnvelopeGlyph, PersonGlyph } from "@/components/BrutalistIcons";
 import { Header } from "@/components/Header";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useArkivClients } from "@/hooks/useArkivClients";
@@ -293,12 +294,18 @@ export default function VaultViewPage({
                   key={s.entityKey}
                   className="border-2 border-black bg-white p-3"
                 >
-                  <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                    SHARE #{s.shareIndex}
-                  </p>
-                  <p className="break-all font-mono text-xs text-black">
-                    {s.validatorAddress}
-                  </p>
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                      SHARE #{s.shareIndex}
+                    </p>
+                    <EnvelopeGlyph size={18} className="text-[#00e676]" />
+                  </div>
+                  <div className="mt-2 flex items-center gap-2">
+                    <PersonGlyph size={28} className="shrink-0 text-black" />
+                    <p className="break-all font-mono text-xs text-black">
+                      {s.validatorAddress}
+                    </p>
+                  </div>
                 </li>
               ))}
             </ul>
