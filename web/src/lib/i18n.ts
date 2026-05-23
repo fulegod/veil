@@ -349,6 +349,56 @@ const dict = {
     "inh.errorDuplicateValidator": "Validator addresses must be unique.",
     "inh.errorSelfValidator":
       "Validators cannot include your own wallet — defeats the purpose.",
+
+    // ─── Inheritance — intro panel (use cases + steps) on /new ──────────
+    "inh.introTag": "[WHAT IS THIS?]",
+    "inh.introHeading": "A cryptographic dead-man's switch.",
+    "inh.introLede":
+      "You seal a secret today. As long as you keep signing one cheap heartbeat tx every few months, nobody can read it — not even you, not Veil, not Arkiv. If you go silent past the heartbeat period, M of N trusted validators can recover the secret together. No custody. No platform risk. Math + a wallet.",
+    "inh.uc1Tag": "[USE.01]",
+    "inh.uc1Title": "Cold-storage seed",
+    "inh.uc1Body":
+      "Your Ledger / Trezor recovery phrase. If something happens to you, 3 of 5 trusted people can recover your crypto holdings.",
+    "inh.uc1Sample": "Ledger seed — main BTC + ETH cold storage",
+    "inh.uc2Tag": "[USE.02]",
+    "inh.uc2Title": "Multisig / Treasury keys",
+    "inh.uc2Body":
+      "Private shards for a DAO treasury, a fund's wallet, or a multisig signer. Custody-free succession.",
+    "inh.uc2Sample": "Treasury — multisig signer A backup",
+    "inh.uc3Tag": "[USE.03]",
+    "inh.uc3Title": "Digital will",
+    "inh.uc3Body":
+      "Last-instructions document for your family — account list, location of physical valuables, final wishes. Released only when you can't.",
+    "inh.uc3Sample": "Will + instructions for family",
+    "inh.uc4Tag": "[USE.04]",
+    "inh.uc4Title": "Critical passwords",
+    "inh.uc4Body":
+      "Bitwarden master password, 2FA recovery codes, root credentials for critical accounts. Self-host with a quorum, not a cloud.",
+    "inh.uc4Sample": "Master password + 2FA recovery codes",
+    "inh.useThisCta": "Use this →",
+    "inh.stepsHeading": "How it works",
+    "inh.step01Title": "Configure",
+    "inh.step01Body":
+      "Pick threshold (e.g. 3-of-5), heartbeat period (3 / 6 / 12 months), and N validator wallet addresses.",
+    "inh.step02Title": "Seal",
+    "inh.step02Body":
+      "Your secret is drand-timelock-encrypted and Shamir-split client-side. The plaintext never leaves your browser.",
+    "inh.step03Title": "Distribute",
+    "inh.step03Body":
+      "One Vault entity + N Share entities go on-chain on Arkiv. Each Share names one specific validator.",
+    "inh.step04Title": "Live",
+    "inh.step04Body":
+      "Each heartbeat period, sign one cheap extendEntity tx. Vault stays sealed. If you stop signing, validators can recover.",
+
+    // ─── Inheritance — vault view contextual banner ─────────────────────
+    "inh.viewBannerAliveTitle": "Your vault is alive.",
+    "inh.viewBannerAliveBody":
+      "Sign a heartbeat tx before the timer hits zero to push the unlock further into the future. While you keep signing, the secret stays sealed forever.",
+    "inh.viewBannerExpiredTitle": "Heartbeat lapsed. Recovery is open.",
+    "inh.viewBannerExpiredBody":
+      "The owner stopped signing past the heartbeat window. Any M of N validators can now combine their shares to reconstruct the original secret.",
+    "inh.viewSharesHint":
+      "These wallets each received one Shamir share. When M of them coordinate, the secret can be reconstructed. The shares are stored on Arkiv but useless on their own.",
     "inh.listEyebrow": "Inheritance",
     "inh.listTitle": "Vaults under your watch",
     "inh.listSubtitle":
@@ -720,6 +770,56 @@ const dict = {
       "Las direcciones de validador deben ser únicas.",
     "inh.errorSelfValidator":
       "Los validadores no pueden incluir tu propia wallet — pierde el sentido.",
+
+    // ─── Inheritance — panel intro (use cases + steps) en /new ──────────
+    "inh.introTag": "[¿QUÉ ES ESTO?]",
+    "inh.introHeading": "Un interruptor de muerte criptográfico.",
+    "inh.introLede":
+      "Sellas un secreto hoy. Mientras sigas firmando una tx barata de heartbeat cada cierto tiempo, nadie puede leerlo — ni siquiera tú, ni Veil, ni Arkiv. Si te quedas en silencio más allá del periodo de heartbeat, M de N validadores de confianza pueden recuperar el secreto juntos. Sin custodia. Sin riesgo de plataforma. Matemática + una wallet.",
+    "inh.uc1Tag": "[USO.01]",
+    "inh.uc1Title": "Seed de cold-storage",
+    "inh.uc1Body":
+      "Tu frase de recuperación de Ledger / Trezor. Si te pasa algo, 3 de 5 personas de confianza pueden recuperar tus criptos.",
+    "inh.uc1Sample": "Seed Ledger — cold storage principal BTC + ETH",
+    "inh.uc2Tag": "[USO.02]",
+    "inh.uc2Title": "Llaves de multisig / Treasury",
+    "inh.uc2Body":
+      "Fragmentos privados para el treasury de un DAO, la wallet de un fondo, o un signer de multisig. Sucesión sin custodia.",
+    "inh.uc2Sample": "Treasury — backup del signer A del multisig",
+    "inh.uc3Tag": "[USO.03]",
+    "inh.uc3Title": "Testamento digital",
+    "inh.uc3Body":
+      "Documento de últimas instrucciones para tu familia — lista de cuentas, ubicación de bienes físicos, deseos finales. Se libera solo cuando ya no puedes.",
+    "inh.uc3Sample": "Testamento + instrucciones para la familia",
+    "inh.uc4Tag": "[USO.04]",
+    "inh.uc4Title": "Contraseñas críticas",
+    "inh.uc4Body":
+      "Master password de Bitwarden, códigos de recuperación 2FA, credenciales root de cuentas críticas. Self-host con quórum, no en la nube.",
+    "inh.uc4Sample": "Master password + códigos de recuperación 2FA",
+    "inh.useThisCta": "Usar este →",
+    "inh.stepsHeading": "Cómo funciona",
+    "inh.step01Title": "Configurar",
+    "inh.step01Body":
+      "Elige el umbral (ej. 3-de-5), el periodo de heartbeat (3 / 6 / 12 meses) y N direcciones de wallet validadoras.",
+    "inh.step02Title": "Sellar",
+    "inh.step02Body":
+      "Tu secreto se cifra con drand-timelock y se divide con Shamir, todo client-side. El plaintext nunca sale de tu browser.",
+    "inh.step03Title": "Distribuir",
+    "inh.step03Body":
+      "Una entity Vault + N entities Share van on-chain en Arkiv. Cada Share nombra a un validador específico.",
+    "inh.step04Title": "Vivir",
+    "inh.step04Body":
+      "Cada periodo de heartbeat, firmas una tx barata de extendEntity. La bóveda sigue sellada. Si dejas de firmar, los validadores pueden recuperar.",
+
+    // ─── Inheritance — banner contextual en la vista de bóveda ──────────
+    "inh.viewBannerAliveTitle": "Tu bóveda está viva.",
+    "inh.viewBannerAliveBody":
+      "Firma una tx de heartbeat antes de que el timer llegue a cero para empujar el unlock más al futuro. Mientras sigas firmando, el secreto se queda sellado para siempre.",
+    "inh.viewBannerExpiredTitle": "Heartbeat expirado. Recuperación abierta.",
+    "inh.viewBannerExpiredBody":
+      "El dueño dejó de firmar más allá del periodo de heartbeat. Cualquier M de N validadores ya pueden combinar sus shares para reconstruir el secreto original.",
+    "inh.viewSharesHint":
+      "Estas wallets recibieron cada una una share de Shamir. Cuando M de ellas se coordinan, el secreto se reconstruye. Las shares están guardadas en Arkiv pero por sí solas no sirven.",
     "inh.listEyebrow": "Herencia",
     "inh.listTitle": "Bóvedas bajo tu vigilancia",
     "inh.listSubtitle":

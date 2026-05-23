@@ -202,6 +202,29 @@ export default function VaultViewPage({
             </div>
           </div>
 
+          {/* Contextual narrative banner — explains the current state in plain language */}
+          <div
+            className={`mt-8 border-2 p-4 md:p-5 ${
+              expired
+                ? "border-[#00e676] bg-black text-white"
+                : "border-black bg-[#00e676] text-black"
+            }`}
+          >
+            <p className="font-mono text-[10px] font-bold uppercase tracking-widest">
+              {expired ? "[STATUS — RECOVERY OPEN]" : "[STATUS — ALIVE]"}
+            </p>
+            <h2 className="mt-1 font-mono text-base font-bold uppercase tracking-tight md:text-lg">
+              {expired
+                ? t("inh.viewBannerExpiredTitle")
+                : t("inh.viewBannerAliveTitle")}
+            </h2>
+            <p className="mt-2 text-xs leading-snug md:text-sm">
+              {expired
+                ? t("inh.viewBannerExpiredBody")
+                : t("inh.viewBannerAliveBody")}
+            </p>
+          </div>
+
           {/* Owner heartbeat button */}
           {isOwner && !expired && (
             <div className="mt-8 border-2 border-black bg-white p-4">
@@ -261,6 +284,9 @@ export default function VaultViewPage({
                 {t("inh.viewSharesHeader")}
               </span>
             </h2>
+            <p className="mt-2 max-w-2xl text-xs leading-snug text-gray-600 lowercase text-justify md:text-sm">
+              {t("inh.viewSharesHint")}
+            </p>
             <ul className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2">
               {shares.map((s) => (
                 <li

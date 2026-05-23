@@ -23,6 +23,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
 import { Header } from "@/components/Header";
+import { InheritanceIntro } from "@/components/InheritanceIntro";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useArkivClients } from "@/hooks/useArkivClients";
 import { encryptForTime } from "@/lib/tlock";
@@ -178,6 +179,15 @@ export default function NewInheritancePage() {
     <div className="flex flex-col flex-1 bg-white text-black">
       <Header />
       <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-6 p-4 md:p-8">
+        <InheritanceIntro
+          onPickUseCase={(sample) => {
+            setTitle(sample);
+            // Smooth-scroll to the form so the user sees the title got filled
+            if (typeof window !== "undefined") {
+              window.scrollBy({ top: 200, behavior: "smooth" });
+            }
+          }}
+        />
         <section className="border-2 border-black bg-white p-6 md:p-12 relative">
           <div className="absolute top-0 left-0 bg-black text-white px-2 py-1 text-[10px] uppercase font-bold tracking-widest">
             [§INH — NEW VAULT]
