@@ -30,15 +30,17 @@ web/.env.*.local
 # ─── Internal notes (local-only memory for Claude) ────────────────────────
 progress.md
 task_plan.md
+DEMO.md
+SUBMIT.md
+VIDEO_SCRIPT.md
+screenshots/
 
-# ─── Claude harness config (not relevant to other builders) ───────────────
-.claude/launch.json
-
-# NOTE: We DO commit:
-#   CLAUDE.md           — shows rigor + Arkiv-specific rules to judges
-#   .agent/skills/      — reference implementation: other builders learn from these
-#   .claude/skills/     — copied global skills used in this project
-#   PATTERNS.md         — Arkiv patterns demonstrated (scoring boost)
-#   SKILLS.md           — index of skills loaded
-#   DEMO.md             — visual walkthrough for judges who don't run locally
-#   screenshots/        — production captures referenced from DEMO.md
+# ─── PRIVATE workspace — author's personal skills, agent configs, AI memory ─
+# These belong to the developer's local environment, NOT the product.
+# Do NOT commit; do NOT publish.
+.claude/
+.agent/
+CLAUDE.md
+SKILLS.md
+web/CLAUDE.md
+web/AGENTS.md
