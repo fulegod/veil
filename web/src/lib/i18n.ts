@@ -226,6 +226,72 @@ const dict = {
     "list.by": "by",
     "list.unlocked": "Unlocked",
     "list.unlocksIn": "Unlocks in",
+
+    // ─── Inheritance — dead-man's switch with M-of-N quorum ─────────────
+    "inh.navLink": "Inheritance vaults",
+    "inh.newTitle": "New inheritance vault",
+    "inh.newIntro":
+      "Seal a secret today. If you stop signing for the heartbeat period, M of your N validators can together recover it. Cryptographic dead-man's switch — no custody, no platform risk.",
+    "inh.fieldTitle": "Title",
+    "inh.fieldTitlePlaceholder": "Cold-storage recovery (Ledger backup phrase)",
+    "inh.fieldSecret": "Secret",
+    "inh.fieldSecretHint":
+      "What you want recoverable. Encrypted now, split into shares. Plaintext never leaves your browser.",
+    "inh.fieldSecretPlaceholder":
+      "Seed phrase, private key, safe combo, document text — anything you'd want delivered if you go silent.",
+    "inh.fieldThreshold": "Threshold (M of N)",
+    "inh.fieldThresholdHint":
+      "How many validators must cooperate to recover. Higher = more secure, harder to recover.",
+    "inh.fieldHeartbeat": "Heartbeat",
+    "inh.fieldHeartbeatHint":
+      "How often you must sign a tx to prove you're alive. If you miss it, recovery becomes possible.",
+    "inh.fieldValidators": "Validators ({count} wallet addresses)",
+    "inh.fieldValidatorsHint":
+      "The wallets that can together recover this secret. Each gets one Shamir share. Convention: tell them now so they know to act if you go silent.",
+    "inh.validatorPlaceholder": "0x… validator {i}",
+    "inh.btnSeal": "Seal vault",
+    "inh.statusEncrypting": "Encrypting secret with drand timelock…",
+    "inh.statusSplitting": "Splitting into {n} Shamir shares…",
+    "inh.statusCreatingVault": "Creating Vault entity on Arkiv…",
+    "inh.statusCreatingShare": "Distributing share {i}/{n}…",
+    "inh.statusDone": "Sealed. Redirecting…",
+    "inh.errorConnect": "Connect your wallet first.",
+    "inh.errorRequired": "Title and secret are required.",
+    "inh.errorInvalidValidator":
+      "Validator #{i} is not a valid 0x address (42 chars).",
+    "inh.errorDuplicateValidator": "Validator addresses must be unique.",
+    "inh.errorSelfValidator":
+      "Validators cannot include your own wallet — defeats the purpose.",
+    "inh.listEyebrow": "Inheritance",
+    "inh.listTitle": "Vaults under your watch",
+    "inh.listSubtitle":
+      "Vaults you set up + vaults where someone trusted you as a validator.",
+    "inh.listSectionMine": "As owner",
+    "inh.listSectionValidator": "As validator",
+    "inh.listEmptyMine": "No vaults yet. Set one up before you need it.",
+    "inh.listEmptyValidator": "Nobody has named you as a validator yet.",
+    "inh.listNewCta": "+ New vault",
+    "inh.viewBadgeOwner": "Owner",
+    "inh.viewBadgeValidator": "Validator",
+    "inh.viewBadgeRecoverable": "Recoverable",
+    "inh.viewBadgeAlive": "Alive",
+    "inh.viewHeartbeatLabel": "Heartbeat expires in",
+    "inh.viewHeartbeatExpired": "Heartbeat expired — recovery available",
+    "inh.viewExtendCta": "I'm alive — extend heartbeat",
+    "inh.viewExtendDone": "Extended.",
+    "inh.viewSharesHeader": "Validators",
+    "inh.viewRecoverCta": "Open recovery →",
+    "inh.recoverTitle": "Recover vault",
+    "inh.recoverIntro":
+      "The owner has gone silent past the heartbeat. The drand round is now published, so each validator can read their share. Combine {m}-of-{n} shares to reconstruct the original secret.",
+    "inh.recoverShareLoad": "Load my share",
+    "inh.recoverShareLoaded": "Share loaded.",
+    "inh.recoverCombineCta": "Combine shares",
+    "inh.recoverSecret": "Recovered secret",
+    "inh.recoverInsufficient":
+      "Need at least {m} shares. Currently have {have}.",
+    "inh.recoverNotEligible":
+      "Your connected wallet is not on this vault's validator list.",
   },
   es: {
     // ─── Common ─────────────────────────────────────────────────────────
@@ -442,6 +508,74 @@ const dict = {
     "list.by": "por",
     "list.unlocked": "Abierta",
     "list.unlocksIn": "Se abre en",
+
+    // ─── Inheritance — interruptor de muerte con quórum M-de-N ──────────
+    "inh.navLink": "Bóvedas de herencia",
+    "inh.newTitle": "Nueva bóveda de herencia",
+    "inh.newIntro":
+      "Sella un secreto hoy. Si dejas de firmar durante el periodo de heartbeat, M de tus N validadores pueden recuperarlo juntos. Interruptor de muerte criptográfico — sin custodia, sin riesgo de plataforma.",
+    "inh.fieldTitle": "Título",
+    "inh.fieldTitlePlaceholder": "Recovery cold-storage (frase de Ledger)",
+    "inh.fieldSecret": "Secreto",
+    "inh.fieldSecretHint":
+      "Lo que quieres que sea recuperable. Se cifra ahora y se divide en shares. El plaintext nunca sale de tu browser.",
+    "inh.fieldSecretPlaceholder":
+      "Seed phrase, llave privada, combinación de caja fuerte, texto de un documento — cualquier cosa que debería entregarse si te quedas en silencio.",
+    "inh.fieldThreshold": "Umbral (M de N)",
+    "inh.fieldThresholdHint":
+      "Cuántos validadores deben cooperar para recuperar. Más alto = más seguro, más difícil de recuperar.",
+    "inh.fieldHeartbeat": "Heartbeat",
+    "inh.fieldHeartbeatHint":
+      "Cada cuánto debes firmar una tx para probar que estás vivo. Si fallas, la recuperación se habilita.",
+    "inh.fieldValidators": "Validadores ({count} direcciones de wallet)",
+    "inh.fieldValidatorsHint":
+      "Las wallets que pueden recuperar este secreto juntos. Cada uno recibe una share Shamir. Convención: avísales ahora para que sepan actuar si te quedas en silencio.",
+    "inh.validatorPlaceholder": "0x… validador {i}",
+    "inh.btnSeal": "Sellar bóveda",
+    "inh.statusEncrypting": "Cifrando secreto con drand timelock…",
+    "inh.statusSplitting": "Dividiendo en {n} shares Shamir…",
+    "inh.statusCreatingVault": "Creando Vault entity en Arkiv…",
+    "inh.statusCreatingShare": "Distribuyendo share {i}/{n}…",
+    "inh.statusDone": "Sellada. Redirigiendo…",
+    "inh.errorConnect": "Conecta tu wallet primero.",
+    "inh.errorRequired": "Título y secreto son obligatorios.",
+    "inh.errorInvalidValidator":
+      "El validador #{i} no es una dirección 0x válida (42 chars).",
+    "inh.errorDuplicateValidator":
+      "Las direcciones de validador deben ser únicas.",
+    "inh.errorSelfValidator":
+      "Los validadores no pueden incluir tu propia wallet — pierde el sentido.",
+    "inh.listEyebrow": "Herencia",
+    "inh.listTitle": "Bóvedas bajo tu vigilancia",
+    "inh.listSubtitle":
+      "Bóvedas que configuraste + bóvedas donde alguien te nombró validador.",
+    "inh.listSectionMine": "Como dueño",
+    "inh.listSectionValidator": "Como validador",
+    "inh.listEmptyMine":
+      "Aún no hay bóvedas. Configura una antes de necesitarla.",
+    "inh.listEmptyValidator": "Nadie te ha nombrado validador todavía.",
+    "inh.listNewCta": "+ Nueva bóveda",
+    "inh.viewBadgeOwner": "Dueño",
+    "inh.viewBadgeValidator": "Validador",
+    "inh.viewBadgeRecoverable": "Recuperable",
+    "inh.viewBadgeAlive": "Vivo",
+    "inh.viewHeartbeatLabel": "Heartbeat expira en",
+    "inh.viewHeartbeatExpired": "Heartbeat expirado — recuperación disponible",
+    "inh.viewExtendCta": "Estoy vivo — extender heartbeat",
+    "inh.viewExtendDone": "Extendido.",
+    "inh.viewSharesHeader": "Validadores",
+    "inh.viewRecoverCta": "Abrir recuperación →",
+    "inh.recoverTitle": "Recuperar bóveda",
+    "inh.recoverIntro":
+      "El dueño se ha quedado en silencio más allá del heartbeat. El round drand ya está publicado, así que cada validador puede leer su share. Combina {m}-de-{n} shares para reconstruir el secreto original.",
+    "inh.recoverShareLoad": "Cargar mi share",
+    "inh.recoverShareLoaded": "Share cargada.",
+    "inh.recoverCombineCta": "Combinar shares",
+    "inh.recoverSecret": "Secreto recuperado",
+    "inh.recoverInsufficient":
+      "Se necesitan al menos {m} shares. Actualmente hay {have}.",
+    "inh.recoverNotEligible":
+      "Tu wallet conectada no está en la lista de validadores de esta bóveda.",
   },
 } as const satisfies Record<Lang, Record<string, string>>;
 

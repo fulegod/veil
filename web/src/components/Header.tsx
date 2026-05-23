@@ -67,6 +67,12 @@ export function Header() {
           </Link>
         </div>
         <div className="flex items-center gap-3">
+          <Link
+            href="/inheritance"
+            className="hidden border-2 border-black bg-white px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-black hover:bg-black hover:text-[#00e676] md:inline-block"
+          >
+            [INHERITANCE]
+          </Link>
           <LanguageToggle />
           <ConnectButton />
         </div>
