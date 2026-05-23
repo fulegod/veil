@@ -247,7 +247,31 @@ function CapsulesSection({ t }: { t: TFn }) {
           </div>
         ))}
       </div>
+
+      {/* CTA at the end of the section — now that the protocol is explained */}
+      <div className="mt-10 flex flex-wrap gap-3">
+        <Link
+          href="/capsules"
+          className="border-2 border-black bg-black px-6 py-4 font-mono text-base font-bold uppercase tracking-widest text-[#00e676] hover:bg-[#00e676] hover:text-black"
+        >
+          [{t("home.capCtaPrimary").toUpperCase()} →]
+        </Link>
+        {isConnectedCapsulesCta(t)}
+      </div>
     </Section>
+  );
+}
+
+// Helper rendered as the SECOND CTA on §01 — links to /capsule/new directly,
+// invites the connected user to seal one without leaving the page.
+function isConnectedCapsulesCta(t: TFn) {
+  return (
+    <Link
+      href="/capsule/new"
+      className="border-2 border-black bg-white px-6 py-4 font-mono text-base font-bold uppercase tracking-widest text-black hover:bg-black hover:text-[#00e676]"
+    >
+      [{t("home.heroCtaPrimary").toUpperCase()}]
+    </Link>
   );
 }
 
