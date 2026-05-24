@@ -11,9 +11,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
 
 import { Header } from "@/components/Header";
+import { InheritanceIntro } from "@/components/InheritanceIntro";
 import { useLanguage } from "@/components/LanguageProvider";
 import {
   listVaultsForOwner,
@@ -33,6 +35,7 @@ interface VaultRow {
 export default function InheritanceDashboardPage() {
   const { t } = useLanguage();
   const { address, isConnected } = useAccount();
+  const router = useRouter();
 
   const [mine, setMine] = useState<VaultRow[]>([]);
   const [asValidator, setAsValidator] = useState<VaultRow[]>([]);
@@ -130,11 +133,18 @@ export default function InheritanceDashboardPage() {
             </p>
           )}
 
-          {/* Concept primer — only shown when there are no vaults to see */}
-          {isConnected &&
-            !loading &&
-            mine.length === 0 &&
-            asValidator.length === 0 && <ConceptPrimer t={t} />}
+          {/* Concept primer — ALWAYS visible at the top, regardless of vault count.
+              This is the user's first stop in the Inheritance flow, so the
+              explanation lives here, not on /new. */}
+          <div className="mt-8">
+            <InheritanceIntro
+              onPickUseCase={(sample) => {
+                router.push(
+                  `/inheritance/new?title=${encodeURIComponent(sample)}`,
+                );
+              }}
+            />
+          </div>
 
           {/* Two columns */}
           <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2">

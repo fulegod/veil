@@ -23,7 +23,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
 import { Header } from "@/components/Header";
-import { InheritanceIntro } from "@/components/InheritanceIntro";
+// InheritanceIntro moved to /inheritance dashboard — this page is just the form.
 import { useLanguage } from "@/components/LanguageProvider";
 import { useArkivClients } from "@/hooks/useArkivClients";
 import { encryptForTime } from "@/lib/tlock";
@@ -61,6 +61,18 @@ export default function NewInheritancePage() {
   const { arkivWallet, isReady, address } = useArkivClients();
 
   const [title, setTitle] = useState("");
+
+  // Pre-fill title from ?title= query param (set by the InheritanceIntro
+  // use-case picker on /inheritance). Reading via window.location instead of
+  // useSearchParams() avoids the Suspense-boundary requirement that breaks
+  // prerender in Next 16 with Turbopack.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const titleFromUrl = new URLSearchParams(window.location.search).get(
+      "title",
+    );
+    if (titleFromUrl) setTitle(titleFromUrl);
+  }, []);
   const [secret, setSecret] = useState("");
   const [thresholdIdx, setThresholdIdx] = useState(1); // 3-of-5 default
   const [heartbeat, setHeartbeat] =
@@ -179,15 +191,6 @@ export default function NewInheritancePage() {
     <div className="flex flex-col flex-1 bg-white text-black">
       <Header />
       <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-6 p-4 md:p-8">
-        <InheritanceIntro
-          onPickUseCase={(sample) => {
-            setTitle(sample);
-            // Smooth-scroll to the form so the user sees the title got filled
-            if (typeof window !== "undefined") {
-              window.scrollBy({ top: 200, behavior: "smooth" });
-            }
-          }}
-        />
         {/* Concept banner — the vault you're about to create, visualized */}
         <figure className="border-2 border-black bg-black p-1">
           {/* eslint-disable-next-line @next/next/no-img-element */}
