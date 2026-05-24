@@ -16,6 +16,7 @@ import { useAccount } from "wagmi";
 
 import { Header } from "@/components/Header";
 import { InheritanceIntro } from "@/components/InheritanceIntro";
+import { TriggerTypes } from "@/components/TriggerTypes";
 import { useLanguage } from "@/components/LanguageProvider";
 import {
   listVaultsForOwner,
@@ -136,7 +137,7 @@ export default function InheritanceDashboardPage() {
           {/* Concept primer — ALWAYS visible at the top, regardless of vault count.
               This is the user's first stop in the Inheritance flow, so the
               explanation lives here, not on /new. */}
-          <div className="mt-8">
+          <div className="mt-8 flex flex-col gap-6">
             <InheritanceIntro
               onPickUseCase={(sample) => {
                 router.push(
@@ -144,6 +145,7 @@ export default function InheritanceDashboardPage() {
                 );
               }}
             />
+            <TriggerTypes />
           </div>
 
           {/* Two columns */}
