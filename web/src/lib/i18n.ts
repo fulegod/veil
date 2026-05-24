@@ -489,6 +489,30 @@ const dict = {
     "act.warningEnableLabel": "Send me a warning email before expiry",
     "act.warningEnableHint":
       "Reminder reaches your inbox X days before the heartbeat lapses. You can still sign and reset.",
+
+    // ─── Plans / tiers (no prices — just communicate that levels exist) ──
+    "plan.eyebrow": "Built to scale with your trust requirements",
+    "plan.title": "Four levels of personalization.",
+    "plan.lede":
+      "From a single self-served vault to white-glove succession planning with insurance overlay. Veil meets you where your stakes are.",
+    "plan.t1Tag": "[STARTER]",
+    "plan.t1Name": "Self-served",
+    "plan.t1Body":
+      "One vault, up to 3 validators, Shamir recovery + heartbeat. Custody-free forever.",
+    "plan.t2Tag": "[PRO]",
+    "plan.t2Name": "Programmable",
+    "plan.t2Body":
+      "Unlimited vaults, multi-trigger schedules, email/SMS delivery, IPFS document drops, multi-validator quorums.",
+    "plan.t3Tag": "[FAMILY]",
+    "plan.t3Name": "Estate-ready",
+    "plan.t3Body":
+      "Legal-template overlay per jurisdiction, partner notary attestation, insurance-backed recovery, white-glove validator onboarding.",
+    "plan.t4Tag": "[ENTERPRISE]",
+    "plan.t4Name": "API + DAO",
+    "plan.t4Body":
+      "REST API, multisig integrations, treasury succession protocols, custom validator policies, white-label deploys.",
+    "plan.footnote":
+      "Pricing announced post-mainnet. Roadmap-driven, not page-driven — talk to us if your needs don't fit a tier.",
     "inh.bannerAliveCaption": "Your vault, sealed — heartbeat keeping it shut",
     "inh.bannerExpiredCaption":
       "Recovery is open — M of N validators can now act",
@@ -1007,6 +1031,31 @@ const dict = {
     "act.warningEnableLabel": "Envíame un email de aviso antes de expirar",
     "act.warningEnableHint":
       "El recordatorio llega a tu inbox X días antes de que el heartbeat expire. Aún puedes firmar y resetear.",
+
+    // ─── Planes / niveles (sin precios — solo comunicar que hay tiers) ───
+    "plan.eyebrow":
+      "Construido para escalar con tus requerimientos de confianza",
+    "plan.title": "Cuatro niveles de personalización.",
+    "plan.lede":
+      "Desde una bóveda self-service hasta planificación sucesoria white-glove con seguro. Veil se adapta a donde están tus apuestas.",
+    "plan.t1Tag": "[STARTER]",
+    "plan.t1Name": "Self-service",
+    "plan.t1Body":
+      "Una bóveda, hasta 3 validadores, recuperación Shamir + heartbeat. Sin custodia para siempre.",
+    "plan.t2Tag": "[PRO]",
+    "plan.t2Name": "Programable",
+    "plan.t2Body":
+      "Bóvedas ilimitadas, schedules multi-trigger, entrega email/SMS, documentos vía IPFS, quórums multi-validador.",
+    "plan.t3Tag": "[FAMILY]",
+    "plan.t3Name": "Estate-ready",
+    "plan.t3Body":
+      "Plantillas legales por jurisdicción, certificación notarial partner, recuperación con seguro respaldo, onboarding white-glove de validadores.",
+    "plan.t4Tag": "[ENTERPRISE]",
+    "plan.t4Name": "API + DAO",
+    "plan.t4Body":
+      "REST API, integraciones multisig, protocolos de sucesión de treasury, políticas custom de validadores, deploys white-label.",
+    "plan.footnote":
+      "Precios anunciados post-mainnet. Roadmap-driven, no page-driven — habla con nosotros si tus necesidades no encajan en un tier.",
     "inh.bannerAliveCaption":
       "Tu bóveda, sellada — el heartbeat la mantiene cerrada",
     "inh.bannerExpiredCaption":

@@ -27,6 +27,7 @@ export default function Home() {
         <CapsulesSection t={t} />
         <InheritanceSection t={t} />
         <UseCasesSection t={t} />
+        <PlansSection t={t} />
         <LaunchAppBanner t={t} />
         <WhyArkivSection t={t} />
         <TrustSection t={t} />
@@ -362,6 +363,79 @@ function UseCasesSection({ t }: { t: TFn }) {
           );
         })}
       </div>
+    </Section>
+  );
+}
+
+// ─── PLANS — tier teaser, no prices (yet). Communicates "this is a product, not a demo".
+
+function PlansSection({ t }: { t: TFn }) {
+  const tiers = [
+    {
+      tag: t("plan.t1Tag"),
+      name: t("plan.t1Name"),
+      body: t("plan.t1Body"),
+    },
+    {
+      tag: t("plan.t2Tag"),
+      name: t("plan.t2Name"),
+      body: t("plan.t2Body"),
+    },
+    {
+      tag: t("plan.t3Tag"),
+      name: t("plan.t3Name"),
+      body: t("plan.t3Body"),
+    },
+    {
+      tag: t("plan.t4Tag"),
+      name: t("plan.t4Name"),
+      body: t("plan.t4Body"),
+    },
+  ];
+
+  return (
+    <Section tag="[§02D — TIERS]">
+      <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+        {t("plan.eyebrow")}
+      </p>
+      <h2 className="mt-2 text-3xl uppercase tracking-tighter md:text-5xl lg:text-6xl">
+        {t("plan.title")}
+      </h2>
+      <p className="mt-4 max-w-3xl text-sm leading-snug text-gray-700 text-justify md:text-base">
+        {t("plan.lede")}
+      </p>
+
+      <div className="mt-8 grid grid-cols-1 gap-0 border-2 border-black md:grid-cols-2 lg:grid-cols-4">
+        {tiers.map((tier, i) => {
+          const borderClass = `${
+            // md (2-col): items 1+3 get left border; rows break at 2,4
+            i % 2 === 1 ? "md:border-l-2 md:border-black" : ""
+          } ${i >= 2 ? "border-t-2 border-black md:border-t-2" : ""} ${
+            // lg (4-col): each item after first gets left border, no top border
+            i > 0 ? "lg:border-l-2 lg:border-black lg:border-t-0" : ""
+          }`;
+          return (
+            <article
+              key={tier.tag}
+              className={`flex flex-col gap-3 p-5 transition-colors hover:bg-[#00e676]/10 ${borderClass}`}
+            >
+              <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+                {tier.tag}
+              </div>
+              <h3 className="font-mono text-lg font-bold uppercase tracking-tight md:text-xl">
+                {tier.name}
+              </h3>
+              <p className="text-xs leading-snug text-gray-700 lowercase text-justify md:text-sm">
+                {tier.body}
+              </p>
+            </article>
+          );
+        })}
+      </div>
+
+      <p className="mt-4 font-mono text-[10px] uppercase tracking-widest text-gray-500">
+        ↳ {t("plan.footnote")}
+      </p>
     </Section>
   );
 }
