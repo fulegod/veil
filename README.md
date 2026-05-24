@@ -1,7 +1,12 @@
 # Veil
 
-**Trustless time capsules for the on-chain era.**
-Seal your alpha today. Cryptographic proof you called it first.
+**Programmable trust, powered by proof of life.**
+Schedule what happens when you stop signing — secrets that release themselves,
+documents that deliver themselves, wallets that transfer themselves.
+
+> _$140B+ in crypto is lost forever to dead wallets._
+> _(Chainalysis: ~20% of all BTC permanently lost. At current prices, ~$140B.)_
+> _Yours doesn't have to be next._
 
 |                          |                                                                                                                                                                                                                                                                  |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -19,13 +24,25 @@ Crypto Twitter is full of deleted tweets, edited screenshots and "I told you so"
 
 ## What Veil does
 
-Veil ships **two products on the same primitive**:
+Veil ships **two products and a programmable trigger layer** on the same primitive:
 
 1. **Capsules** — seal a message today that nobody can read until the date you choose. At unlock time the message becomes public; the author and the original timestamp are anchored on-chain and cannot be edited. The use case: _verifiable alpha_ — make a crypto call publicly, prove later that you called it first, with nothing to delete or screenshot-edit.
 
-2. **Inheritance Vaults** — a **cryptographic dead-man's switch**. Seal a secret today (seed phrase, key, document) that becomes recoverable by **M of N validators** if you stop signing a "heartbeat" transaction for a chosen period (3m / 6m / 1y). No custody, no platform. The use case: _digital estate planning_ — your cold-storage doesn't die with you, but it also can't be stolen by any single party.
+2. **Inheritance Vaults** — a **cryptographic dead-man's switch**. Seal a secret today (seed phrase, key, document) that becomes recoverable by **M of N validators** if you stop signing a "heartbeat" transaction for a chosen period (3m / 6m / 1y). No custody, no platform.
 
-Both are instances of the same primitive: **commitment-without-disclosure with verifiable lifecycle**. The first picks "time" as the unlock trigger; the second picks "absence of life-signal" and adds Shamir threshold sharing on top.
+3. **Programmable triggers** — every Vault can carry multiple **Action entities**, each describing _what should happen at a specific moment in its lifecycle_. A single vault can deliver an email to your lawyer at expiry, transfer ETH to your heirs, drop an IPFS-pinned PDF to a list of journalists — all scheduled, all fired by a Vercel cron polling Arkiv hourly.
+
+Use cases the trigger layer unlocks beyond crypto recovery:
+
+|                          | Trigger                | Outcome                                    |
+| ------------------------ | ---------------------- | ------------------------------------------ |
+| **Digital will**         | 18 months silent       | email to family + IPFS docs + ETH transfer |
+| **Whistleblower switch** | 7 days no check-in     | PDF evidence emailed to 3 journalists      |
+| **Anti-coercion wallet** | 24h no heartbeat       | auto-drain to a foundation, not the captor |
+| **Equity vesting**       | leaving the cap table  | equity transfers back to treasury          |
+| **Time-locked evidence** | statute-of-limitations | prosecutor email + public IPFS pin         |
+
+The framing: **programmable trust**. Capsules pick "time" as the trigger; Inheritance picks "absence of life-signal"; Action entities make the second category generic — any condition, any recipient, any payload.
 
 ## How it works
 
@@ -105,11 +122,14 @@ ethns-builder/
 │   │   │   ├── arkiv.ts          ← typed wrappers, PROJECT_ATTRIBUTE enforced
 │   │   │   ├── tlock.ts          ← encrypt / decrypt / drand client
 │   │   │   ├── inheritance.ts    ← Shamir SSS + heartbeat presets
+│   │   │   ├── email.ts          ← Resend SDK wrapper + console.log fallback
 │   │   │   ├── wagmi.ts          ← chains + connectors
-│   │   │   ├── config.ts         ← PROJECT_ATTRIBUTE + entity kinds + explorer URLs
+│   │   │   ├── config.ts         ← PROJECT_ATTRIBUTE + entity kinds + ACTION_TYPE
 │   │   │   └── i18n.ts           ← typed EN/ES dictionary
+│   │   ├── app/api/cron/check-vaults/route.ts  ← Vercel cron — fires Actions hourly
 │   │   ├── components/           ← Header, LanguageToggle, VeilAvatar, …
 │   │   └── hooks/useArkivClients.ts ← wagmi → Arkiv wallet client bridge
+│   ├── vercel.json               ← cron schedule + framework config
 │   └── public/error-silencer.js  ← runs beforeInteractive
 ├── smoke/                         ← standalone validation scripts (Bun)
 │   └── src/{wallet,arkiv,tlock,combined}.ts
@@ -122,16 +142,17 @@ ethns-builder/
 
 The full write-up with code snippets is in [`PATTERNS.md`](./PATTERNS.md). Briefly:
 
-| #   | Pattern                                                                                                    | Where in code                                         |
-| --- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| 1   | **`PROJECT_ATTRIBUTE` on every create AND every query** — non-negotiable on a shared public DB             | `lib/config.ts` + every helper in `lib/arkiv.ts`      |
-| 2   | **`$creator` (immutable) vs `$owner` (mutable)** — used distinctly so capsule sale doesn't erase author    | `Capsule.$creator` ≠ `Reveal.$creator`                |
-| 3   | **Differentiated `expiresIn` per entity kind** — Capsule 1y, Reveal 90d, Vault = heartbeat, Share ~10y     | `lib/arkiv.ts` per-helper `expiresIn`                 |
-| 4   | **Relationships via shared-attribute keys** — `Reveal.capsule_key`, `Share.vault_key`, no foreign keys     | `findFirstRevealForCapsule()` + `getSharesForVault()` |
-| 5   | **Timelock encryption on top of Arkiv** — drand round number stored as queryable numeric attribute         | `lib/tlock.ts` + `unlock_round` attribute             |
-| 6   | **`extendEntity` as a living "heartbeat"** — only `$owner` can call; absence of call = entity expires      | `extendVault()` + `/inheritance/[key]` button         |
-| 7   | **Multi-kind composition** — 4 entity kinds (Capsule / Reveal / Vault / Share) wired by indexed attributes | `ENTITY_KIND` in `config.ts`                          |
-| 8   | **Cryptographic threshold on top** — Shamir M-of-N split across Share entities, recoverable only by quorum | `lib/inheritance.ts` + `/inheritance/[key]/recover`   |
+| #   | Pattern                                                                                                                                                                                     | Where in code                                         |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| 1   | **`PROJECT_ATTRIBUTE` on every create AND every query** — non-negotiable on a shared public DB                                                                                              | `lib/config.ts` + every helper in `lib/arkiv.ts`      |
+| 2   | **`$creator` (immutable) vs `$owner` (mutable)** — used distinctly so capsule sale doesn't erase author                                                                                     | `Capsule.$creator` ≠ `Reveal.$creator`                |
+| 3   | **Differentiated `expiresIn` per entity kind** — Capsule 1y, Reveal 90d, Vault = heartbeat, Share ~10y                                                                                      | `lib/arkiv.ts` per-helper `expiresIn`                 |
+| 4   | **Relationships via shared-attribute keys** — `Reveal.capsule_key`, `Share.vault_key`, no foreign keys                                                                                      | `findFirstRevealForCapsule()` + `getSharesForVault()` |
+| 5   | **Timelock encryption on top of Arkiv** — drand round number stored as queryable numeric attribute                                                                                          | `lib/tlock.ts` + `unlock_round` attribute             |
+| 6   | **`extendEntity` as a living "heartbeat"** — only `$owner` can call; absence of call = entity expires                                                                                       | `extendVault()` + `/inheritance/[key]` button         |
+| 7   | **Multi-kind composition** — 5 entity kinds (Capsule / Reveal / Vault / Share / Action) wired by indexed attributes                                                                         | `ENTITY_KIND` in `config.ts`                          |
+| 8   | **Cryptographic threshold on top** — Shamir M-of-N split across Share entities, recoverable only by quorum                                                                                  | `lib/inheritance.ts` + `/inheritance/[key]/recover`   |
+| 9   | **Off-chain action dispatcher driven by on-chain state** — Action entities scheduled in Arkiv, fired by a Vercel cron polling hourly; `notified_at` numeric attribute as idempotency anchor | `Action` entity + `/api/cron/check-vaults/route.ts`   |
 
 ## End-to-end evidence on Braga
 
@@ -217,6 +238,39 @@ Note the `--bun` flag. Without it, Next.js runs under whatever Node is in PATH; 
 - **i18n is custom, not a library.** Two languages, four pages, no URL routing needed. ~80 lines beats pulling in `next-intl` for the scope. ([`web/src/lib/i18n.ts`](./web/src/lib/i18n.ts))
 - **Decrypt is scheduled with `setTimeout`, not gated on a per-second ticker.** A naive `useEffect` with `now` in deps cancels the in-flight decrypt promise every tick. ([`web/src/app/capsule/[entityKey]/page.tsx`](./web/src/app/capsule/%5BentityKey%5D/page.tsx))
 - **Decrypted plaintext is read via `TextDecoder`, not `Buffer.from(uint8array).toString("utf-8")`.** The browser's `Buffer` shim can silently return an empty string. TextDecoder is browser-native and deterministic. ([`web/src/lib/tlock.ts`](./web/src/lib/tlock.ts))
+
+## Roadmap
+
+Shipped in this build (live on Braga today):
+
+- ✅ Capsule entity + drand timelock encryption + public reveal entity
+- ✅ Vault entity + Shamir M-of-N + heartbeat via `extendEntity`
+- ✅ Action entity + Vercel cron polling hourly + Resend email layer
+  (works in `[simulated]` mode without API key, runs end-to-end on Braga)
+- ✅ E2E smoke test verified on Braga with 6 tx hashes
+
+Q2 2026 (next sprint):
+
+- ⏳ **UI for multi-trigger Action authoring** — currently the `Action` entity
+  exists and the cron fires it, but the `/inheritance/new` form only writes
+  Shamir-recovery actions. Tabs for email / transfer / doc-drop are designed
+  (see `TriggerTypes` component) but not yet wired to `createAction`.
+- ⏳ **Wallet transfer trigger** — fire an `eth_sendTransaction` from a
+  service-wallet escrow when the action's `trigger_at` lapses. Requires an
+  ownership-transfer pattern on the Action entity at create time.
+- ⏳ **Document drop trigger** — upload to IPFS at vault-creation time, store
+  CID in the action payload, release link on expiry.
+- ⏳ **Per-share ECIES encryption** — currently Shamir shares sit in Arkiv as
+  public payloads, threshold-secure via Shamir alone. v2 encrypts each share
+  against the validator's recovered pubkey so reading a share requires the
+  validator's signature.
+
+Tiers (`§02D` on the home) shown as roadmap commitments, not shipped today:
+
+- **Starter** — free, self-served, 1 vault. (Today.)
+- **Pro** — multi-trigger, multi-recipient. (Today, gated post-mainnet.)
+- **Family** — legal templates + notary partner + insurance overlay.
+- **Enterprise** — REST API, multisig integrations, white-label.
 
 ## License
 

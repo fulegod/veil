@@ -171,16 +171,17 @@ export async function extendVault(walletClient, vaultKey, additionalSeconds) {
 
 ---
 
-## Pattern 7 — Multi-kind composition (4 entity kinds, one schema)
+## Pattern 7 — Multi-kind composition (5 entity kinds, one schema)
 
-Veil ships **four entity kinds** in the same Arkiv project, all namespaced by `app: "veil"`:
+Veil ships **five entity kinds** in the same Arkiv project, all namespaced by `app: "veil"`:
 
-| Kind      | Purpose                                  | Lifetime            | Linked via                          |
-| --------- | ---------------------------------------- | ------------------- | ----------------------------------- |
-| `capsule` | Time-locked message                      | 1y post-unlock      | `entityKey`                         |
-| `reveal`  | "Was decrypted first by this wallet at…" | 90 days post-create | `capsule_key` → `Capsule.entityKey` |
-| `vault`   | Inheritance container, drand-locked      | = heartbeat         | `entityKey`                         |
-| `share`   | One Shamir share per validator           | ~10 years           | `vault_key` → `Vault.entityKey`     |
+| Kind      | Purpose                                         | Lifetime            | Linked via                          |
+| --------- | ----------------------------------------------- | ------------------- | ----------------------------------- |
+| `capsule` | Time-locked message                             | 1y post-unlock      | `entityKey`                         |
+| `reveal`  | "Was decrypted first by this wallet at…"        | 90 days post-create | `capsule_key` → `Capsule.entityKey` |
+| `vault`   | Inheritance container, drand-locked             | = heartbeat         | `entityKey`                         |
+| `share`   | One Shamir share per validator                  | ~10 years           | `vault_key` → `Vault.entityKey`     |
+| `action`  | Scheduled trigger (email / transfer / doc-drop) | 2 years             | `vault_key` → `Vault.entityKey`     |
 
 Each helper in `lib/arkiv.ts` stamps `PROJECT_ATTRIBUTE` + a `kind` discriminator, and every query filters by both:
 
@@ -230,6 +231,56 @@ for (let i = 0; i < total; i++) {
 **Why on Arkiv specifically:** the N share entities are each independently indexed by `validator_address` (string attr) and `vault_key` (shared-attribute relationship). A validator can query "all vaults where I'm named" in a single range query. No central registry, no off-chain "who's a validator of what" service. The graph lives in the indexes.
 
 **Threat model note (MVP):** shares are stored in plaintext-as-payload. The cryptographic threshold comes from Shamir + drand, not from per-share encryption. v2 would ECIES-encrypt each share against the validator's recovered pubkey, so even reading a share requires the validator's wallet signature.
+
+---
+
+## Pattern 9 — Off-chain action dispatcher driven by on-chain state
+
+This is what makes Veil "programmable trust" instead of just "another encryption demo". The protocol carries **declarative actions** that fire when their on-chain state matches a condition.
+
+**The mechanic:**
+
+1. User creates a Vault on Arkiv with their heartbeat schedule
+2. User creates N **Action entities** linked to the Vault via `vault_key`. Each Action declares:
+
+   ```
+   action_type:    "email_warning" | "email_delivery" | "transfer" | "doc_drop"
+   trigger_at:     numeric ms-epoch when this should fire
+   destination:    string — email / wallet / IPFS CID
+   notified_at:    numeric, 0 = pending (idempotency anchor)
+   payload:        JSON { message, destination, ... }
+   ```
+
+3. A serverless cron (Vercel Cron at `/api/cron/check-vaults`, hourly schedule in `vercel.json`) polls Arkiv for pending actions:
+
+   ```ts
+   const result = await publicClient
+     .buildQuery()
+     .where(
+       and([
+         eq(PROJECT_ATTRIBUTE.key, PROJECT_ATTRIBUTE.value),
+         eq("kind", ENTITY_KIND.ACTION),
+       ]),
+     )
+     .withAttributes()
+     .withMetadata()
+     .withPayload()
+     .limit(200)
+     .fetch();
+
+   // Client-side filter: Arkiv query API has no "not equals" predicate
+   const pending = result.entities.filter(
+     (a) => a.notifiedAt === 0 && a.triggerAt <= now,
+   );
+   ```
+
+4. For each pending action it dispatches the side effect (Resend email today; ETH transfer + IPFS drop on the v2 roadmap), then would mark `notified_at` to avoid re-firing.
+
+**Why this matters:** the canonical pattern for "do something off-chain when a condition becomes true on-chain" is usually a centralized DB queue. Veil keeps the schedule **on Arkiv** — anyone can audit what fires when, the `$creator` of each Action is anchored as the original scheduler, and the action survives even if Veil's cron disappears (any third party could run the same cron against the same Arkiv data and get identical results).
+
+**Idempotency (MVP tradeoff):** we use a 65-minute window filter on `trigger_at` instead of mutating `notified_at` after each send. This avoids needing a service-wallet owner-of-record for Actions (which would require an extra ownership-transfer tx at create time). Tradeoff: if the cron misses a window the email is missed, not retried. Production would either (a) transfer Action ownership to a service wallet at create, or (b) add a KV-backed idempotency layer separate from Arkiv. Both are tracked on the roadmap.
+
+**Email provider fallback:** `lib/email.ts` checks for `RESEND_API_KEY`. If missing, it logs `[email:simulated]` to stdout instead of failing. Lets the cron run end-to-end on a fresh deploy without provider config — the on-chain side works regardless.
 
 ---
 
