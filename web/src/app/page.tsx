@@ -26,6 +26,7 @@ export default function Home() {
         <HeroSection isConnected={isConnected} address={address} t={t} />
         <CapsulesSection t={t} />
         <InheritanceSection t={t} />
+        <UseCasesSection t={t} />
         <LaunchAppBanner t={t} />
         <WhyArkivSection t={t} />
         <TrustSection t={t} />
@@ -272,6 +273,90 @@ function isConnectedCapsulesCta(t: TFn) {
     >
       [{t("home.heroCtaPrimary").toUpperCase()}]
     </Link>
+  );
+}
+
+// ─── USE CASES — six concrete scenarios that show the product's range ──────
+
+function UseCasesSection({ t }: { t: TFn }) {
+  const cases = [
+    {
+      tag: t("uc.case01Tag"),
+      title: t("uc.case01Title"),
+      body: t("uc.case01Body"),
+    },
+    {
+      tag: t("uc.case02Tag"),
+      title: t("uc.case02Title"),
+      body: t("uc.case02Body"),
+    },
+    {
+      tag: t("uc.case03Tag"),
+      title: t("uc.case03Title"),
+      body: t("uc.case03Body"),
+    },
+    {
+      tag: t("uc.case04Tag"),
+      title: t("uc.case04Title"),
+      body: t("uc.case04Body"),
+    },
+    {
+      tag: t("uc.case05Tag"),
+      title: t("uc.case05Title"),
+      body: t("uc.case05Body"),
+    },
+    {
+      tag: t("uc.case06Tag"),
+      title: t("uc.case06Title"),
+      body: t("uc.case06Body"),
+    },
+  ];
+
+  return (
+    <Section tag="[§02C — USE CASES]">
+      <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+        {t("uc.eyebrow")}
+      </p>
+      <h2 className="mt-2 text-3xl uppercase tracking-tighter md:text-5xl lg:text-6xl">
+        {t("uc.title")}
+      </h2>
+      <p className="mt-4 max-w-3xl text-sm leading-snug text-gray-700 text-justify md:text-base">
+        {t("uc.lede")}
+      </p>
+
+      <div className="mt-8 grid grid-cols-1 gap-0 border-2 border-black md:grid-cols-2 lg:grid-cols-3">
+        {cases.map((c, i) => {
+          const borderClass = `${
+            // row 1 (i=0,1,2)
+            i >= 1 ? "border-t-2 border-black md:border-l-2 md:border-t-0" : ""
+          } ${
+            // lg: when 3 columns, items 4,5,6 are second row — add top border
+            i >= 3 ? "lg:border-t-2 lg:border-black" : ""
+          } ${
+            // md: 2 columns, items 2,3,4,5 need correct row breaks
+            i >= 2 ? "md:border-t-2 md:border-black md:border-l-0" : ""
+          } ${i % 2 === 1 ? "md:border-l-2 md:border-black" : ""} ${
+            i % 3 === 0 ? "lg:border-l-0" : "lg:border-l-2 lg:border-black"
+          }`;
+          return (
+            <article
+              key={c.tag}
+              className={`flex flex-col gap-3 p-5 transition-colors hover:bg-[#00e676]/10 ${borderClass}`}
+            >
+              <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+                {c.tag}
+              </div>
+              <h3 className="text-base font-bold uppercase tracking-tight md:text-lg">
+                {c.title}
+              </h3>
+              <p className="text-xs leading-snug text-gray-700 lowercase text-justify md:text-sm">
+                {c.body}
+              </p>
+            </article>
+          );
+        })}
+      </div>
+    </Section>
   );
 }
 
@@ -558,9 +643,9 @@ function ExampleSection({ t }: { t: TFn }) {
   );
 }
 
-// ─── USE CASES ──────────────────────────────────────────────────────────────
+// ─── ORPHAN — old 4-card use cases section, replaced by new 6-card above ──
 
-function UseCasesSection({ t }: { t: TFn }) {
+function _UnusedOldUseCasesSection({ t }: { t: TFn }) {
   const cases = [
     {
       tag: "[ALPHA]",

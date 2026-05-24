@@ -88,11 +88,11 @@ const dict = {
     "diag.legendRecovery":
       "recovery = drand timelock + Shamir threshold (both must open)",
 
-    "home.heroEyebrow": "On-chain time-locked secrets",
-    "home.heroTitleA": "Seal it today.",
-    "home.heroTitleB": "Open it on time.",
+    "home.heroEyebrow": "Programmable trust on-chain",
+    "home.heroTitleA": "Some things must",
+    "home.heroTitleB": "execute themselves.",
     "home.heroSubtitle":
-      "Veil locks any message — a crypto call, a cold-storage seed, a will — until a future date you pick (or until your heartbeat goes silent and your validators recover it). Nobody can peek, nobody can stop the reveal, nobody can edit the timestamp. Cryptographic proof, custody-free.",
+      "Veil seals documents, transfers, and instructions on-chain — and executes them automatically when you stop proving you're alive. A will that delivers itself. A wallet that transfers itself. A secret that releases itself. Schedule the trigger, choose the recipient, sign your heartbeat every period — or stop, and the rest is automatic. Custody-free, platform-free, drand-and-Shamir-anchored.",
     "home.heroCtaPrimary": "Seal a call",
     "home.heroCtaSecondary": "See live capsules",
     "home.heroAttribution":
@@ -426,6 +426,66 @@ const dict = {
     "inh.viewSharesHint":
       "These wallets each received one Shamir share. When M of them coordinate, the secret can be reconstructed. The shares are stored on Arkiv but useless on their own.",
     "inh.bannerNewCaption": "What you're about to create",
+
+    // ─── Use cases section (6 cards — full product vision) ────────────────
+    "uc.eyebrow": "Six things Veil can execute on your behalf",
+    "uc.title": "Schedule what happens when you can't.",
+    "uc.lede":
+      "Every Vault can carry multiple triggers — emails, transfers, document drops — each with its own timer and recipient. As long as you sign your heartbeat, nothing fires. Stop signing, and the schedule runs itself.",
+    "uc.case01Tag": "[CASE.01 · WILL]",
+    "uc.case01Title": "Digital will",
+    "uc.case01Body":
+      "After 18 months of silence: email instructions to your family + release IPFS-hosted documents + transfer ETH to your heirs.",
+    "uc.case02Tag": "[CASE.02 · COLD-STORAGE]",
+    "uc.case02Title": "Cold-storage succession",
+    "uc.case02Body":
+      "Seed phrase split across 5 trusted wallets with 3-of-5 Shamir threshold. Heartbeat lapses → validators recover.",
+    "uc.case03Tag": "[CASE.03 · WHISTLEBLOWER]",
+    "uc.case03Title": "Whistleblower dead-switch",
+    "uc.case03Body":
+      "If you don't check in every 7 days: deliver the PDF evidence to 3 journalists via email. Drand round publishes, contents become readable.",
+    "uc.case04Tag": "[CASE.04 · ANTI-COERCION]",
+    "uc.case04Title": "Anti-coercion wallet",
+    "uc.case04Body":
+      "Daily heartbeat keeps your wallet under your control. Stop signing for 24h → automatic transfer to a foundation, not your captor.",
+    "uc.case05Tag": "[CASE.05 · EQUITY]",
+    "uc.case05Title": "Conditional equity vesting",
+    "uc.case05Body":
+      "Co-founder signed-once vesting: stop signing the heartbeat → equity transfers back to the company treasury. No lawyers needed.",
+    "uc.case06Tag": "[CASE.06 · LEGAL]",
+    "uc.case06Title": "Time-locked evidence",
+    "uc.case06Body":
+      "Sealed until the statute of limitations expires, then auto-published to the prosecutor's email + a public IPFS pin.",
+
+    // ─── Trigger types (tabs in /inheritance/new) ────────────────────────
+    "trigger.secretTitle": "Secret text",
+    "trigger.secretSub": "Phrase, key, or message — Shamir-split to validators",
+    "trigger.emailTitle": "Email delivery",
+    "trigger.emailSub":
+      "Send a message + body to one or more inboxes on expiry",
+    "trigger.transferTitle": "Wallet transfer",
+    "trigger.transferSub":
+      "Auto-send ETH / USDC to a destination address (roadmap Q2)",
+    "trigger.docTitle": "Document drop",
+    "trigger.docSub":
+      "Upload file → release IPFS link to recipients (roadmap Q2)",
+    "trigger.roadmapBadge": "ROADMAP",
+    "trigger.activeBadge": "LIVE",
+
+    // ─── New action form fields ──────────────────────────────────────────
+    "act.addCta": "+ Add another trigger",
+    "act.removeCta": "Remove",
+    "act.emailDestLabel": "Recipient email",
+    "act.emailDestPlaceholder": "heir@example.com",
+    "act.messageLabel": "Message to deliver",
+    "act.messagePlaceholder":
+      "Write what should be sent at the trigger moment — instructions, last words, a key, a URL…",
+    "act.timingLabel": "When to fire",
+    "act.timingOnExpiry": "On heartbeat expiry",
+    "act.timingDaysBefore": "{n} days before expiry (warning)",
+    "act.warningEnableLabel": "Send me a warning email before expiry",
+    "act.warningEnableHint":
+      "Reminder reaches your inbox X days before the heartbeat lapses. You can still sign and reset.",
     "inh.bannerAliveCaption": "Your vault, sealed — heartbeat keeping it shut",
     "inh.bannerExpiredCaption":
       "Recovery is open — M of N validators can now act",
@@ -539,11 +599,11 @@ const dict = {
       "recuperación = drand timelock + umbral Shamir (ambas deben abrir)",
 
     // ─── Home: Hero ─────────────────────────────────────────────────────
-    "home.heroEyebrow": "Secretos con candado temporal on-chain",
-    "home.heroTitleA": "Séllalo hoy.",
-    "home.heroTitleB": "Ábrelo a tiempo.",
+    "home.heroEyebrow": "Confianza programable on-chain",
+    "home.heroTitleA": "Algunas cosas deben",
+    "home.heroTitleB": "ejecutarse solas.",
     "home.heroSubtitle":
-      "Veil cifra cualquier mensaje — una call crypto, una seed de cold-storage, un testamento — hasta una fecha futura que elijas (o hasta que tu heartbeat se quede en silencio y tus validadores lo recuperen). Nadie puede leerlo, nadie detiene la revelación, nadie edita el timestamp. Prueba criptográfica, sin custodia.",
+      "Veil sella documentos, transferencias e instrucciones on-chain — y las ejecuta automáticamente cuando dejas de probar que estás vivo. Un testamento que se entrega solo. Una wallet que se transfiere sola. Un secreto que se libera solo. Programa el disparador, elige el destinatario, firma tu heartbeat cada periodo — o deja de firmar, y el resto es automático. Sin custodia, sin plataforma, anclado en drand + Shamir.",
     "home.heroCtaPrimary": "Sellar una call",
     "home.heroCtaSecondary": "Ver cápsulas en vivo",
     "home.heroAttribution":
@@ -880,6 +940,67 @@ const dict = {
     "inh.viewSharesHint":
       "Estas wallets recibieron cada una una share de Shamir. Cuando M de ellas se coordinan, el secreto se reconstruye. Las shares están guardadas en Arkiv pero por sí solas no sirven.",
     "inh.bannerNewCaption": "Lo que estás por crear",
+
+    // ─── Use cases section (6 cards — visión completa del producto) ──────
+    "uc.eyebrow": "Seis cosas que Veil puede ejecutar por ti",
+    "uc.title": "Programa qué pasa cuando no puedes.",
+    "uc.lede":
+      "Cada Bóveda puede cargar varios disparadores — emails, transferencias, entrega de documentos — cada uno con su propio timer y destinatario. Mientras firmes tu heartbeat, nada se ejecuta. Deja de firmar, y el calendario corre solo.",
+    "uc.case01Tag": "[CASO.01 · TESTAMENTO]",
+    "uc.case01Title": "Testamento digital",
+    "uc.case01Body":
+      "Tras 18 meses de silencio: envía instrucciones a tu familia por email + libera documentos hospedados en IPFS + transfiere ETH a tus herederos.",
+    "uc.case02Tag": "[CASO.02 · COLD-STORAGE]",
+    "uc.case02Title": "Sucesión de cold-storage",
+    "uc.case02Body":
+      "Seed phrase dividida en 5 wallets de confianza con umbral 3-de-5 Shamir. El heartbeat expira → los validadores recuperan.",
+    "uc.case03Tag": "[CASO.03 · WHISTLEBLOWER]",
+    "uc.case03Title": "Interruptor de muerte para denunciantes",
+    "uc.case03Body":
+      "Si no haces check-in cada 7 días: entrega el PDF de evidencia a 3 periodistas por email. Drand publica el round, el contenido se vuelve legible.",
+    "uc.case04Tag": "[CASO.04 · ANTI-COACCIÓN]",
+    "uc.case04Title": "Wallet anti-coacción",
+    "uc.case04Body":
+      "El heartbeat diario mantiene tu wallet bajo tu control. Si dejas de firmar 24h → transferencia automática a una fundación, no a tu secuestrador.",
+    "uc.case05Tag": "[CASO.05 · EQUITY]",
+    "uc.case05Title": "Vesting de equity condicional",
+    "uc.case05Body":
+      "Co-founder con vesting firmado: si dejas de firmar el heartbeat → el equity se devuelve al treasury de la empresa. Sin abogados.",
+    "uc.case06Tag": "[CASO.06 · LEGAL]",
+    "uc.case06Title": "Evidencia con candado temporal",
+    "uc.case06Body":
+      "Sellada hasta que el statute of limitations expira, después auto-publicada al email del fiscal + pin público en IPFS.",
+
+    // ─── Trigger types (tabs en /inheritance/new) ────────────────────────
+    "trigger.secretTitle": "Texto secreto",
+    "trigger.secretSub":
+      "Frase, llave o mensaje — dividido con Shamir entre validadores",
+    "trigger.emailTitle": "Entrega por email",
+    "trigger.emailSub":
+      "Envía un mensaje + cuerpo a uno o más inboxes al expirar",
+    "trigger.transferTitle": "Transferencia de wallet",
+    "trigger.transferSub":
+      "Auto-envío de ETH / USDC a una dirección destino (roadmap Q2)",
+    "trigger.docTitle": "Entrega de documento",
+    "trigger.docSub":
+      "Sube archivo → libera link IPFS a los destinatarios (roadmap Q2)",
+    "trigger.roadmapBadge": "ROADMAP",
+    "trigger.activeBadge": "LIVE",
+
+    // ─── New action form fields ──────────────────────────────────────────
+    "act.addCta": "+ Agregar otro disparador",
+    "act.removeCta": "Quitar",
+    "act.emailDestLabel": "Email del destinatario",
+    "act.emailDestPlaceholder": "heredero@ejemplo.com",
+    "act.messageLabel": "Mensaje a entregar",
+    "act.messagePlaceholder":
+      "Escribe lo que se debe enviar en el momento del disparo — instrucciones, últimas palabras, una clave, una URL…",
+    "act.timingLabel": "Cuándo se dispara",
+    "act.timingOnExpiry": "Al expirar el heartbeat",
+    "act.timingDaysBefore": "{n} días antes de expirar (aviso)",
+    "act.warningEnableLabel": "Envíame un email de aviso antes de expirar",
+    "act.warningEnableHint":
+      "El recordatorio llega a tu inbox X días antes de que el heartbeat expire. Aún puedes firmar y resetear.",
     "inh.bannerAliveCaption":
       "Tu bóveda, sellada — el heartbeat la mantiene cerrada",
     "inh.bannerExpiredCaption":
