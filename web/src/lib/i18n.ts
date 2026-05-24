@@ -88,7 +88,10 @@ const dict = {
     "diag.legendRecovery":
       "recovery = drand timelock + Shamir threshold (both must open)",
 
-    "home.heroEyebrow": "Programmable trust on-chain",
+    "home.heroEyebrow":
+      "$140B+ in crypto is lost forever to dead wallets. Yours doesn't have to be next.",
+    "home.heroEyebrowSource":
+      "Source: Chainalysis estimates ~20% of all BTC permanently lost. At current prices, ~$140B.",
     "home.heroTitleA": "Some things must",
     "home.heroTitleB": "execute themselves.",
     "home.heroSubtitle":
@@ -599,7 +602,10 @@ const dict = {
       "recuperación = drand timelock + umbral Shamir (ambas deben abrir)",
 
     // ─── Home: Hero ─────────────────────────────────────────────────────
-    "home.heroEyebrow": "Confianza programable on-chain",
+    "home.heroEyebrow":
+      "$140B+ en cripto perdidos para siempre en wallets muertas. La tuya no tiene por qué ser la próxima.",
+    "home.heroEyebrowSource":
+      "Fuente: Chainalysis estima que ~20% de todo BTC está permanentemente perdido. A precios actuales, ~$140B.",
     "home.heroTitleA": "Algunas cosas deben",
     "home.heroTitleB": "ejecutarse solas.",
     "home.heroSubtitle":

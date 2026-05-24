@@ -52,10 +52,16 @@ function HeroSection({
       <div className="grid grid-cols-12 gap-6">
         {/* Left column — copy + CTAs */}
         <div className="col-span-12 md:col-span-7">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
-            {t("home.heroEyebrow")}
-          </p>
-          <h1 className="mt-3 text-5xl font-bold uppercase tracking-tighter md:text-7xl lg:text-8xl">
+          {/* Data-driven eyebrow — lead with the pain, not the feature */}
+          <div className="border-l-4 border-[#00e676] bg-[#00e676]/10 px-4 py-3">
+            <p className="font-mono text-sm font-bold uppercase leading-tight tracking-tight text-black md:text-base">
+              {t("home.heroEyebrow")}
+            </p>
+            <p className="mt-1 font-mono text-[10px] leading-snug text-gray-600">
+              {t("home.heroEyebrowSource")}
+            </p>
+          </div>
+          <h1 className="mt-6 text-5xl font-bold uppercase tracking-tighter md:text-7xl lg:text-8xl">
             <span className="block leading-[1] pb-2">
               {t("home.heroTitleA")}
             </span>
