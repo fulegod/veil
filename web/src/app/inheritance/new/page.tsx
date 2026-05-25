@@ -655,7 +655,7 @@ export default function NewInheritancePage() {
                           className="sr-only"
                           disabled={busy}
                         />
-                        {HEARTBEAT_PRESETS[k].label}
+                        {t(`preset.heartbeat.${k}` as never)}
                       </label>
                     ),
                   )}

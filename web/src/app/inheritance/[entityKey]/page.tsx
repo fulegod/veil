@@ -299,7 +299,7 @@ export default function VaultViewPage({
                           : "bg-white text-black hover:bg-gray-100"
                       }`}
                     >
-                      +{HEARTBEAT_PRESETS[k].label}
+                      +{t(`preset.heartbeat.${k}` as never)}
                     </button>
                   ),
                 )}

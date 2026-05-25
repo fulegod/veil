@@ -642,6 +642,9 @@ const dict = {
 
     // /case-files outcome
     "cf.outcome": "OUTCOME",
+    "preset.heartbeat.3m": "3 months",
+    "preset.heartbeat.6m": "6 months",
+    "preset.heartbeat.1y": "1 year",
   },
   es: {
     // ─── Common ─────────────────────────────────────────────────────────
@@ -1284,6 +1287,9 @@ const dict = {
 
     // /case-files outcome
     "cf.outcome": "RESULTADO",
+    "preset.heartbeat.3m": "3 meses",
+    "preset.heartbeat.6m": "6 meses",
+    "preset.heartbeat.1y": "1 año",
   },
 } as const satisfies Record<Lang, Record<string, string>>;
 
