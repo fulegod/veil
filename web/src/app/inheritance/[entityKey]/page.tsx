@@ -19,10 +19,13 @@ import { useArkivClients } from "@/hooks/useArkivClients";
 import {
   getVault,
   getSharesForVault,
+  getActionsForVault,
   extendVault,
   type VaultEntity,
   type ShareEntity,
+  type ActionEntity,
 } from "@/lib/arkiv";
+import { ACTION_TYPE } from "@/lib/config";
 import {
   formatHeartbeatCountdown,
   HEARTBEAT_PRESETS,
@@ -43,6 +46,7 @@ export default function VaultViewPage({
 
   const [vault, setVault] = useState<VaultEntity | null>(null);
   const [shares, setShares] = useState<ShareEntity[]>([]);
+  const [actions, setActions] = useState<ActionEntity[]>([]);
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(Date.now());
   const [extendBusy, setExtendBusy] = useState(false);
@@ -62,13 +66,15 @@ export default function VaultViewPage({
     (async () => {
       setLoading(true);
       try {
-        const [v, s] = await Promise.all([
+        const [v, s, a] = await Promise.all([
           getVault(entityKey),
           getSharesForVault(entityKey),
+          getActionsForVault(entityKey),
         ]);
         if (!cancelled) {
           setVault(v);
           setShares(s);
+          setActions(a);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -89,6 +95,30 @@ export default function VaultViewPage({
     );
 
   const expired = !!vault && vault.heartbeatAt > 0 && vault.heartbeatAt <= now;
+
+  function actionLabel(actionType: string): string {
+    switch (actionType) {
+      case ACTION_TYPE.EMAIL_WARNING:
+        return t("inh.viewActionWarning");
+      case ACTION_TYPE.EMAIL_DELIVERY:
+        return t("inh.viewActionDelivery");
+      case ACTION_TYPE.TRANSFER:
+        return t("inh.viewActionTransfer");
+      case ACTION_TYPE.DOC_DROP:
+        return t("inh.viewActionDocDrop");
+      default:
+        return actionType;
+    }
+  }
+
+  function formatTriggerAt(ms: number): string {
+    if (!ms) return "—";
+    try {
+      return new Date(ms).toISOString().replace("T", " ").slice(0, 16) + " UTC";
+    } catch {
+      return String(ms);
+    }
+  }
 
   async function handleExtend() {
     if (!arkivWallet || !vault) return;
@@ -333,6 +363,82 @@ export default function VaultViewPage({
                 </li>
               ))}
             </ul>
+          </div>
+
+          {/* Scheduled Actions — off-chain dispatchers attached to this vault */}
+          <div className="mt-10">
+            <h2 className="font-mono text-sm font-bold uppercase tracking-widest">
+              <span className="bg-[#00e676] px-2 py-0.5 text-black">
+                {t("inh.viewActionsHeader")}
+              </span>
+            </h2>
+            <p className="mt-2 max-w-2xl text-xs leading-snug text-gray-600 lowercase text-justify md:text-sm">
+              {t("inh.viewActionsHint")}
+            </p>
+            {actions.length === 0 ? (
+              <p className="mt-3 border-2 border-dashed border-black bg-white p-3 font-mono text-[10px] uppercase tracking-widest text-gray-500">
+                {t("inh.viewActionsEmpty")}
+              </p>
+            ) : (
+              <ul className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-2">
+                {actions
+                  .slice()
+                  .sort((a, b) => a.triggerAt - b.triggerAt)
+                  .map((a) => {
+                    const fired = a.notifiedAt > 0;
+                    return (
+                      <li
+                        key={a.entityKey}
+                        className="border-2 border-black bg-white p-3"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                            {actionLabel(a.actionType)}
+                          </p>
+                          <span
+                            className={`border-2 border-black px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest ${
+                              fired
+                                ? "bg-black text-[#00e676]"
+                                : "bg-[#00e676] text-black"
+                            }`}
+                          >
+                            {fired
+                              ? t("inh.viewActionStatusFired")
+                              : t("inh.viewActionStatusPending")}
+                          </span>
+                        </div>
+                        <div className="mt-2 grid grid-cols-[80px_1fr] gap-1 font-mono text-[11px]">
+                          <span className="text-gray-500 uppercase tracking-widest text-[10px]">
+                            {t("inh.viewActionFires")}
+                          </span>
+                          <span className="text-black">
+                            {formatTriggerAt(a.triggerAt)}
+                          </span>
+                          <span className="text-gray-500 uppercase tracking-widest text-[10px]">
+                            {t("inh.viewActionDest")}
+                          </span>
+                          <span className="break-all text-black">
+                            {a.destination}
+                          </span>
+                        </div>
+                        {a.message && (
+                          <p className="mt-2 border-l-2 border-[#00e676] bg-gray-50 p-2 text-[11px] leading-snug text-black">
+                            “{a.message}”
+                          </p>
+                        )}
+                        <a
+                          href={explorerEntityUrl(a.entityKey)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-2 inline-block font-mono text-[10px] uppercase tracking-widest text-gray-500 underline hover:text-black"
+                        >
+                          {a.entityKey.slice(0, 10)}… → braga
+                        </a>
+                      </li>
+                    );
+                  })}
+              </ul>
+            )}
           </div>
         </section>
       </div>
