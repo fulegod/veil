@@ -31,8 +31,11 @@ const dict = {
     "cf.pageTitle": "Case files.",
     "cf.pageLede":
       "The circuit diagrams on the home explain the protocols. These pages show what the protocols feel like in practice. Two case files: one for Capsules (a crypto analyst who stopped editing their record), one for the Inheritance protocol (three pictures of a cryptographic dead-man's switch).",
+    "cf.tag00": "§00 — CASE FILES",
+    "home.case03Tag": "§03 — CASE FILE",
     "cf.section1Tag": "[§01 — VERIFIABLE ALPHA]",
     "cf.section2Tag": "[§02 — INHERITANCE PROTOCOL VISUALIZED]",
+    "cf.k31Caption": "K-31, 03:47 local time. Singapore.",
     "cf.section2Eyebrow": "Protocol illustrated",
     "cf.section2Title": "Three pictures of a cryptographic dead-man's switch.",
     "cf.section2Lede":
@@ -705,8 +708,11 @@ const dict = {
     "cf.pageTitle": "Casos.",
     "cf.pageLede":
       "Los diagramas de circuito en la home explican los protocolos. Estas páginas muestran cómo se sienten los protocolos en la práctica. Dos casos: uno para Cápsulas (una analista crypto que dejó de editar su historial), uno para el protocolo de Herencia (tres imágenes de un interruptor de muerte criptográfico).",
-    "cf.section1Tag": "[§01 — VERIFIABLE ALPHA]",
+    "cf.tag00": "§00 — CASOS",
+    "home.case03Tag": "§03 — CASO",
+    "cf.section1Tag": "[§01 — ALPHA VERIFICABLE]",
     "cf.section2Tag": "[§02 — PROTOCOLO DE HERENCIA VISUALIZADO]",
+    "cf.k31Caption": "K-31, 03:47 hora local. Singapur.",
     "cf.section2Eyebrow": "Protocolo ilustrado",
     "cf.section2Title":
       "Tres imágenes de un interruptor de muerte criptográfico.",

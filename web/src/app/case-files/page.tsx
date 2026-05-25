@@ -26,7 +26,7 @@ export default function CaseFilesPage() {
         {/* Page header */}
         <section className="border-2 border-black bg-white p-6 md:p-10 relative">
           <div className="absolute top-0 left-0 bg-black text-white px-2 py-1 text-[10px] uppercase font-bold tracking-widest">
-            [§00 — CASE FILES]
+            [{t("cf.tag00")}]
           </div>
           <div className="mt-6">
             <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
@@ -80,7 +80,7 @@ function K31CaseFile() {
             />
           </div>
           <figcaption className="mt-2 font-mono text-[10px] uppercase tracking-widest text-gray-500">
-            ↳ K-31, 03:47 local time. Singapore.
+            ↳ {t("cf.k31Caption")}
           </figcaption>
         </figure>
 
@@ -110,7 +110,7 @@ function K31CaseFile() {
       <div className="mt-8 grid grid-cols-12 gap-0 border-2 border-black">
         <div className="col-span-12 bg-black p-6 text-white md:col-span-7 md:p-8">
           <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
-            [OUTCOME]
+            [{t("cf.outcome")}]
           </p>
           <h3 className="mt-2 text-2xl uppercase leading-[1.1] tracking-tighter md:text-3xl">
             {t("home.caseOutcomeHead")}
