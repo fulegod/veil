@@ -22,6 +22,9 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
+import { useAccount, useBalance, useChainId } from "wagmi";
+
+import { BragaOnboarding } from "@/components/BragaOnboarding";
 import { Header } from "@/components/Header";
 // InheritanceIntro moved to /inheritance dashboard — this page is just the form.
 import { useLanguage } from "@/components/LanguageProvider";
@@ -85,10 +88,24 @@ interface DocDropTrigger {
   file: File | null;
 }
 
+const BRAGA_CHAIN_ID = 60138453102;
+
 export default function NewInheritancePage() {
   const router = useRouter();
   const { t } = useLanguage();
   const { arkivWallet, isReady, address } = useArkivClients();
+  const { isConnected } = useAccount();
+  const chainId = useChainId();
+  const { data: balance } = useBalance({
+    address,
+    chainId: BRAGA_CHAIN_ID,
+  });
+  // Onboarding banner shows when wallet/chain/balance aren't ready
+  const needsOnboarding =
+    !isConnected ||
+    chainId !== BRAGA_CHAIN_ID ||
+    !balance ||
+    balance.value === BigInt(0);
 
   const [title, setTitle] = useState("");
 
@@ -334,6 +351,7 @@ export default function NewInheritancePage() {
     <div className="flex flex-col flex-1 bg-white text-black">
       <Header />
       <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-6 p-4 md:p-8">
+        {needsOnboarding && <BragaOnboarding variant="compact" />}
         {/* Concept banner — the vault you're about to create, visualized */}
         <figure className="border-2 border-black bg-black p-1">
           {/* eslint-disable-next-line @next/next/no-img-element */}

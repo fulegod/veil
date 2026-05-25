@@ -645,6 +645,47 @@ const dict = {
     "preset.heartbeat.3m": "3 months",
     "preset.heartbeat.6m": "6 months",
     "preset.heartbeat.1y": "1 year",
+
+    // Braga onboarding
+    "setup.tag": "§ BRAGA TESTNET SETUP",
+    "setup.subtag": "ONE-TIME · ~2 MIN",
+    "setup.title": "First time on Braga? Three clicks.",
+    "setup.intro":
+      "Veil runs on Arkiv's Braga testnet — chainId 60138453102, free GLM tokens from the faucet. Follow these three steps once and you're set to seal capsules and create vaults.",
+    "setup.step1Label": "Add Braga to MetaMask",
+    "setup.step1Body":
+      "One-click add via wallet_addEthereumChain. MetaMask prompts you to confirm the RPC + chainId.",
+    "setup.step1Cta": "Add Braga Network",
+    "setup.step2Label": "Get test GLM from the faucet",
+    "setup.step2Body":
+      "Free tokens for testing. Paste your wallet address into the faucet page — it sends ~0.01 GLM, enough for many txs.",
+    "setup.step2Cta": "Open Faucet",
+    "setup.step3Label": "Verify and start",
+    "setup.step3Body":
+      "Once tokens land (~10 seconds), your balance appears here. Then head to /capsule/new or /inheritance/new.",
+    "setup.balanceLabel": "Your Braga balance",
+    "setup.readyToSeal": "Ready to seal",
+    "setup.gasNote":
+      "Heads up: each Arkiv operation (create capsule, create vault, extend heartbeat) costs a few wei of GLM. The faucet drip is plenty for an afternoon of testing.",
+    "nav.setup": "Setup",
+    "setup.faqTitle": "Common questions",
+    "setup.faqWhatBragaQ": "What is Braga?",
+    "setup.faqWhatBragaA":
+      "Arkiv's public testnet — same SDK as mainnet, free tokens, intended for builders to test against. Every entity you create here is real and inspectable on the Braga explorer.",
+    "setup.faqWhyTestnetQ": "Why testnet for a real demo?",
+    "setup.faqWhyTestnetA":
+      "Mainnet is not live yet. Arkiv ships their first mainnet alongside the hackathon ecosystem. Until then, Braga is where everything runs — including this hackathon.",
+    "setup.faqMetamaskQ": "Do I need MetaMask specifically?",
+    "setup.faqMetamaskA":
+      "Any EIP-1193 wallet works (MetaMask, Rabby, OKX, Brave Wallet). The add-network button uses wallet_addEthereumChain, supported by all of them.",
+    "setup.faqGasQ": "Will this cost me money?",
+    "setup.faqGasA":
+      "No. GLM on Braga is testnet currency — no real value, faucet hands them out for free. You spend a tiny fraction per tx and refill from the faucet whenever you want.",
+    "setup.faqMainnetQ": "What happens when Arkiv launches mainnet?",
+    "setup.faqMainnetA":
+      "Veil's stack is chain-agnostic — switch the wagmi chain to Arkiv mainnet and everything works. Capsules and Vaults you created on Braga stay on Braga; new ones go to mainnet.",
+    "setup.ctaCapsule": "Seal a capsule",
+    "setup.ctaVault": "Create a vault",
   },
   es: {
     // ─── Common ─────────────────────────────────────────────────────────
@@ -1290,6 +1331,47 @@ const dict = {
     "preset.heartbeat.3m": "3 meses",
     "preset.heartbeat.6m": "6 meses",
     "preset.heartbeat.1y": "1 año",
+
+    // Braga onboarding
+    "setup.tag": "§ SETUP BRAGA TESTNET",
+    "setup.subtag": "UNA VEZ · ~2 MIN",
+    "setup.title": "¿Primera vez en Braga? Tres clicks.",
+    "setup.intro":
+      "Veil corre en la testnet Braga de Arkiv — chainId 60138453102, tokens GLM gratis del faucet. Sigue estos tres pasos una vez y ya puedes sellar cápsulas y crear bóvedas.",
+    "setup.step1Label": "Agregar Braga a MetaMask",
+    "setup.step1Body":
+      "Add en un click via wallet_addEthereumChain. MetaMask te pide confirmar el RPC + chainId.",
+    "setup.step1Cta": "Agregar red Braga",
+    "setup.step2Label": "Obtén GLM de prueba del faucet",
+    "setup.step2Body":
+      "Tokens gratis para testing. Pega tu address en la página del faucet — envía ~0.01 GLM, suficiente para muchas tx.",
+    "setup.step2Cta": "Abrir Faucet",
+    "setup.step3Label": "Verifica y empieza",
+    "setup.step3Body":
+      "Cuando lleguen los tokens (~10 segundos), tu balance aparece aquí. Después ve a /capsule/new o /inheritance/new.",
+    "setup.balanceLabel": "Tu balance en Braga",
+    "setup.readyToSeal": "Listo para sellar",
+    "setup.gasNote":
+      "Heads up: cada operación de Arkiv (crear cápsula, crear bóveda, extender heartbeat) cuesta unos wei de GLM. El faucet alcanza para una tarde de testing tranquilo.",
+    "nav.setup": "Setup",
+    "setup.faqTitle": "Preguntas frecuentes",
+    "setup.faqWhatBragaQ": "¿Qué es Braga?",
+    "setup.faqWhatBragaA":
+      "La testnet pública de Arkiv — mismo SDK que mainnet, tokens gratis, pensada para que los builders prueben. Cada entidad que creas aquí es real y se puede inspeccionar en el explorer de Braga.",
+    "setup.faqWhyTestnetQ": "¿Por qué testnet para un demo real?",
+    "setup.faqWhyTestnetA":
+      "Mainnet todavía no está live. Arkiv lanza su mainnet junto con el ecosistema del hackathon. Hasta entonces, Braga es donde todo corre — incluido este hackathon.",
+    "setup.faqMetamaskQ": "¿Necesito MetaMask específicamente?",
+    "setup.faqMetamaskA":
+      "Cualquier wallet EIP-1193 funciona (MetaMask, Rabby, OKX, Brave Wallet). El botón de add-network usa wallet_addEthereumChain, soportado por todas.",
+    "setup.faqGasQ": "¿Esto me va a costar dinero?",
+    "setup.faqGasA":
+      "No. GLM en Braga es moneda de testnet — sin valor real, el faucet los regala. Gastas una fracción mínima por tx y rellenas desde el faucet cuando quieras.",
+    "setup.faqMainnetQ": "¿Qué pasa cuando Arkiv lance mainnet?",
+    "setup.faqMainnetA":
+      "El stack de Veil es chain-agnostic — cambias el chain de wagmi a mainnet de Arkiv y todo funciona. Las Cápsulas y Bóvedas que creaste en Braga se quedan en Braga; las nuevas van a mainnet.",
+    "setup.ctaCapsule": "Sellar una cápsula",
+    "setup.ctaVault": "Crear una bóveda",
   },
 } as const satisfies Record<Lang, Record<string, string>>;
 

@@ -37,6 +37,11 @@ export function Header() {
       href: "/case-files",
       active: pathname.startsWith("/case-files"),
     },
+    {
+      label: t("nav.setup"),
+      href: "/setup",
+      active: pathname.startsWith("/setup"),
+    },
   ];
 
   return (

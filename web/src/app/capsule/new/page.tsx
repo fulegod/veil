@@ -3,6 +3,9 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
+import { useAccount, useBalance, useChainId } from "wagmi";
+
+import { BragaOnboarding } from "@/components/BragaOnboarding";
 import { Header } from "@/components/Header";
 import { useLanguage } from "@/components/LanguageProvider";
 import { TimezoneHint } from "@/components/TimezoneHint";
@@ -31,10 +34,26 @@ function defaultUnlockLocal(): string {
   )}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+// chainId hex 0xDFFA2CECE (60138453102)
+const BRAGA_CHAIN_ID = 60138453102;
+
 export default function NewCapsulePage() {
   const router = useRouter();
   const { t } = useLanguage();
   const { arkivWallet, isReady, address } = useArkivClients();
+  const { isConnected } = useAccount();
+  const chainId = useChainId();
+  const { data: balance } = useBalance({
+    address,
+    chainId: BRAGA_CHAIN_ID,
+  });
+  // Show the Braga onboarding banner when the user is not ready to seal:
+  // no wallet, wrong chain, or zero GLM. Once they pass all three, it hides.
+  const needsOnboarding =
+    !isConnected ||
+    chainId !== BRAGA_CHAIN_ID ||
+    !balance ||
+    balance.value === BigInt(0);
 
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -116,6 +135,7 @@ export default function NewCapsulePage() {
     <div className="flex flex-col flex-1 bg-white text-black">
       <Header />
       <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-6 p-4 md:p-8">
+        {needsOnboarding && <BragaOnboarding variant="compact" />}
         <section className="border-2 border-black bg-white p-6 md:p-12 relative">
           <div className="absolute top-0 left-0 bg-black text-white px-2 py-1 text-[10px] uppercase font-bold tracking-widest">
             [{t("sec.newCapsule")}]
