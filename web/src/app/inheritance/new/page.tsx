@@ -26,9 +26,18 @@ import { Header } from "@/components/Header";
 // InheritanceIntro moved to /inheritance dashboard — this page is just the form.
 import { useLanguage } from "@/components/LanguageProvider";
 import { useArkivClients } from "@/hooks/useArkivClients";
-import { encryptForTime } from "@/lib/tlock";
-import { createVault, createShare, createAction } from "@/lib/arkiv";
+import { encryptForTime, encryptBytesForTime } from "@/lib/tlock";
+import {
+  createVault,
+  createShare,
+  createAction,
+  createCapsule,
+} from "@/lib/arkiv";
 import { ACTION_TYPE } from "@/lib/config";
+import {
+  MAX_CAPSULE_FILE_BYTES,
+  packCapsulePayload,
+} from "@/lib/capsule-payload";
 import {
   splitSecret,
   shareToHex,
@@ -46,6 +55,7 @@ type Status =
   | { kind: "splitting"; n: number }
   | { kind: "vault" }
   | { kind: "share"; i: number; n: number }
+  | { kind: "doc"; i: number; n: number }
   | { kind: "action"; i: number; n: number }
   | { kind: "done"; entityKey: string }
   | {
@@ -63,6 +73,16 @@ interface EmailTrigger {
   recipient: string;
   message: string;
   timing: "on-expiry" | "warn-7d" | "warn-30d";
+}
+
+// Doc-drop trigger row — owner attaches a file to be released after the
+// heartbeat expires. The file is timelock-encrypted client-side, stored as
+// an unlisted Capsule entity, then a doc_drop Action keeps the recipient +
+// link metadata so the cron can email when the time comes.
+interface DocDropTrigger {
+  recipient: string;
+  message: string;
+  file: File | null;
 }
 
 export default function NewInheritancePage() {
@@ -89,6 +109,7 @@ export default function NewInheritancePage() {
     useState<HeartbeatPreset>(DEFAULT_HEARTBEAT);
   const [validators, setValidators] = useState<string[]>(["", "", "", "", ""]);
   const [emailTriggers, setEmailTriggers] = useState<EmailTrigger[]>([]);
+  const [docDrops, setDocDrops] = useState<DocDropTrigger[]>([]);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
 
   const preset = THRESHOLD_PRESETS[thresholdIdx];
@@ -205,6 +226,49 @@ export default function NewInheritancePage() {
         });
       }
 
+      // Doc-drop triggers — encrypt each file with the same heartbeat round,
+      // store as an unlisted Capsule, then point an Action at it.
+      const validDocs = docDrops.filter(
+        (d) => isEmail(d.recipient) && !!d.file,
+      );
+      for (let i = 0; i < validDocs.length; i++) {
+        const d = validDocs[i];
+        const f = d.file!;
+        setStatus({ kind: "doc", i: i + 1, n: validDocs.length });
+        if (f.size > MAX_CAPSULE_FILE_BYTES) {
+          throw new Error(
+            `File "${f.name}" is ${(f.size / 1024).toFixed(0)} KB. Limit is ${(MAX_CAPSULE_FILE_BYTES / 1024).toFixed(0)} KB.`,
+          );
+        }
+        const fileBytes = new Uint8Array(await f.arrayBuffer());
+        const wrapped = packCapsulePayload({
+          kind: "file",
+          filename: f.name,
+          mime: f.type || "application/octet-stream",
+          bytes: fileBytes,
+        });
+        // Encrypt with same drand round as the vault's heartbeat — nothing
+        // can be decrypted before that round publishes.
+        const enc = await encryptBytesForTime(wrapped, heartbeatAt);
+        const cap = await createCapsule({
+          walletClient: arkivWallet,
+          ciphertext: enc.ciphertext,
+          unlockRound: enc.round,
+          unlockAt: heartbeatAt,
+          title: `${title.trim()} — ${f.name}`,
+          isPublic: false,
+        });
+        await createAction({
+          walletClient: arkivWallet,
+          vaultKey,
+          actionType: ACTION_TYPE.DOC_DROP,
+          triggerAtMs: heartbeatAt,
+          destination: d.recipient.trim(),
+          message: d.message.trim() || f.name,
+          capsuleKey: cap.entityKey,
+        });
+      }
+
       setStatus({ kind: "done", entityKey: vaultKey });
       setTimeout(() => router.push(`/inheritance/${vaultKey}`), 1500);
     } catch (err) {
@@ -229,6 +293,22 @@ export default function NewInheritancePage() {
     setEmailTriggers((prev) => prev.filter((_, i) => i !== idx));
   }
 
+  // Doc-drop trigger editor helpers
+  function addDocDrop() {
+    setDocDrops((prev) => [
+      ...prev,
+      { recipient: "", message: "", file: null },
+    ]);
+  }
+  function updateDocDrop(idx: number, patch: Partial<DocDropTrigger>) {
+    setDocDrops((prev) =>
+      prev.map((d, i) => (i === idx ? { ...d, ...patch } : d)),
+    );
+  }
+  function removeDocDrop(idx: number) {
+    setDocDrops((prev) => prev.filter((_, i) => i !== idx));
+  }
+
   const statusLine = useMemo(() => {
     switch (status.kind) {
       case "encrypting":
@@ -241,6 +321,8 @@ export default function NewInheritancePage() {
         return t("inh.statusCreatingShare", { i: status.i, n: status.n });
       case "action":
         return `[ACTION ${status.i}/${status.n}] scheduling on-chain trigger…`;
+      case "doc":
+        return `[DOC ${status.i}/${status.n}] sealing file as timelock capsule…`;
       case "done":
         return t("inh.statusDone");
       default:
@@ -416,6 +498,110 @@ export default function NewInheritancePage() {
                         }
                         rows={3}
                         placeholder="Message body that will be delivered…"
+                        disabled={busy}
+                        className="mt-2 w-full border-2 border-black bg-white px-3 py-2 font-mono text-sm text-black outline-none placeholder:text-gray-400 focus:bg-[#00e676]/5 disabled:bg-gray-100"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Document drops — file is timelock-sealed in a Capsule ── */}
+              <div className="border-t-2 border-black pt-6">
+                <div className="flex items-baseline justify-between gap-3">
+                  <div>
+                    <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-black">
+                      [§ DOCUMENT DROPS]
+                    </p>
+                    <p className="mt-1 font-mono text-[10px] text-gray-500 leading-snug">
+                      Each row seals a file as a drand-timelocked Capsule. When
+                      the heartbeat lapses, the cron emails the recipient a link
+                      to download + decrypt it locally.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addDocDrop}
+                    disabled={busy}
+                    className="shrink-0 border-2 border-black bg-white px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-black hover:bg-black hover:text-[#00e676] disabled:opacity-50"
+                  >
+                    + ADD FILE
+                  </button>
+                </div>
+
+                {docDrops.length === 0 && (
+                  <p className="mt-3 border-2 border-dashed border-gray-300 bg-white p-3 font-mono text-[10px] uppercase tracking-widest text-gray-500">
+                    no document drops configured. add a file (photo, pdf, video,
+                    audio — up to 1 mb) to release to someone after your
+                    heartbeat expires.
+                  </p>
+                )}
+
+                <div className="mt-3 flex flex-col gap-3">
+                  {docDrops.map((d, i) => (
+                    <div key={i} className="border-2 border-black bg-white p-3">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+                          [DROP {String(i + 1).padStart(2, "0")}]
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => removeDocDrop(i)}
+                          disabled={busy}
+                          className="font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-black"
+                        >
+                          [remove]
+                        </button>
+                      </div>
+                      <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
+                        <BrutalInput
+                          type="email"
+                          value={d.recipient}
+                          onChange={(e) =>
+                            updateDocDrop(i, { recipient: e.target.value })
+                          }
+                          placeholder="recipient@example.com"
+                          disabled={busy}
+                        />
+                        {d.file ? (
+                          <div className="flex items-center justify-between gap-2 border-2 border-black bg-[#00e676]/15 px-3 py-2">
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate font-mono text-[11px] font-bold uppercase tracking-widest text-black">
+                                {d.file.name}
+                              </p>
+                              <p className="font-mono text-[9px] uppercase tracking-widest text-gray-700">
+                                {(d.file.size / 1024).toFixed(1)} KB ·{" "}
+                                {d.file.type || "binary"}
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => updateDocDrop(i, { file: null })}
+                              disabled={busy}
+                              className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-black"
+                            >
+                              [clear]
+                            </button>
+                          </div>
+                        ) : (
+                          <input
+                            type="file"
+                            onChange={(e) => {
+                              const f = e.target.files?.[0];
+                              if (f) updateDocDrop(i, { file: f });
+                            }}
+                            disabled={busy}
+                            className="block w-full border-2 border-dashed border-black bg-white px-3 py-1.5 font-mono text-[11px] text-black file:mr-3 file:border-2 file:border-black file:bg-black file:px-2 file:py-0.5 file:font-mono file:text-[9px] file:font-bold file:uppercase file:tracking-widest file:text-[#00e676] hover:file:bg-[#00e676] hover:file:text-black disabled:bg-gray-100"
+                          />
+                        )}
+                      </div>
+                      <textarea
+                        value={d.message}
+                        onChange={(e) =>
+                          updateDocDrop(i, { message: e.target.value })
+                        }
+                        rows={2}
+                        placeholder="Note that will accompany the file link (optional)…"
                         disabled={busy}
                         className="mt-2 w-full border-2 border-black bg-white px-3 py-2 font-mono text-sm text-black outline-none placeholder:text-gray-400 focus:bg-[#00e676]/5 disabled:bg-gray-100"
                       />

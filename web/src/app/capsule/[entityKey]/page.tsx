@@ -6,7 +6,11 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { useLanguage } from "@/components/LanguageProvider";
 import { getCapsule, type CapsuleEntity } from "@/lib/arkiv";
-import { decryptCiphertext } from "@/lib/tlock";
+import { decryptCiphertextToBytes } from "@/lib/tlock";
+import {
+  unpackCapsulePayload,
+  type CapsuleContent,
+} from "@/lib/capsule-payload";
 import { explorerEntityUrl } from "@/lib/config";
 
 type LoadState =
@@ -17,7 +21,7 @@ type LoadState =
 type RevealState =
   | { kind: "locked" }
   | { kind: "decrypting" }
-  | { kind: "revealed"; plaintext: string }
+  | { kind: "revealed"; content: CapsuleContent }
   | { kind: "error"; message: string };
 
 export default function CapsulePage({
@@ -65,9 +69,11 @@ export default function CapsulePage({
     function runDecrypt() {
       if (cancelled) return;
       setReveal({ kind: "decrypting" });
-      decryptCiphertext(ciphertext)
-        .then((plaintext) => {
-          if (!cancelled) setReveal({ kind: "revealed", plaintext });
+      decryptCiphertextToBytes(ciphertext)
+        .then((bytes) => {
+          if (cancelled) return;
+          const content = unpackCapsulePayload(bytes);
+          setReveal({ kind: "revealed", content });
         })
         .catch((err) => {
           if (cancelled) return;
@@ -188,9 +194,7 @@ function CapsuleView({
                   </p>
                 )}
                 {reveal.kind === "revealed" && (
-                  <pre className="whitespace-pre-wrap break-words text-black">
-                    {reveal.plaintext}
-                  </pre>
+                  <RevealedContent content={reveal.content} />
                 )}
                 {reveal.kind === "error" && (
                   <p className="text-black">
@@ -240,6 +244,89 @@ function CapsuleView({
         </div>
       </BrutalSection>
     </>
+  );
+}
+
+/**
+ * RevealedContent — branches on the unpacked CapsuleContent kind. For files
+ * it builds an in-memory Blob URL so the browser renders images/audio/video
+ * inline without ever touching disk. Unknown mime types fall back to a
+ * download button.
+ */
+function RevealedContent({ content }: { content: CapsuleContent }) {
+  // Build a Blob URL for files. useMemo isn't enough here because we also need
+  // to revoke the URL on unmount.
+  const [blobUrl, setBlobUrl] = useState<string | null>(null);
+  useEffect(() => {
+    if (content.kind !== "file") return;
+    const url = URL.createObjectURL(
+      new Blob([new Uint8Array(content.bytes)], { type: content.mime }),
+    );
+    setBlobUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [content]);
+
+  if (content.kind === "text") {
+    return (
+      <pre className="whitespace-pre-wrap break-words text-black">
+        {content.text}
+      </pre>
+    );
+  }
+
+  const { filename, mime, bytes } = content;
+  const sizeKb = (bytes.length / 1024).toFixed(1);
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-black pb-2 font-mono text-[10px] uppercase tracking-widest text-gray-700">
+        <span>
+          [FILE] {filename} · {sizeKb} KB · {mime || "binary"}
+        </span>
+        {blobUrl && (
+          <a
+            href={blobUrl}
+            download={filename}
+            className="border-2 border-black bg-black px-2 py-1 font-bold text-[#00e676] hover:bg-[#00e676] hover:text-black"
+          >
+            [↓ DOWNLOAD]
+          </a>
+        )}
+      </div>
+
+      {blobUrl && mime.startsWith("image/") && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={blobUrl}
+          alt={filename}
+          className="block max-h-[600px] w-full border-2 border-black object-contain"
+        />
+      )}
+
+      {blobUrl && mime.startsWith("audio/") && (
+        <audio controls src={blobUrl} className="w-full">
+          your browser does not support audio playback.
+        </audio>
+      )}
+
+      {blobUrl && mime.startsWith("video/") && (
+        <video
+          controls
+          src={blobUrl}
+          className="block max-h-[600px] w-full border-2 border-black bg-black"
+        >
+          your browser does not support video playback.
+        </video>
+      )}
+
+      {blobUrl && mime === "application/pdf" && (
+        <iframe
+          src={blobUrl}
+          title={filename}
+          className="block h-[600px] w-full border-2 border-black bg-white"
+        />
+      )}
+    </div>
   );
 }
 

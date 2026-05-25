@@ -4,8 +4,11 @@
  * Polls Arkiv every hour for pending Action entities and fires them:
  *   - email_warning  → pre-expiry reminder to the configured address
  *   - email_delivery → post-expiry message delivery to the recipient
- *   - transfer       → roadmap (not implemented in MVP)
- *   - doc_drop       → roadmap (not implemented in MVP)
+ *   - doc_drop       → post-expiry email with a /capsule/{key} link; the
+ *                       file lives in a Capsule entity that's drand-locked
+ *                       to the same heartbeat round, so it can ONLY be
+ *                       decrypted after the heartbeat lapses.
+ *   - transfer       → roadmap (needs account abstraction or pre-signed tx)
  *
  * IDEMPOTENCY (MVP limitation): we filter actions by a time window
  * (`triggerAt` within the last 65 minutes) instead of mutating
@@ -25,7 +28,11 @@
 import { NextResponse } from "next/server";
 
 import { listPendingActions } from "@/lib/arkiv";
-import { sendVaultDelivery, sendVaultWarning } from "@/lib/email";
+import {
+  sendVaultDelivery,
+  sendVaultDocDrop,
+  sendVaultWarning,
+} from "@/lib/email";
 import { ACTION_TYPE, explorerEntityUrl } from "@/lib/config";
 
 const WINDOW_MS = 65 * 60 * 1000; // 65 min window (1h cron + 5m drift)
@@ -102,8 +109,37 @@ export async function GET(request: Request) {
           status: r.simulated ? "simulated" : r.ok ? "sent" : "failed",
           error: r.error,
         });
+      } else if (action.actionType === ACTION_TYPE.DOC_DROP) {
+        if (!action.capsuleKey) {
+          results.push({
+            entityKey: action.entityKey,
+            actionType: action.actionType,
+            destination: action.destination,
+            status: "failed",
+            error: "doc_drop action missing capsule_key",
+          });
+        } else {
+          const capsuleUrl =
+            typeof process.env.NEXT_PUBLIC_BASE_URL === "string" &&
+            process.env.NEXT_PUBLIC_BASE_URL.length > 0
+              ? `${process.env.NEXT_PUBLIC_BASE_URL}/capsule/${action.capsuleKey}`
+              : explorerEntityUrl(action.capsuleKey);
+          const r = await sendVaultDocDrop({
+            to: action.destination,
+            vaultTitle: action.message.slice(0, 80) || "(untitled)",
+            message: action.message,
+            capsuleUrl,
+          });
+          results.push({
+            entityKey: action.entityKey,
+            actionType: action.actionType,
+            destination: action.destination,
+            status: r.simulated ? "simulated" : r.ok ? "sent" : "failed",
+            error: r.error,
+          });
+        }
       } else {
-        // transfer / doc_drop — roadmap, not yet implemented
+        // transfer — roadmap (needs account abstraction or pre-signed tx)
         results.push({
           entityKey: action.entityKey,
           actionType: action.actionType,

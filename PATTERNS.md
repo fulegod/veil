@@ -284,6 +284,48 @@ This is what makes Veil "programmable trust" instead of just "another encryption
 
 ---
 
+## Pattern 10 — Binary payloads on a string-shaped substrate
+
+**The idea:** Arkiv's `payload` is bytes — but most reference implementations treat it as if it were a string field. Once you accept that the substrate is byte-oriented, you can ship **photos, audio, short videos, PDFs** through the exact same primitive you use for sealed text messages.
+
+**The shape Veil uses (see `lib/capsule-payload.ts`):**
+
+```
+Byte 0      : kind tag — 0x54 ('T') = text, 0x46 ('F') = file
+For text   : bytes 1..   = UTF-8 message
+For file   : 1-2  uint16 BE  filename length L
+             3..3+L         filename UTF-8
+             3+L..5+L uint16 BE  mime length M
+             5+L..5+L+M     mime type UTF-8
+             5+L+M..         file bytes
+```
+
+This envelope is what gets drand-timelock-encrypted. After decryption, the recipient's browser parses the envelope, builds an in-memory Blob URL, and renders the file natively (`<img>` / `<audio>` / `<video>` / `<iframe>` for PDFs) — nothing leaks server-side because the decryption is client-only.
+
+**Backwards compatibility:** any first-byte that is NOT 0x54 / 0x46 is treated as legacy UTF-8 text. Capsules sealed before this pattern existed still open correctly.
+
+**Why hand-rolled instead of JSON+base64:** base64-encoding bytes inflates payloads 33% — pure waste on a substrate where you pay per byte. The hand-rolled envelope is deterministic, ~5-7 bytes of overhead, and trivial to parse client-side.
+
+---
+
+## Pattern 11 — Cross-entity composition (Vault → Action → Capsule)
+
+**The idea:** an Action entity doesn't need to carry the payload inline. It can hold a pointer (`capsule_key`) to a separate Capsule entity that carries the encrypted file. The cron fires the Action; the recipient resolves the link; their browser decrypts the Capsule locally.
+
+**Why it matters:** Action entities are small (a few hundred bytes each), so a vault can have many of them cheaply. The heavy payloads (a sealed video, a sealed PDF) live in their own Capsules that are drand-locked to **the same heartbeat round** — so the link is technically dispatchable from the moment the action is scheduled, but **the file is mathematically unreadable until the heartbeat lapses**. The cron is just a postman; the cryptography enforces the timing.
+
+```ts
+// Owner creates the vault, then for each doc_drop:
+const wrapped = packCapsulePayload({ kind: "file", filename, mime, bytes });
+const enc = await encryptBytesForTime(wrapped, heartbeatAt);
+const cap = await createCapsule({ ciphertext: enc.ciphertext, unlockRound: enc.round, ... });
+await createAction({ actionType: "doc_drop", capsuleKey: cap.entityKey, destination: recipient, ... });
+```
+
+**Why this composition is meaningful for Arkiv builders:** it shows that the same primitive — a drand-timelocked Capsule — is reusable across two products (sealed crypto calls AND post-life document delivery) without duplicating storage logic. One entity kind, two products.
+
+---
+
 ## Anti-patterns Veil deliberately avoids
 
 | Anti-pattern                                   | Why it costs scoring                                               |

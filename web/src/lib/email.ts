@@ -120,3 +120,51 @@ export async function sendVaultDelivery(opts: {
     return { ok: false, error: e instanceof Error ? e.message : String(e) };
   }
 }
+
+/**
+ * Document drop — the heartbeat has lapsed and a file the owner sealed inside
+ * a Capsule should now be released to the recipient. We email a link to the
+ * Capsule view page; the recipient's browser does the drand decryption.
+ */
+export async function sendVaultDocDrop(opts: {
+  to: string;
+  vaultTitle: string;
+  message: string;
+  capsuleUrl: string;
+}): Promise<SendResult> {
+  const subject = `[Veil] Document released from "${opts.vaultTitle}"`;
+  const text = [
+    `You are receiving this because someone set up a Veil vault that named you`,
+    `as the recipient of a sealed file if they ever stopped signing for`,
+    `proof-of-life. Their heartbeat has now lapsed.`,
+    ``,
+    opts.message
+      ? `Their note:\n${"─".repeat(45)}\n${opts.message}\n${"─".repeat(45)}\n`
+      : ``,
+    `Open the link below to view and download the file. Your browser will`,
+    `decrypt it locally using the drand network — nothing leaks server-side.`,
+    ``,
+    opts.capsuleUrl,
+    ``,
+    `— Veil. Programmable trust.`,
+  ].join("\n");
+
+  const client = getClient();
+  if (!client) {
+    console.log(`[email:simulated] → ${opts.to} :: ${subject}\n${text}`);
+    return { ok: true, simulated: true };
+  }
+
+  try {
+    const result = await client.emails.send({
+      from: FROM,
+      to: opts.to,
+      subject,
+      text,
+    });
+    if (result.error) return { ok: false, error: result.error.message };
+    return { ok: true, id: result.data?.id };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : String(e) };
+  }
+}

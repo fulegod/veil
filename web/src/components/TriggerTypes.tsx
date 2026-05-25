@@ -5,8 +5,9 @@
  * inside a Vault. Status badge per card communicates roadmap honesty:
  *
  *   [LIVE]      Secret recovery via Shamir M-of-N → fully working today
- *   [SOON]      Email delivery via Resend cron → backend ready, UI next sprint
- *   [ROADMAP]   Wallet transfer / Document drop → Q2 2026
+ *   [LIVE]      Email delivery via Resend cron → backend wired end-to-end
+ *   [LIVE]      Document drop via encrypted Storage URL → wired end-to-end
+ *   [ROADMAP]   Wallet transfer → needs account abstraction / pre-signed tx
  *
  * Visual-only — no interactivity. Purpose is to communicate that the
  * Vault is a generic carrier for multiple trigger types, not just
@@ -49,18 +50,18 @@ export function TriggerTypes() {
       icon: <EnvelopeGlyph size={32} className="text-[#00e676]" />,
       title: t("trigger.emailTitle"),
       sub: t("trigger.emailSub"),
-      status: "SOON",
-    },
-    {
-      icon: <PersonGlyph size={32} className="text-[#00e676]" />,
-      title: t("trigger.transferTitle"),
-      sub: t("trigger.transferSub"),
-      status: "ROADMAP",
+      status: "LIVE",
     },
     {
       icon: <DocumentGlyph size={32} className="text-[#00e676]" />,
       title: t("trigger.docTitle"),
       sub: t("trigger.docSub"),
+      status: "LIVE",
+    },
+    {
+      icon: <PersonGlyph size={32} className="text-[#00e676]" />,
+      title: t("trigger.transferTitle"),
+      sub: t("trigger.transferSub"),
       status: "ROADMAP",
     },
   ];

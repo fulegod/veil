@@ -559,6 +559,10 @@ export interface CreateActionInput {
   triggerAtMs: number; // ms-epoch when this action should fire
   destination: string; // email address, wallet address, or IPFS hash
   message: string; // user-facing message body (will be email subject/body)
+  // Optional — only used for DOC_DROP actions. Points at the Capsule entity
+  // that holds the timelock-encrypted file. The cron job emails a deep-link
+  // to /capsule/{capsuleKey} when the trigger fires.
+  capsuleKey?: string;
 }
 
 export interface ActionEntity {
@@ -570,29 +574,34 @@ export interface ActionEntity {
   destination: string;
   message: string;
   notifiedAt: number; // 0 = not yet fired
+  capsuleKey: string; // empty string when N/A
 }
 
 /**
  * Create an Action attached to a Vault. The cron job polls these every hour.
  */
 export async function createAction(input: CreateActionInput) {
-  // Actions outlive the vault by 90 days so reveals are auditable after expiry
+  const attributes: { key: string; value: string | number }[] = [
+    PROJECT_ATTRIBUTE,
+    { key: "kind", value: ENTITY_KIND.ACTION },
+    { key: "vault_key", value: input.vaultKey },
+    { key: "action_type", value: input.actionType },
+    { key: "trigger_at", value: input.triggerAtMs },
+    { key: "destination", value: input.destination },
+    { key: "notified_at", value: 0 }, // 0 sentinel = not yet fired
+  ];
+  if (input.capsuleKey) {
+    attributes.push({ key: "capsule_key", value: input.capsuleKey });
+  }
   return input.walletClient.createEntity({
     payload: jsonToPayload({
       message: input.message,
       destination: input.destination,
+      ...(input.capsuleKey ? { capsule_key: input.capsuleKey } : {}),
     }),
     contentType: "application/json",
-    attributes: [
-      PROJECT_ATTRIBUTE,
-      { key: "kind", value: ENTITY_KIND.ACTION },
-      { key: "vault_key", value: input.vaultKey },
-      { key: "action_type", value: input.actionType },
-      { key: "trigger_at", value: input.triggerAtMs },
-      { key: "destination", value: input.destination },
-      { key: "notified_at", value: 0 }, // 0 sentinel = not yet fired
-    ],
-    expiresIn: ExpirationTime.fromDays(365 * 2), // 2 years
+    attributes,
+    expiresIn: ExpirationTime.fromDays(365 * 2), // Actions outlive the vault
   });
 }
 
@@ -629,11 +638,13 @@ export async function getActionsForVault(
       );
       let message = "";
       let destination = String(attrs.destination ?? "");
+      let capsuleKey = String(attrs.capsule_key ?? "");
       if (e.payload) {
         try {
           const parsed = JSON.parse(new TextDecoder().decode(e.payload));
           message = String(parsed.message ?? "");
           destination = String(parsed.destination ?? destination);
+          capsuleKey = String(parsed.capsule_key ?? capsuleKey);
         } catch {
           /* ignore */
         }
@@ -647,6 +658,7 @@ export async function getActionsForVault(
         destination,
         message,
         notifiedAt: Number(attrs.notified_at) || 0,
+        capsuleKey,
       };
     },
   );
@@ -689,11 +701,13 @@ export async function listPendingActions(
         );
         let message = "";
         let destination = String(attrs.destination ?? "");
+        let capsuleKey = String(attrs.capsule_key ?? "");
         if (e.payload) {
           try {
             const parsed = JSON.parse(new TextDecoder().decode(e.payload));
             message = String(parsed.message ?? "");
             destination = String(parsed.destination ?? destination);
+            capsuleKey = String(parsed.capsule_key ?? capsuleKey);
           } catch {
             /* ignore */
           }
@@ -707,6 +721,7 @@ export async function listPendingActions(
           destination,
           message,
           notifiedAt: Number(attrs.notified_at) || 0,
+          capsuleKey,
         };
       },
     )
@@ -723,20 +738,25 @@ export async function markActionNotified(
   action: ActionEntity,
   firedAtMs: number,
 ) {
+  const attributes: { key: string; value: string | number }[] = [
+    PROJECT_ATTRIBUTE,
+    { key: "kind", value: ENTITY_KIND.ACTION },
+    { key: "vault_key", value: action.vaultKey },
+    { key: "action_type", value: action.actionType },
+    { key: "trigger_at", value: action.triggerAt },
+    { key: "destination", value: action.destination },
+    { key: "notified_at", value: firedAtMs },
+  ];
+  if (action.capsuleKey) {
+    attributes.push({ key: "capsule_key", value: action.capsuleKey });
+  }
   return walletClient.updateEntity(action.entityKey as `0x${string}`, {
     payload: jsonToPayload({
       message: action.message,
       destination: action.destination,
+      ...(action.capsuleKey ? { capsule_key: action.capsuleKey } : {}),
     }),
     contentType: "application/json",
-    attributes: [
-      PROJECT_ATTRIBUTE,
-      { key: "kind", value: ENTITY_KIND.ACTION },
-      { key: "vault_key", value: action.vaultKey },
-      { key: "action_type", value: action.actionType },
-      { key: "trigger_at", value: action.triggerAt },
-      { key: "destination", value: action.destination },
-      { key: "notified_at", value: firedAtMs },
-    ],
+    attributes,
   });
 }

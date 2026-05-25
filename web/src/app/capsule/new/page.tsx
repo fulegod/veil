@@ -7,8 +7,12 @@ import { Header } from "@/components/Header";
 import { useLanguage } from "@/components/LanguageProvider";
 import { TimezoneHint } from "@/components/TimezoneHint";
 import { useArkivClients } from "@/hooks/useArkivClients";
-import { encryptForTime } from "@/lib/tlock";
+import { encryptBytesForTime } from "@/lib/tlock";
 import { createCapsule } from "@/lib/arkiv";
+import {
+  MAX_CAPSULE_FILE_BYTES,
+  packCapsulePayload,
+} from "@/lib/capsule-payload";
 import { explorerTxUrl } from "@/lib/config";
 import type { TKey } from "@/lib/i18n";
 
@@ -34,6 +38,7 @@ export default function NewCapsulePage() {
 
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [file, setFile] = useState<File | null>(null);
   const [unlockLocal, setUnlockLocal] = useState(defaultUnlockLocal());
   const [isPublic, setIsPublic] = useState(true);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
@@ -46,8 +51,16 @@ export default function NewCapsulePage() {
       setStatus({ kind: "error", messageKey: "new.errorConnect" });
       return;
     }
-    if (!title.trim() || !body.trim()) {
+    // Either a body OR a file must be present (along with title)
+    if (!title.trim() || (!body.trim() && !file)) {
       setStatus({ kind: "error", messageKey: "new.errorRequired" });
+      return;
+    }
+    if (file && file.size > MAX_CAPSULE_FILE_BYTES) {
+      setStatus({
+        kind: "error",
+        raw: `File is ${(file.size / 1024).toFixed(0)} KB. Limit is ${(MAX_CAPSULE_FILE_BYTES / 1024).toFixed(0)} KB per capsule.`,
+      });
       return;
     }
     const unlockAtMs = new Date(unlockLocal).getTime();
@@ -58,7 +71,23 @@ export default function NewCapsulePage() {
 
     try {
       setStatus({ kind: "encrypting" });
-      const { ciphertext, round } = await encryptForTime(body, unlockAtMs);
+      // Build the wrapped plaintext: file (if any) takes precedence over text.
+      let plaintextBytes: Uint8Array;
+      if (file) {
+        const fileBytes = new Uint8Array(await file.arrayBuffer());
+        plaintextBytes = packCapsulePayload({
+          kind: "file",
+          filename: file.name,
+          mime: file.type || "application/octet-stream",
+          bytes: fileBytes,
+        });
+      } else {
+        plaintextBytes = packCapsulePayload({ kind: "text", text: body });
+      }
+      const { ciphertext, round } = await encryptBytesForTime(
+        plaintextBytes,
+        unlockAtMs,
+      );
 
       setStatus({ kind: "submitting" });
       const { entityKey, txHash } = await createCapsule({
@@ -120,12 +149,57 @@ export default function NewCapsulePage() {
                 <textarea
                   value={body}
                   onChange={(e) => setBody(e.target.value)}
-                  required
                   rows={8}
                   placeholder={t("new.fieldBodyPlaceholder")}
                   className="w-full border-2 border-black bg-white px-3 py-2 font-mono text-sm text-black outline-none placeholder:text-gray-400 focus:bg-[#00e676]/5 disabled:bg-gray-100"
-                  disabled={busy}
+                  disabled={busy || !!file}
                 />
+              </Field>
+
+              <div className="relative flex items-center gap-3">
+                <div className="h-px flex-1 bg-black/30" />
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                  [{t("new.fieldFileOr")}]
+                </span>
+                <div className="h-px flex-1 bg-black/30" />
+              </div>
+
+              <Field label={t("new.fieldFile")} hint={t("new.fieldFileHint")}>
+                {file ? (
+                  <div className="flex items-center justify-between gap-3 border-2 border-black bg-[#00e676]/15 px-3 py-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-mono text-xs font-bold uppercase tracking-widest text-black">
+                        [{t("new.fieldFilePicked")}] {file.name}
+                      </p>
+                      <p className="mt-0.5 font-mono text-[10px] uppercase tracking-widest text-gray-700">
+                        {(file.size / 1024).toFixed(1)} KB ·{" "}
+                        {file.type || "binary"}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setFile(null)}
+                      disabled={busy}
+                      className="shrink-0 border-2 border-black bg-white px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-black hover:text-[#00e676]"
+                    >
+                      [{t("new.fieldFileClear")}]
+                    </button>
+                  </div>
+                ) : (
+                  <input
+                    type="file"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) {
+                        setFile(f);
+                        // Clear text if a file is picked — they're mutually exclusive
+                        setBody("");
+                      }
+                    }}
+                    disabled={busy}
+                    className="block w-full border-2 border-dashed border-black bg-white px-3 py-2 font-mono text-xs text-black file:mr-3 file:border-2 file:border-black file:bg-black file:px-3 file:py-1 file:font-mono file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:text-[#00e676] hover:file:bg-[#00e676] hover:file:text-black disabled:bg-gray-100"
+                  />
+                )}
               </Field>
 
               <Field

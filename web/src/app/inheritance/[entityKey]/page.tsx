@@ -426,11 +426,19 @@ export default function VaultViewPage({
                             “{a.message}”
                           </p>
                         )}
+                        {a.capsuleKey && (
+                          <Link
+                            href={`/capsule/${a.capsuleKey}`}
+                            className="mt-2 inline-block border-2 border-black bg-black px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676] hover:bg-[#00e676] hover:text-black"
+                          >
+                            [SEALED FILE → /capsule/{a.capsuleKey.slice(0, 8)}…]
+                          </Link>
+                        )}
                         <a
                           href={explorerEntityUrl(a.entityKey)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="mt-2 inline-block font-mono text-[10px] uppercase tracking-widest text-gray-500 underline hover:text-black"
+                          className="ml-2 mt-2 inline-block font-mono text-[10px] uppercase tracking-widest text-gray-500 underline hover:text-black"
                         >
                           {a.entityKey.slice(0, 10)}… → braga
                         </a>

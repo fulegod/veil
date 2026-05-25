@@ -26,11 +26,11 @@ Crypto Twitter is full of deleted tweets, edited screenshots and "I told you so"
 
 Veil ships **two products and a programmable trigger layer** on the same primitive:
 
-1. **Capsules** — seal a message today that nobody can read until the date you choose. At unlock time the message becomes public; the author and the original timestamp are anchored on-chain and cannot be edited. The use case: _verifiable alpha_ — make a crypto call publicly, prove later that you called it first, with nothing to delete or screenshot-edit.
+1. **Capsules** — seal a message **or a file** today that nobody can read until the date you choose. The payload (text up to any length, or a binary file up to ~1 MB — photo, audio, PDF, short video) is drand-timelock-encrypted client-side before it touches Arkiv. At unlock time the contents become readable; the author and timestamp are anchored on-chain and cannot be edited. Use cases: _verifiable alpha_ (sealed crypto calls), letters to your future self, sealed evidence with a future-dated reveal.
 
 2. **Inheritance Vaults** — a **cryptographic dead-man's switch**. Seal a secret today (seed phrase, key, document) that becomes recoverable by **M of N validators** if you stop signing a "heartbeat" transaction for a chosen period (3m / 6m / 1y). No custody, no platform.
 
-3. **Programmable triggers** — every Vault can carry multiple **Action entities**, each describing _what should happen at a specific moment in its lifecycle_. A single vault can deliver an email to your lawyer at expiry, transfer ETH to your heirs, drop an IPFS-pinned PDF to a list of journalists — all scheduled, all fired by a Vercel cron polling Arkiv hourly.
+3. **Programmable triggers** — every Vault can carry multiple **Action entities**, each describing _what should happen at a specific moment in its lifecycle_. A single vault can email your heir a goodbye note 30 days before expiry, email the legal team the day it lapses, and deliver an encrypted PDF to a journalist on the same trigger — all scheduled, all fired by a Vercel cron polling Arkiv hourly. Today: `email_warning`, `email_delivery`, `doc_drop` are LIVE. `transfer` (wallet) is on the roadmap (needs account abstraction).
 
 Use cases the trigger layer unlocks beyond crypto recovery:
 
@@ -120,9 +120,10 @@ ethns-builder/
 │   │   │           └── recover/page.tsx  ← M-of-N share combiner
 │   │   ├── lib/
 │   │   │   ├── arkiv.ts          ← typed wrappers, PROJECT_ATTRIBUTE enforced
-│   │   │   ├── tlock.ts          ← encrypt / decrypt / drand client
+│   │   │   ├── tlock.ts          ← encrypt / decrypt / drand client (text + bytes)
+│   │   │   ├── capsule-payload.ts ← pack/unpack envelope: text vs file
 │   │   │   ├── inheritance.ts    ← Shamir SSS + heartbeat presets
-│   │   │   ├── email.ts          ← Resend SDK wrapper + console.log fallback
+│   │   │   ├── email.ts          ← Resend wrapper + console.log fallback; warning / delivery / doc-drop
 │   │   │   ├── wagmi.ts          ← chains + connectors
 │   │   │   ├── config.ts         ← PROJECT_ATTRIBUTE + entity kinds + ACTION_TYPE
 │   │   │   └── i18n.ts           ← typed EN/ES dictionary
@@ -142,17 +143,19 @@ ethns-builder/
 
 The full write-up with code snippets is in [`PATTERNS.md`](./PATTERNS.md). Briefly:
 
-| #   | Pattern                                                                                                                                                                                     | Where in code                                         |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| 1   | **`PROJECT_ATTRIBUTE` on every create AND every query** — non-negotiable on a shared public DB                                                                                              | `lib/config.ts` + every helper in `lib/arkiv.ts`      |
-| 2   | **`$creator` (immutable) vs `$owner` (mutable)** — used distinctly so capsule sale doesn't erase author                                                                                     | `Capsule.$creator` ≠ `Reveal.$creator`                |
-| 3   | **Differentiated `expiresIn` per entity kind** — Capsule 1y, Reveal 90d, Vault = heartbeat, Share ~10y                                                                                      | `lib/arkiv.ts` per-helper `expiresIn`                 |
-| 4   | **Relationships via shared-attribute keys** — `Reveal.capsule_key`, `Share.vault_key`, no foreign keys                                                                                      | `findFirstRevealForCapsule()` + `getSharesForVault()` |
-| 5   | **Timelock encryption on top of Arkiv** — drand round number stored as queryable numeric attribute                                                                                          | `lib/tlock.ts` + `unlock_round` attribute             |
-| 6   | **`extendEntity` as a living "heartbeat"** — only `$owner` can call; absence of call = entity expires                                                                                       | `extendVault()` + `/inheritance/[key]` button         |
-| 7   | **Multi-kind composition** — 5 entity kinds (Capsule / Reveal / Vault / Share / Action) wired by indexed attributes                                                                         | `ENTITY_KIND` in `config.ts`                          |
-| 8   | **Cryptographic threshold on top** — Shamir M-of-N split across Share entities, recoverable only by quorum                                                                                  | `lib/inheritance.ts` + `/inheritance/[key]/recover`   |
-| 9   | **Off-chain action dispatcher driven by on-chain state** — Action entities scheduled in Arkiv, fired by a Vercel cron polling hourly; `notified_at` numeric attribute as idempotency anchor | `Action` entity + `/api/cron/check-vaults/route.ts`   |
+| #   | Pattern                                                                                                                                                                                                                                                                                                                                                 | Where in code                                         |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| 1   | **`PROJECT_ATTRIBUTE` on every create AND every query** — non-negotiable on a shared public DB                                                                                                                                                                                                                                                          | `lib/config.ts` + every helper in `lib/arkiv.ts`      |
+| 2   | **`$creator` (immutable) vs `$owner` (mutable)** — used distinctly so capsule sale doesn't erase author                                                                                                                                                                                                                                                 | `Capsule.$creator` ≠ `Reveal.$creator`                |
+| 3   | **Differentiated `expiresIn` per entity kind** — Capsule 1y, Reveal 90d, Vault = heartbeat, Share ~10y                                                                                                                                                                                                                                                  | `lib/arkiv.ts` per-helper `expiresIn`                 |
+| 4   | **Relationships via shared-attribute keys** — `Reveal.capsule_key`, `Share.vault_key`, no foreign keys                                                                                                                                                                                                                                                  | `findFirstRevealForCapsule()` + `getSharesForVault()` |
+| 5   | **Timelock encryption on top of Arkiv** — drand round number stored as queryable numeric attribute                                                                                                                                                                                                                                                      | `lib/tlock.ts` + `unlock_round` attribute             |
+| 6   | **`extendEntity` as a living "heartbeat"** — only `$owner` can call; absence of call = entity expires                                                                                                                                                                                                                                                   | `extendVault()` + `/inheritance/[key]` button         |
+| 7   | **Multi-kind composition** — 5 entity kinds (Capsule / Reveal / Vault / Share / Action) wired by indexed attributes                                                                                                                                                                                                                                     | `ENTITY_KIND` in `config.ts`                          |
+| 8   | **Cryptographic threshold on top** — Shamir M-of-N split across Share entities, recoverable only by quorum                                                                                                                                                                                                                                              | `lib/inheritance.ts` + `/inheritance/[key]/recover`   |
+| 9   | **Off-chain action dispatcher driven by on-chain state** — Action entities scheduled in Arkiv, fired by a Vercel cron polling hourly; `notified_at` numeric attribute as idempotency anchor                                                                                                                                                             | `Action` entity + `/api/cron/check-vaults/route.ts`   |
+| 10  | **Binary payloads on a string-shaped substrate** — Capsule payloads carry a 1-byte kind tag + length-prefixed name/mime + raw file bytes, all then drand-encrypted. The same primitive renders text, photos, audio, video and PDFs in the browser after unlock.                                                                                         | `lib/capsule-payload.ts` + `/capsule/[key]`           |
+| 11  | **Cross-entity composition (Vault → Action → Capsule)** — a `doc_drop` Action keeps a `capsule_key` attribute pointing at a separate Capsule entity. When the heartbeat lapses, the cron emails a deep-link to the Capsule, whose drand round is the same as the heartbeat round — so the recipient's browser can decrypt only after the trigger fires. | `createAction({capsuleKey})` + cron `doc_drop` branch |
 
 ## End-to-end evidence on Braga
 

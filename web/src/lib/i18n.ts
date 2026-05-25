@@ -278,6 +278,11 @@ const dict = {
     "new.fieldBody": "Body (the secret)",
     "new.fieldBodyHint": "Encrypted. Unreadable until the unlock time.",
     "new.fieldBodyPlaceholder": "What only you (and the future) should know.",
+    "new.fieldFile": "Or attach a file",
+    "new.fieldFileHint": "Photo, audio, PDF, short video — up to 1 MB.",
+    "new.fieldFilePicked": "File ready",
+    "new.fieldFileClear": "Remove",
+    "new.fieldFileOr": "OR",
     "new.fieldUnlock": "Unlock at",
     "new.fieldUnlockHint":
       "Anyone can decrypt after this time. Minimum 30s in the future.",
@@ -465,13 +470,13 @@ const dict = {
     "trigger.secretSub": "Phrase, key, or message — Shamir-split to validators",
     "trigger.emailTitle": "Email delivery",
     "trigger.emailSub":
-      "Send a message + body to one or more inboxes on expiry",
-    "trigger.transferTitle": "Wallet transfer",
-    "trigger.transferSub":
-      "Auto-send ETH / USDC to a destination address (roadmap Q2)",
+      "Schedule message + body to one or more inboxes — pre-expiry warning or on-expiry delivery",
     "trigger.docTitle": "Document drop",
     "trigger.docSub":
-      "Upload file → release IPFS link to recipients (roadmap Q2)",
+      "Seal a file (photo / pdf / audio / video) as a timelock Capsule; recipient gets a decrypt link by email when the heartbeat lapses",
+    "trigger.transferTitle": "Wallet transfer",
+    "trigger.transferSub":
+      "Auto-send ETH / USDC to a destination address (needs account abstraction — roadmap)",
     "trigger.roadmapBadge": "ROADMAP",
     "trigger.activeBadge": "LIVE",
 
@@ -830,6 +835,11 @@ const dict = {
     "new.fieldBody": "Cuerpo (el secreto)",
     "new.fieldBodyHint": "Cifrado. Ilegible hasta el momento del unlock.",
     "new.fieldBodyPlaceholder": "Lo que solo tú (y el futuro) deberían saber.",
+    "new.fieldFile": "O adjunta un archivo",
+    "new.fieldFileHint": "Foto, audio, PDF, video corto — hasta 1 MB.",
+    "new.fieldFilePicked": "Archivo listo",
+    "new.fieldFileClear": "Quitar",
+    "new.fieldFileOr": "O",
     "new.fieldUnlock": "Unlock at",
     "new.fieldUnlockHint":
       "Cualquiera puede descifrar después de este momento. Mínimo 30s en el futuro.",
@@ -1019,13 +1029,13 @@ const dict = {
       "Frase, llave o mensaje — dividido con Shamir entre validadores",
     "trigger.emailTitle": "Entrega por email",
     "trigger.emailSub":
-      "Envía un mensaje + cuerpo a uno o más inboxes al expirar",
-    "trigger.transferTitle": "Transferencia de wallet",
-    "trigger.transferSub":
-      "Auto-envío de ETH / USDC a una dirección destino (roadmap Q2)",
+      "Programa mensaje + cuerpo a uno o más inboxes — aviso pre-expiración o entrega al expirar",
     "trigger.docTitle": "Entrega de documento",
     "trigger.docSub":
-      "Sube archivo → libera link IPFS a los destinatarios (roadmap Q2)",
+      "Sella un archivo (foto / pdf / audio / video) como Capsule con timelock; el destinatario recibe link de descifrado por email cuando expira el heartbeat",
+    "trigger.transferTitle": "Transferencia de wallet",
+    "trigger.transferSub":
+      "Auto-envío de ETH / USDC a una dirección destino (requiere account abstraction — roadmap)",
     "trigger.roadmapBadge": "ROADMAP",
     "trigger.activeBadge": "LIVE",
 

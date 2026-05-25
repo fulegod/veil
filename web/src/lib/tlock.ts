@@ -76,6 +76,28 @@ export async function encryptForTime(
 }
 
 /**
+ * Encripta bytes arbitrarios (archivos, audio, video pequeños) contra un
+ * unlock time. Mismo flujo que encryptForTime pero acepta Uint8Array y
+ * mantiene los bytes byte-exact a través del decrypt.
+ */
+export async function encryptBytesForTime(
+  plaintextBytes: Uint8Array,
+  unlockAtMs: number,
+): Promise<{ ciphertext: Uint8Array; round: number; unlockAt: number }> {
+  const round = await roundForUnlockAt(unlockAtMs);
+  const armor = await timelockEncrypt(
+    round,
+    Buffer.from(plaintextBytes),
+    getDrandClient(),
+  );
+  return {
+    ciphertext: utf8Encoder.encode(armor),
+    round,
+    unlockAt: unlockAtMs,
+  };
+}
+
+/**
  * Descifra ciphertext si el round drand ya está disponible.
  * Si todavía no está, tira error (catch en UI para mostrar countdown).
  *
@@ -86,6 +108,19 @@ export async function decryptCiphertext(
   ciphertext: Uint8Array,
   opts: { timeoutMs?: number } = {},
 ): Promise<string> {
+  const bytes = await decryptCiphertextToBytes(ciphertext, opts);
+  return utf8Decoder.decode(bytes);
+}
+
+/**
+ * Descifra ciphertext devolviendo bytes raw (sin UTF-8 decode).
+ * Necesario para archivos binarios: si interpretamos bytes binarios como
+ * UTF-8 perdemos data por replacement chars.
+ */
+export async function decryptCiphertextToBytes(
+  ciphertext: Uint8Array,
+  opts: { timeoutMs?: number } = {},
+): Promise<Uint8Array> {
   const timeoutMs = opts.timeoutMs ?? 15_000;
   const armor = utf8Decoder.decode(ciphertext);
 
@@ -94,7 +129,8 @@ export async function decryptCiphertext(
     timeoutMs,
     `timelockDecrypt did not complete in ${timeoutMs}ms (likely drand fetch hung)`,
   );
-  return utf8Decoder.decode(decrypted);
+  // timelockDecrypt returns Buffer in node, Uint8Array-like in browser
+  return new Uint8Array(decrypted);
 }
 
 /**
