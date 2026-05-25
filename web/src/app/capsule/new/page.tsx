@@ -59,7 +59,10 @@ export default function NewCapsulePage() {
     if (file && file.size > MAX_CAPSULE_FILE_BYTES) {
       setStatus({
         kind: "error",
-        raw: `File is ${(file.size / 1024).toFixed(0)} KB. Limit is ${(MAX_CAPSULE_FILE_BYTES / 1024).toFixed(0)} KB per capsule.`,
+        raw: t("new.fileSizeError", {
+          kb: (file.size / 1024).toFixed(0),
+          limit: (MAX_CAPSULE_FILE_BYTES / 1024).toFixed(0),
+        }),
       });
       return;
     }
@@ -115,7 +118,7 @@ export default function NewCapsulePage() {
       <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-6 p-4 md:p-8">
         <section className="border-2 border-black bg-white p-6 md:p-12 relative">
           <div className="absolute top-0 left-0 bg-black text-white px-2 py-1 text-[10px] uppercase font-bold tracking-widest">
-            [§NEW — SEAL A CALL]
+            [{t("sec.newCapsule")}]
           </div>
 
           <form
@@ -262,7 +265,9 @@ export default function NewCapsulePage() {
 
               {status.kind === "error" && (
                 <div className="border-2 border-black bg-white px-3 py-2 font-mono text-xs text-black shadow-[3px_3px_0_rgba(0,0,0,1)]">
-                  <span className="bg-black px-1 text-white">[ERROR]</span>{" "}
+                  <span className="bg-black px-1 text-white">
+                    [{t("common.errorBracket")}]
+                  </span>{" "}
                   {status.messageKey ? t(status.messageKey) : status.raw}
                 </div>
               )}
@@ -287,27 +292,24 @@ export default function NewCapsulePage() {
             {/* Right column — sidebar */}
             <aside className="col-span-12 border-t-2 border-black pt-4 md:col-span-4 md:border-l-2 md:border-t-0 md:pl-6 md:pt-0">
               <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                [CREATOR (IMMUTABLE)]
+                [{t("sec.creatorImmutable")}]
               </div>
               <div className="mt-1 break-all font-mono text-xs text-black">
-                {address ?? "0x… — connect wallet"}
+                {address ?? t("common.connectFallback")}
               </div>
 
               <div className="mt-6 font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                [HOW THIS WORKS]
+                [{t("sec.howThisWorks")}]
               </div>
               <ol className="mt-2 list-none space-y-2 font-mono text-xs lowercase text-gray-700">
                 <li>
-                  <span className="text-[#00e676]">▸</span> body encrypted
-                  client-side against a future drand round.
+                  <span className="text-[#00e676]">▸</span> {t("sec.howStep1")}
                 </li>
                 <li>
-                  <span className="text-[#00e676]">▸</span> ciphertext stored as
-                  an arkiv entity signed by your wallet.
+                  <span className="text-[#00e676]">▸</span> {t("sec.howStep2")}
                 </li>
                 <li>
-                  <span className="text-[#00e676]">▸</span> nobody can decrypt
-                  until the round publishes.
+                  <span className="text-[#00e676]">▸</span> {t("sec.howStep3")}
                 </li>
               </ol>
             </aside>

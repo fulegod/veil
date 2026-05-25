@@ -108,7 +108,7 @@ export default function RecoverPage({
       <div className="flex flex-col flex-1 bg-white text-black">
         <Header />
         <div className="mx-auto w-full max-w-[1280px] p-8 font-mono text-xs uppercase tracking-widest text-gray-500">
-          loading…
+          {t("common.loading")}
         </div>
       </div>
     );
@@ -120,7 +120,7 @@ export default function RecoverPage({
         <Header />
         <div className="mx-auto w-full max-w-[1280px] p-8">
           <p className="border-2 border-black bg-white p-3 font-mono text-xs uppercase tracking-widest">
-            Vault not found.
+            {t("common.notFoundVault")}
           </p>
         </div>
       </div>
@@ -174,7 +174,7 @@ export default function RecoverPage({
             <h2 className="font-mono text-sm font-bold uppercase tracking-widest">
               <span className="bg-[#00e676] px-2 py-0.5 text-black">
                 {t("inh.viewSharesHeader")} — {selected.size}/{vault.threshold}{" "}
-                selected
+                {t("common.selected")}
               </span>
             </h2>
 
@@ -200,7 +200,7 @@ export default function RecoverPage({
                         <div className="flex-1">
                           <div className="flex items-center justify-between gap-2">
                             <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-black">
-                              SHARE #{s.shareIndex}
+                              {t("common.share")} #{s.shareIndex}
                             </p>
                             {isSelected ? (
                               <KeyGlyph size={18} className="text-black" />
@@ -227,7 +227,7 @@ export default function RecoverPage({
                             onClick={(e) => e.stopPropagation()}
                             className="mt-1 inline-block font-mono text-[9px] uppercase tracking-widest text-gray-600 underline hover:text-black"
                           >
-                            view on Braga →
+                            {t("common.viewOnBraga")}
                           </a>
                         </div>
                       </div>

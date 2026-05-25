@@ -23,6 +23,7 @@ const dict = {
     "common.toggleLang": "ES",
     "nav.capsules": "Capsules",
     "nav.inheritance": "Inheritance",
+    "nav.cases": "Case file",
 
     // ─── Case Files page (/case-files) — illustrated narratives ──────────
     "cf.navLink": "Case files",
@@ -565,6 +566,82 @@ const dict = {
       "Need at least {m} shares. Currently have {have}.",
     "inh.recoverNotEligible":
       "Your connected wallet is not on this vault's validator list.",
+
+    // ─── New: section breadcrumbs + status lines + form helpers (i18n pass) ──
+    "sec.newVault": "§INH — NEW VAULT",
+    "sec.newCapsule": "§NEW — SEAL A CALL",
+    "sec.capsuleLoading": "§CAPSULE — LOADING",
+    "sec.capsule404": "§CAPSULE — 404",
+    "sec.capsule": "§CAPSULE",
+    "sec.vault": "§INH — VAULT {short}",
+    "sec.feed": "§FEED — PUBLIC CAPSULES",
+    "sec.statusRecoveryOpen": "STATUS — RECOVERY OPEN",
+    "sec.statusAlive": "STATUS — ALIVE",
+    "sec.examplesClickToFill": "EXAMPLES — click to pre-fill the title",
+    "sec.programmableTriggers": "PROGRAMMABLE TRIGGERS",
+    "sec.fourTriggerTypes": "Four trigger types. One Vault.",
+    "sec.fourTriggerTypesLede":
+      "A single Vault can carry multiple scheduled actions — emails, transfers, document drops — each with its own recipient and timer. While you sign your heartbeat, nothing fires.",
+    "sec.outcome": "OUTCOME",
+    "sec.creatorImmutable": "CREATOR (IMMUTABLE)",
+    "sec.howThisWorks": "HOW THIS WORKS",
+    "sec.howStep1": "body encrypted client-side against a future drand round.",
+    "sec.howStep2":
+      "ciphertext stored as an arkiv entity signed by your wallet.",
+    "sec.howStep3": "nobody can decrypt until the round publishes.",
+    "common.notFoundVault": "Vault not found.",
+    "common.back": "← back",
+    "common.viewOnBraga": "view on Braga →",
+    "common.errorBracket": "ERROR",
+    "common.connectFallback": "0x… — connect wallet",
+    "common.share": "SHARE",
+    "common.file": "FILE",
+    "common.download": "↓ DOWNLOAD",
+    "common.sealedFile": "SEALED FILE",
+    "common.toBraga": "→ braga",
+    "common.audioFallback": "your browser does not support audio playback.",
+    "common.videoFallback": "your browser does not support video playback.",
+    "common.selected": "selected",
+
+    // Email triggers section
+    "et.header": "§ EMAIL TRIGGERS",
+    "et.hint":
+      "Each row creates an on-chain Action entity. The cron fires the email when the heartbeat reaches that point.",
+    "et.addCta": "+ ADD EMAIL",
+    "et.empty":
+      "no email triggers configured. vault recovery via Shamir works on its own — emails are an optional notification layer.",
+    "et.label": "TRIGGER",
+    "et.remove": "remove",
+    "et.emailPlaceholder": "recipient@example.com",
+    "et.messagePlaceholder": "Message body that will be delivered…",
+    "et.optionOnExpiry": "On heartbeat expiry (delivery)",
+    "et.option7d": "7 days before expiry (warning)",
+    "et.option30d": "30 days before expiry (warning)",
+
+    // Doc drop section
+    "dd.header": "§ DOCUMENT DROPS",
+    "dd.hint":
+      "Each row seals a file as a drand-timelocked Capsule. When the heartbeat lapses, the cron emails the recipient a link to download + decrypt it locally.",
+    "dd.addCta": "+ ADD FILE",
+    "dd.empty":
+      "no document drops configured. add a file (photo, pdf, video, audio — up to 1 mb) to release to someone after your heartbeat expires.",
+    "dd.label": "DROP",
+    "dd.clear": "clear",
+    "dd.messagePlaceholder":
+      "Note that will accompany the file link (optional)…",
+
+    // Status lines during vault creation
+    "inh.statusActioning": "[ACTION {i}/{n}] scheduling on-chain trigger…",
+    "inh.statusSealingDoc": "[DOC {i}/{n}] sealing file as timelock capsule…",
+
+    // Capsule new file-size error
+    "new.fileSizeError": "File is {kb} KB. Limit is {limit} KB per capsule.",
+
+    // Header
+    "head.tagline": "SEAL IT. PROVE IT. ISSUE NO. {issue}",
+
+    // /case-files outcome
+    "cf.outcome": "OUTCOME",
   },
   es: {
     // ─── Common ─────────────────────────────────────────────────────────
@@ -576,6 +653,7 @@ const dict = {
     "common.toggleLang": "EN",
     "nav.capsules": "Cápsulas",
     "nav.inheritance": "Herencia",
+    "nav.cases": "Case file",
 
     // ─── Página Case Files (/case-files) — narrativas ilustradas ────────
     "cf.navLink": "Casos",
@@ -650,7 +728,7 @@ const dict = {
     "home.heroTitleA": "Algunas cosas deben",
     "home.heroTitleB": "ejecutarse solas.",
     "home.heroSubtitle":
-      "Veil sella documentos, transferencias e instrucciones on-chain — y las ejecuta automáticamente cuando dejas de probar que estás vivo. Un testamento que se entrega solo. Una wallet que se transfiere sola. Un secreto que se libera solo. Programa el disparador, elige el destinatario, firma tu heartbeat cada periodo — o deja de firmar, y el resto es automático. Sin custodia, sin plataforma, anclado en drand + Shamir.",
+      "Veil sella documentos, transferencias e instrucciones on-chain — y las ejecuta automáticamente cuando dejas de probar que estás vivo. Un testamento que se entrega solo. Una wallet que se transfiere sola. Un secreto que se libera solo. Programa el trigger, elige el destinatario, firma tu heartbeat cada periodo — o deja de firmar, y el resto es automático. Sin custodia, sin plataforma, anclado en drand + Shamir.",
     "home.heroCtaPrimary": "Sellar una call",
     "home.heroCtaSecondary": "Ver cápsulas en vivo",
     "home.heroAttribution":
@@ -687,7 +765,7 @@ const dict = {
     "home.howStep3Tag": "03",
     "home.howStep3Title": "Revelar",
     "home.howStep3Body":
-      "En el momento elegido, drand publica el round. La key se vuelve derivable matemáticamente. Cualquiera con el link lee el texto original. La primera desencripción puede anclarse on-chain como entity Reveal.",
+      "En el momento elegido, drand publica el round. La clave se vuelve derivable matemáticamente. Cualquiera con el link lee el texto original. La primera desencripción puede anclarse on-chain como entity Reveal.",
 
     // ─── Home: Live example ─────────────────────────────────────────────
     "home.exampleEyebrow": "Velo funcionando",
@@ -707,7 +785,7 @@ const dict = {
       "Mercados, deportes, geopolítica, ciencia. Compromete tu pronóstico públicamente sin revelarlo — que la historia te califique.",
     "home.useCase2Title": "Pre-mortems de founders",
     "home.useCase2Body":
-      "Lista las cinco razones por las que tu startup puede fallar. Sellado al levantar. Revelado al exit o al cierre. La honestidad se vuelve track record.",
+      "Lista las cinco razones por las que tu startup puede fallar. Sellado al cerrar la ronda. Revelado al exit o al cierre. La honestidad se vuelve track record.",
     "home.useCase3Title": "Cartas a tu yo futuro",
     "home.useCase3Body":
       "Una nota para ti a los 30, tu hijo a los 18, tu equipo en el siguiente aniversario. Sin confianza, a través de los años.",
@@ -802,7 +880,7 @@ const dict = {
     "home.caseT2Date": "MAR 31 · 23:59Z",
     "home.caseT2Label": "ABRIR",
     "home.caseT2Body":
-      "drand publica el round. La key se vuelve derivable. Cualquiera con el link lee el texto exacto al que el trader se comprometió. Nadie podía hacerlo ni un segundo antes.",
+      "drand publica el round. La clave se vuelve derivable. Cualquiera con el link lee el texto exacto al que el trader se comprometió. Nadie podía hacerlo ni un segundo antes.",
     "home.caseT3Date": "DESDE ABR 01",
     "home.caseT3Label": "VERIFICAR",
     "home.caseT3Body":
@@ -925,7 +1003,7 @@ const dict = {
       "Cada cuánto debes firmar una tx para probar que estás vivo. Si fallas, la recuperación se habilita.",
     "inh.fieldValidators": "Validadores ({count} direcciones de wallet)",
     "inh.fieldValidatorsHint":
-      "Las wallets que pueden recuperar este secreto juntos. Cada uno recibe una share Shamir. Convención: avísales ahora para que sepan actuar si te quedas en silencio.",
+      "Las wallets que pueden recuperar este secreto juntas. Cada una recibe una share Shamir. Convención: avísales ahora para que sepan actuar si te quedas en silencio.",
     "inh.validatorPlaceholder": "0x… validador {i}",
     "inh.btnSeal": "Sellar bóveda",
     "inh.statusEncrypting": "Cifrando secreto con drand timelock…",
@@ -940,7 +1018,7 @@ const dict = {
     "inh.errorDuplicateValidator":
       "Las direcciones de validador deben ser únicas.",
     "inh.errorSelfValidator":
-      "Los validadores no pueden incluir tu propia wallet — pierde el sentido.",
+      "Los validadores no pueden incluir tu propia wallet — eso anula el propósito.",
 
     // ─── Inheritance — panel intro (use cases + steps) en /new ──────────
     "inh.introTag": "[¿QUÉ ES ESTO?]",
@@ -1127,6 +1205,85 @@ const dict = {
       "Se necesitan al menos {m} shares. Actualmente hay {have}.",
     "inh.recoverNotEligible":
       "Tu wallet conectada no está en la lista de validadores de esta bóveda.",
+
+    // ─── Nuevas: breadcrumbs + status + form helpers (i18n pass) ──
+    "sec.newVault": "§INH — NUEVA BÓVEDA",
+    "sec.newCapsule": "§NUEVA — SELLA UN CALL",
+    "sec.capsuleLoading": "§CAPSULE — CARGANDO",
+    "sec.capsule404": "§CAPSULE — 404",
+    "sec.capsule": "§CAPSULE",
+    "sec.vault": "§INH — BÓVEDA {short}",
+    "sec.feed": "§FEED — CAPSULES PÚBLICAS",
+    "sec.statusRecoveryOpen": "STATUS — RECUPERACIÓN ABIERTA",
+    "sec.statusAlive": "STATUS — VIVO",
+    "sec.examplesClickToFill": "EJEMPLOS — click para pre-llenar el título",
+    "sec.programmableTriggers": "TRIGGERS PROGRAMABLES",
+    "sec.fourTriggerTypes": "Cuatro triggers. Una bóveda.",
+    "sec.fourTriggerTypesLede":
+      "Una sola bóveda puede llevar varias acciones programadas — emails, transferencias, entrega de documentos — cada una con su propio destinatario y temporizador. Mientras firmes tu heartbeat, nada se dispara.",
+    "sec.outcome": "RESULTADO",
+    "sec.creatorImmutable": "CREADOR (INMUTABLE)",
+    "sec.howThisWorks": "CÓMO FUNCIONA",
+    "sec.howStep1":
+      "cuerpo cifrado client-side contra una ronda futura de drand.",
+    "sec.howStep2":
+      "ciphertext guardado como entidad arkiv firmada por tu wallet.",
+    "sec.howStep3": "nadie puede descifrar hasta que la ronda se publique.",
+    "common.notFoundVault": "Bóveda no encontrada.",
+    "common.back": "← volver",
+    "common.viewOnBraga": "ver en Braga →",
+    "common.errorBracket": "ERROR",
+    "common.connectFallback": "0x… — conecta tu wallet",
+    "common.share": "SHARE",
+    "common.file": "ARCHIVO",
+    "common.download": "↓ DESCARGAR",
+    "common.sealedFile": "ARCHIVO SELLADO",
+    "common.toBraga": "→ braga",
+    "common.audioFallback": "tu navegador no soporta reproducción de audio.",
+    "common.videoFallback": "tu navegador no soporta reproducción de video.",
+    "common.selected": "seleccionados",
+
+    // Email triggers section
+    "et.header": "§ TRIGGERS DE EMAIL",
+    "et.hint":
+      "Cada fila crea una entidad Action on-chain. El cron dispara el email cuando el heartbeat llega a ese punto.",
+    "et.addCta": "+ AGREGAR EMAIL",
+    "et.empty":
+      "no hay triggers de email configurados. la recuperación por Shamir funciona sola — los emails son una capa opcional de notificación.",
+    "et.label": "TRIGGER",
+    "et.remove": "quitar",
+    "et.emailPlaceholder": "destinatario@ejemplo.com",
+    "et.messagePlaceholder": "Cuerpo del mensaje que se entregará…",
+    "et.optionOnExpiry": "Al expirar el heartbeat (entrega)",
+    "et.option7d": "7 días antes de expirar (aviso)",
+    "et.option30d": "30 días antes de expirar (aviso)",
+
+    // Doc drop section
+    "dd.header": "§ ENTREGA DE DOCUMENTOS",
+    "dd.hint":
+      "Cada fila sella un archivo como Capsule con timelock drand. Cuando el heartbeat expira, el cron envía al destinatario un link para descargar + descifrar localmente.",
+    "dd.addCta": "+ AGREGAR ARCHIVO",
+    "dd.empty":
+      "no hay entregas de documentos configuradas. agrega un archivo (foto, pdf, video, audio — hasta 1 mb) para que se entregue a alguien después de que expire tu heartbeat.",
+    "dd.label": "DROP",
+    "dd.clear": "borrar",
+    "dd.messagePlaceholder":
+      "Nota que acompañará al link del archivo (opcional)…",
+
+    // Status lines during vault creation
+    "inh.statusActioning": "[ACTION {i}/{n}] programando trigger on-chain…",
+    "inh.statusSealingDoc":
+      "[DOC {i}/{n}] sellando archivo como capsule con timelock…",
+
+    // Capsule new file-size error
+    "new.fileSizeError":
+      "El archivo pesa {kb} KB. El límite es {limit} KB por capsule.",
+
+    // Header
+    "head.tagline": "SÉLLALO. PRUÉBALO. ISSUE NO. {issue}",
+
+    // /case-files outcome
+    "cf.outcome": "RESULTADO",
   },
 } as const satisfies Record<Lang, Record<string, string>>;
 

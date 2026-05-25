@@ -320,9 +320,9 @@ export default function NewInheritancePage() {
       case "share":
         return t("inh.statusCreatingShare", { i: status.i, n: status.n });
       case "action":
-        return `[ACTION ${status.i}/${status.n}] scheduling on-chain trigger…`;
+        return t("inh.statusActioning", { i: status.i, n: status.n });
       case "doc":
-        return `[DOC ${status.i}/${status.n}] sealing file as timelock capsule…`;
+        return t("inh.statusSealingDoc", { i: status.i, n: status.n });
       case "done":
         return t("inh.statusDone");
       default:
@@ -348,7 +348,7 @@ export default function NewInheritancePage() {
         </figure>
         <section className="border-2 border-black bg-white p-6 md:p-12 relative">
           <div className="absolute top-0 left-0 bg-black text-white px-2 py-1 text-[10px] uppercase font-bold tracking-widest">
-            [§INH — NEW VAULT]
+            [{t("sec.newVault")}]
           </div>
 
           <form
@@ -419,11 +419,10 @@ export default function NewInheritancePage() {
                 <div className="flex items-baseline justify-between gap-3">
                   <div>
                     <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-black">
-                      [§ EMAIL TRIGGERS]
+                      [{t("et.header")}]
                     </p>
                     <p className="mt-1 font-mono text-[10px] text-gray-500 leading-snug">
-                      Each row creates an on-chain Action entity. The cron fires
-                      the email when the heartbeat reaches that point.
+                      {t("et.hint")}
                     </p>
                   </div>
                   <button
@@ -432,15 +431,13 @@ export default function NewInheritancePage() {
                     disabled={busy}
                     className="border-2 border-black bg-white px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-black hover:bg-black hover:text-[#00e676] disabled:opacity-50"
                   >
-                    + ADD EMAIL
+                    {t("et.addCta")}
                   </button>
                 </div>
 
                 {emailTriggers.length === 0 && (
                   <p className="mt-3 border-2 border-dashed border-gray-300 bg-white p-3 font-mono text-[10px] uppercase tracking-widest text-gray-500">
-                    no email triggers configured. vault recovery via Shamir
-                    works on its own — emails are an optional notification
-                    layer.
+                    {t("et.empty")}
                   </p>
                 )}
 
@@ -449,7 +446,7 @@ export default function NewInheritancePage() {
                     <div key={i} className="border-2 border-black bg-white p-3">
                       <div className="flex items-baseline justify-between gap-2">
                         <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
-                          [TRIGGER {String(i + 1).padStart(2, "0")}]
+                          [{t("et.label")} {String(i + 1).padStart(2, "0")}]
                         </p>
                         <button
                           type="button"
@@ -457,7 +454,7 @@ export default function NewInheritancePage() {
                           disabled={busy}
                           className="font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-black"
                         >
-                          [remove]
+                          [{t("et.remove")}]
                         </button>
                       </div>
                       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
@@ -467,7 +464,7 @@ export default function NewInheritancePage() {
                           onChange={(e) =>
                             updateEmailTrigger(i, { recipient: e.target.value })
                           }
-                          placeholder="recipient@example.com"
+                          placeholder={t("et.emailPlaceholder")}
                           disabled={busy}
                         />
                         <select
@@ -481,14 +478,10 @@ export default function NewInheritancePage() {
                           className="w-full border-2 border-black bg-white px-3 py-2 font-mono text-sm text-black outline-none focus:bg-[#00e676]/5 disabled:bg-gray-100"
                         >
                           <option value="on-expiry">
-                            On heartbeat expiry (delivery)
+                            {t("et.optionOnExpiry")}
                           </option>
-                          <option value="warn-7d">
-                            7 days before expiry (warning)
-                          </option>
-                          <option value="warn-30d">
-                            30 days before expiry (warning)
-                          </option>
+                          <option value="warn-7d">{t("et.option7d")}</option>
+                          <option value="warn-30d">{t("et.option30d")}</option>
                         </select>
                       </div>
                       <textarea
@@ -497,7 +490,7 @@ export default function NewInheritancePage() {
                           updateEmailTrigger(i, { message: e.target.value })
                         }
                         rows={3}
-                        placeholder="Message body that will be delivered…"
+                        placeholder={t("et.messagePlaceholder")}
                         disabled={busy}
                         className="mt-2 w-full border-2 border-black bg-white px-3 py-2 font-mono text-sm text-black outline-none placeholder:text-gray-400 focus:bg-[#00e676]/5 disabled:bg-gray-100"
                       />
@@ -511,12 +504,10 @@ export default function NewInheritancePage() {
                 <div className="flex items-baseline justify-between gap-3">
                   <div>
                     <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-black">
-                      [§ DOCUMENT DROPS]
+                      [{t("dd.header")}]
                     </p>
                     <p className="mt-1 font-mono text-[10px] text-gray-500 leading-snug">
-                      Each row seals a file as a drand-timelocked Capsule. When
-                      the heartbeat lapses, the cron emails the recipient a link
-                      to download + decrypt it locally.
+                      {t("dd.hint")}
                     </p>
                   </div>
                   <button
@@ -525,15 +516,13 @@ export default function NewInheritancePage() {
                     disabled={busy}
                     className="shrink-0 border-2 border-black bg-white px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-black hover:bg-black hover:text-[#00e676] disabled:opacity-50"
                   >
-                    + ADD FILE
+                    {t("dd.addCta")}
                   </button>
                 </div>
 
                 {docDrops.length === 0 && (
                   <p className="mt-3 border-2 border-dashed border-gray-300 bg-white p-3 font-mono text-[10px] uppercase tracking-widest text-gray-500">
-                    no document drops configured. add a file (photo, pdf, video,
-                    audio — up to 1 mb) to release to someone after your
-                    heartbeat expires.
+                    {t("dd.empty")}
                   </p>
                 )}
 
@@ -542,7 +531,7 @@ export default function NewInheritancePage() {
                     <div key={i} className="border-2 border-black bg-white p-3">
                       <div className="flex items-baseline justify-between gap-2">
                         <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
-                          [DROP {String(i + 1).padStart(2, "0")}]
+                          [{t("dd.label")} {String(i + 1).padStart(2, "0")}]
                         </p>
                         <button
                           type="button"
@@ -550,7 +539,7 @@ export default function NewInheritancePage() {
                           disabled={busy}
                           className="font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-black"
                         >
-                          [remove]
+                          [{t("et.remove")}]
                         </button>
                       </div>
                       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
@@ -560,7 +549,7 @@ export default function NewInheritancePage() {
                           onChange={(e) =>
                             updateDocDrop(i, { recipient: e.target.value })
                           }
-                          placeholder="recipient@example.com"
+                          placeholder={t("et.emailPlaceholder")}
                           disabled={busy}
                         />
                         {d.file ? (
@@ -580,7 +569,7 @@ export default function NewInheritancePage() {
                               disabled={busy}
                               className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-black"
                             >
-                              [clear]
+                              [{t("dd.clear")}]
                             </button>
                           </div>
                         ) : (
@@ -601,7 +590,7 @@ export default function NewInheritancePage() {
                           updateDocDrop(i, { message: e.target.value })
                         }
                         rows={2}
-                        placeholder="Note that will accompany the file link (optional)…"
+                        placeholder={t("dd.messagePlaceholder")}
                         disabled={busy}
                         className="mt-2 w-full border-2 border-black bg-white px-3 py-2 font-mono text-sm text-black outline-none placeholder:text-gray-400 focus:bg-[#00e676]/5 disabled:bg-gray-100"
                       />

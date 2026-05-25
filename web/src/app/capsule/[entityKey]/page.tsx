@@ -97,7 +97,7 @@ export default function CapsulePage({
       <Header />
       <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-6 p-4 md:p-8">
         {load.kind === "loading" && (
-          <BrutalSection tag="[§CAPSULE — LOADING]">
+          <BrutalSection tag={`[${t("sec.capsuleLoading")}]`}>
             <p className="font-mono text-sm text-gray-500">
               [{t("view.loading")}]
             </p>
@@ -105,7 +105,7 @@ export default function CapsulePage({
         )}
 
         {load.kind === "not-found" && (
-          <BrutalSection tag="[§CAPSULE — 404]">
+          <BrutalSection tag={`[${t("sec.capsule404")}]`}>
             <h1 className="text-3xl uppercase tracking-tighter md:text-4xl">
               {t("view.notFound")}
             </h1>
@@ -148,12 +148,13 @@ function CapsuleView({
   reveal: RevealState;
   entityKey: string;
 }) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const isUnlocked = now >= capsule.unlockAt;
+  const localeFormat = lang === "es" ? "es-ES" : "en-US";
 
   return (
     <>
-      <BrutalSection tag="[§CAPSULE]" tagAccent>
+      <BrutalSection tag={`[${t("sec.capsule")}]`} tagAccent>
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 md:col-span-8">
             <div className="flex flex-wrap items-center gap-2">
@@ -198,7 +199,9 @@ function CapsuleView({
                 )}
                 {reveal.kind === "error" && (
                   <p className="text-black">
-                    <span className="bg-black px-1 text-white">[ERROR]</span>{" "}
+                    <span className="bg-black px-1 text-white">
+                      [{t("common.errorBracket")}]
+                    </span>{" "}
                     {t("view.decryptError")} {reveal.message}
                   </p>
                 )}
@@ -219,7 +222,7 @@ function CapsuleView({
             </MetaItem>
             <MetaItem label={t("view.metaUnlockAt")}>
               <span className="font-mono text-xs">
-                {new Date(capsule.unlockAt).toLocaleString()}
+                {new Date(capsule.unlockAt).toLocaleString(localeFormat)}
               </span>
             </MetaItem>
             <MetaItem label={t("view.metaUnlockRound")}>
@@ -254,6 +257,7 @@ function CapsuleView({
  * download button.
  */
 function RevealedContent({ content }: { content: CapsuleContent }) {
+  const { t } = useLanguage();
   // Build a Blob URL for files. useMemo isn't enough here because we also need
   // to revoke the URL on unmount.
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
@@ -281,7 +285,7 @@ function RevealedContent({ content }: { content: CapsuleContent }) {
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-black pb-2 font-mono text-[10px] uppercase tracking-widest text-gray-700">
         <span>
-          [FILE] {filename} · {sizeKb} KB · {mime || "binary"}
+          [{t("common.file")}] {filename} · {sizeKb} KB · {mime || "binary"}
         </span>
         {blobUrl && (
           <a
@@ -289,7 +293,7 @@ function RevealedContent({ content }: { content: CapsuleContent }) {
             download={filename}
             className="border-2 border-black bg-black px-2 py-1 font-bold text-[#00e676] hover:bg-[#00e676] hover:text-black"
           >
-            [↓ DOWNLOAD]
+            [{t("common.download")}]
           </a>
         )}
       </div>
@@ -305,7 +309,7 @@ function RevealedContent({ content }: { content: CapsuleContent }) {
 
       {blobUrl && mime.startsWith("audio/") && (
         <audio controls src={blobUrl} className="w-full">
-          your browser does not support audio playback.
+          {t("common.audioFallback")}
         </audio>
       )}
 
@@ -315,7 +319,7 @@ function RevealedContent({ content }: { content: CapsuleContent }) {
           src={blobUrl}
           className="block max-h-[600px] w-full border-2 border-black bg-black"
         >
-          your browser does not support video playback.
+          {t("common.videoFallback")}
         </video>
       )}
 

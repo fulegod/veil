@@ -73,7 +73,7 @@ export function InheritanceIntro({
       {/* Use case cards */}
       <div className="mt-8">
         <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
-          [EXAMPLES — click to pre-fill the title]
+          [{t("sec.examplesClickToFill")}]
         </p>
         <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
           {useCases.map((uc) => (

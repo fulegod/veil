@@ -273,7 +273,7 @@ function VaultColumn({
 
       {loading ? (
         <p className="font-mono text-[10px] uppercase tracking-widest text-gray-500">
-          loading…
+          {t("common.loading" as never)}
         </p>
       ) : vaults.length === 0 ? (
         <p className="border-2 border-black bg-white p-3 font-mono text-[10px] uppercase tracking-widest text-gray-600">

@@ -145,7 +145,7 @@ export default function VaultViewPage({
       <div className="flex flex-col flex-1 bg-white text-black">
         <Header />
         <div className="mx-auto w-full max-w-[1280px] p-8 font-mono text-xs uppercase tracking-widest text-gray-500">
-          loading…
+          {t("common.loading")}
         </div>
       </div>
     );
@@ -157,13 +157,13 @@ export default function VaultViewPage({
         <Header />
         <div className="mx-auto w-full max-w-[1280px] p-8">
           <p className="border-2 border-black bg-white p-3 font-mono text-xs uppercase tracking-widest">
-            Vault not found.
+            {t("common.notFoundVault")}
           </p>
           <Link
             href="/inheritance"
             className="mt-4 inline-block border-2 border-black bg-white px-3 py-2 font-mono text-xs font-bold uppercase tracking-widest hover:bg-black hover:text-[#00e676]"
           >
-            ← back
+            {t("common.back")}
           </Link>
         </div>
       </div>
@@ -176,7 +176,7 @@ export default function VaultViewPage({
       <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-6 p-4 md:p-8">
         <section className="border-2 border-black bg-white p-6 md:p-12 relative">
           <div className="absolute top-0 left-0 bg-black text-white px-2 py-1 text-[10px] uppercase font-bold tracking-widest">
-            [§INH — VAULT {vault.entityKey.slice(0, 10)}…]
+            [{t("sec.vault", { short: `${vault.entityKey.slice(0, 10)}…` })}]
           </div>
 
           <div className="mt-6 flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
@@ -228,7 +228,7 @@ export default function VaultViewPage({
                 rel="noopener noreferrer"
                 className="font-mono text-[10px] uppercase tracking-widest text-gray-500 underline hover:text-black"
               >
-                view on Braga →
+                {t("common.viewOnBraga")}
               </a>
             </div>
           </div>
@@ -266,7 +266,7 @@ export default function VaultViewPage({
             }`}
           >
             <p className="font-mono text-[10px] font-bold uppercase tracking-widest">
-              {expired ? "[STATUS — RECOVERY OPEN]" : "[STATUS — ALIVE]"}
+              [{expired ? t("sec.statusRecoveryOpen") : t("sec.statusAlive")}]
             </p>
             <h2 className="mt-1 font-mono text-base font-bold uppercase tracking-tight md:text-lg">
               {expired
@@ -350,7 +350,7 @@ export default function VaultViewPage({
                 >
                   <div className="flex items-center justify-between gap-2">
                     <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                      SHARE #{s.shareIndex}
+                      {t("common.share")} #{s.shareIndex}
                     </p>
                     <EnvelopeGlyph size={18} className="text-[#00e676]" />
                   </div>
@@ -431,7 +431,8 @@ export default function VaultViewPage({
                             href={`/capsule/${a.capsuleKey}`}
                             className="mt-2 inline-block border-2 border-black bg-black px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676] hover:bg-[#00e676] hover:text-black"
                           >
-                            [SEALED FILE → /capsule/{a.capsuleKey.slice(0, 8)}…]
+                            [{t("common.sealedFile")} → /capsule/
+                            {a.capsuleKey.slice(0, 8)}…]
                           </Link>
                         )}
                         <a
@@ -440,7 +441,7 @@ export default function VaultViewPage({
                           rel="noopener noreferrer"
                           className="ml-2 mt-2 inline-block font-mono text-[10px] uppercase tracking-widest text-gray-500 underline hover:text-black"
                         >
-                          {a.entityKey.slice(0, 10)}… → braga
+                          {a.entityKey.slice(0, 10)}… {t("common.toBraga")}
                         </a>
                       </li>
                     );

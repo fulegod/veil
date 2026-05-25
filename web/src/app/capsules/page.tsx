@@ -79,7 +79,7 @@ export default function CapsulesPage() {
       <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-6 p-4 md:p-8">
         <section className="relative border-2 border-black bg-white p-6 md:p-12">
           <div className="absolute top-0 left-0 bg-black px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
-            [§FEED — PUBLIC CAPSULES]
+            [{t("sec.feed")}]
           </div>
 
           <div className="mt-6 flex flex-wrap items-baseline justify-between gap-3 border-b-2 border-black pb-4">

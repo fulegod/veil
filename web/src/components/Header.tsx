@@ -32,6 +32,11 @@ export function Header() {
       href: "/inheritance",
       active: pathname.startsWith("/inheritance"),
     },
+    {
+      label: t("nav.cases"),
+      href: "/case-files",
+      active: pathname.startsWith("/case-files"),
+    },
   ];
 
   return (
@@ -80,7 +85,7 @@ export function Header() {
                   VEIL
                 </span>
                 <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                  SEAL IT. PROVE IT. ISSUE NO. {issue}
+                  {t("head.tagline", { issue })}
                 </span>
               </span>
             </Link>

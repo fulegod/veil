@@ -69,15 +69,13 @@ export function TriggerTypes() {
   return (
     <section className="border-2 border-black bg-white p-6 md:p-8">
       <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-gray-500">
-        [PROGRAMMABLE TRIGGERS]
+        [{t("sec.programmableTriggers")}]
       </p>
       <h2 className="mt-2 text-2xl uppercase tracking-tighter text-black md:text-3xl lg:text-4xl">
-        Four trigger types. One Vault.
+        {t("sec.fourTriggerTypes")}
       </h2>
       <p className="mt-3 max-w-3xl text-xs leading-snug text-gray-700 text-justify md:text-sm">
-        A single Vault can carry multiple scheduled actions — emails, transfers,
-        document drops — each with its own recipient and timer. While you sign
-        your heartbeat, nothing fires.
+        {t("sec.fourTriggerTypesLede")}
       </p>
 
       <div className="mt-6 grid grid-cols-1 gap-0 border-2 border-black md:grid-cols-2 lg:grid-cols-4">
