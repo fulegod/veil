@@ -120,6 +120,56 @@ async function main() {
   console.log(`   📜 tx:            ${vaultRes.txHash}`);
   console.log(`   🔎 ${explorerTx(vaultRes.txHash)}\n`);
 
+  // ─── 3.5. Create 2 Action entities (email_warning + email_delivery) ─────
+  console.log(
+    "📝 Creating 2 Action entities (email_warning + email_delivery)…",
+  );
+  const actionConfigs = [
+    {
+      type: "email_warning",
+      triggerOffset: -30 * 24 * 3600 * 1000, // 30 days BEFORE heartbeat expiry
+      destination: "heir@example.com",
+      message:
+        "Your Veil vault expires in 30 days. Sign a heartbeat tx to extend.",
+    },
+    {
+      type: "email_delivery",
+      triggerOffset: 0, // exactly at heartbeat expiry
+      destination: "heir@example.com",
+      message:
+        "Owner went silent. This message is delivered as part of the vault contents.",
+    },
+  ];
+  const actionTxs: { entityKey: string; txHash: string; type: string }[] = [];
+  for (const cfg of actionConfigs) {
+    const triggerAt = heartbeatAt + cfg.triggerOffset;
+    const res = await walletClient.createEntity({
+      payload: new TextEncoder().encode(
+        JSON.stringify({ message: cfg.message, destination: cfg.destination }),
+      ),
+      contentType: "application/json",
+      attributes: [
+        { key: "app", value: PROJECT },
+        { key: "kind", value: "action" },
+        { key: "vault_key", value: vaultRes.entityKey },
+        { key: "action_type", value: cfg.type },
+        { key: "trigger_at", value: triggerAt },
+        { key: "destination", value: cfg.destination },
+        { key: "notified_at", value: 0 },
+      ],
+      expiresIn: ExpirationTime.fromSeconds(2 * 365 * 24 * 3600),
+    });
+    actionTxs.push({
+      entityKey: res.entityKey,
+      txHash: res.txHash,
+      type: cfg.type,
+    });
+    console.log(
+      `   ✅ Action [${cfg.type}]: ${res.entityKey}  tx ${res.txHash.slice(0, 12)}…`,
+    );
+  }
+  console.log("");
+
   // ─── 4. Create N Share entities ──────────────────────────────────────
   console.log(`📝 Creating ${TOTAL} Share entities linked via vault_key…`);
   const shareTxs: { entityKey: string; txHash: string; index: number }[] = [];
@@ -210,6 +260,55 @@ async function main() {
   console.log(
     `   ✓ listVaultsForValidator finds vault from validator 3's perspective`,
   );
+
+  // Query: Actions linked to this vault
+  const actionsQuery = await publicClient
+    .buildQuery()
+    .where(
+      and([
+        eq("app", PROJECT),
+        eq("kind", "action"),
+        eq("vault_key", vaultRes.entityKey),
+      ]),
+    )
+    .withAttributes()
+    .withMetadata()
+    .withPayload()
+    .limit(20)
+    .fetch();
+  console.assert(
+    actionsQuery.entities.length === actionConfigs.length,
+    `✗ expected ${actionConfigs.length} actions, got ${actionsQuery.entities.length}`,
+  );
+  console.log(
+    `   ✓ getActionsForVault returns ${actionsQuery.entities.length} actions`,
+  );
+
+  // Verify each action's payload + trigger_at + action_type round-trip correctly
+  for (const e of actionsQuery.entities as Array<{
+    attributes: { key: string; value: string | number }[];
+    payload?: Uint8Array | null;
+  }>) {
+    const attrs = Object.fromEntries(e.attributes.map((a) => [a.key, a.value]));
+    const actionType = String(attrs.action_type);
+    const matchingConfig = actionConfigs.find((c) => c.type === actionType);
+    console.assert(
+      !!matchingConfig,
+      `✗ unknown action_type came back from Arkiv: ${actionType}`,
+    );
+    console.assert(
+      Number(attrs.notified_at) === 0,
+      `✗ action ${actionType} should be unfired (notified_at=0)`,
+    );
+    if (e.payload) {
+      const parsed = JSON.parse(new TextDecoder().decode(e.payload));
+      console.assert(
+        parsed.message === matchingConfig?.message,
+        `✗ action ${actionType} message did not round-trip`,
+      );
+    }
+  }
+  console.log(`   ✓ Each action's payload + attributes round-trip correctly`);
   console.log("");
 
   // ─── 6. Wait for drand round + reconstruct ────────────────────────────
@@ -257,11 +356,19 @@ async function main() {
   shareTxs.forEach((s) => {
     console.log(`Share #${s.index} tx:   ${explorerTx(s.txHash)}`);
   });
+  actionTxs.forEach((a) => {
+    console.log(`Action [${a.type}] tx: ${explorerTx(a.txHash)}`);
+  });
   console.log("");
   console.log(`✅ End-to-end inheritance flow verified on Braga.`);
-  console.log(`   1 Vault + ${TOTAL} Shares created, queried, recombined.`);
+  console.log(
+    `   1 Vault + ${TOTAL} Shares + ${actionTxs.length} Actions created, queried, recombined.`,
+  );
   console.log(
     `   ${THRESHOLD}-of-${TOTAL} Shamir threshold confirmed against real drand round.`,
+  );
+  console.log(
+    `   Action entities (programmable triggers) round-tripped through Arkiv.`,
   );
 }
 

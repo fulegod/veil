@@ -156,26 +156,30 @@ The full write-up with code snippets is in [`PATTERNS.md`](./PATTERNS.md). Brief
 
 ## End-to-end evidence on Braga
 
-The `smoke/src/inheritance-e2e.ts` script runs the **full Inheritance feature against real Arkiv** — encrypt with drand, split with Shamir, write 1 Vault + 5 Share entities, query each one back, wait for the drand round, recombine 3-of-5 shares and assert plaintext matches. Run it yourself with `cd smoke && bun run inheritance`.
+The `smoke/src/inheritance-e2e.ts` script runs the **full Inheritance feature against real Arkiv** — encrypt with drand, split with Shamir, write 1 Vault + 5 Share + 2 Action entities, query each one back, wait for the drand round, recombine 3-of-5 shares and assert plaintext matches. Run it yourself with `cd smoke && bun run inheritance`.
 
-Output from the run on 2026-05-23:
+Output from the run on 2026-05-25:
 
 ```
-✅ Vault entity: 0x9224e57d6af73b320b06c8eae4f223b220254f04200c7d4b54b966bd63497a6e
-   Vault tx:     0xb9a789a20925a4d53bf20e7231c5a467fc514ea401f6e43356285da9da97feb3
-   Share #1 tx:  0x1ebc515446f8a5292166614c00cea84520427c6d0590d4b4ea45e4f5cee419e9
-   Share #2 tx:  0xbb126b19d19d9750b72c7cfe39bbdea3419782687226df1f0cde36d70ce41b6d
-   Share #3 tx:  0x85849515e803d61a727b414e2d3453a9bacf99905efd8e91f874e140e9c868a4
-   Share #4 tx:  0x63b27508e524c985b9a8baa6575cc0f8f6cae60e14c3264fa36fc4416046c56f
-   Share #5 tx:  0xe1a24362ebca91aa5e7ac66aa3fd1e052b6c9848ea2b2dd5213a82bfca62942f
+✅ Vault entity: 0xb33d392775695b472d7815d7ef5d6989d5e2ff125ce961980fed03c986b26420
+   Vault tx:     0xb81d23c69d118c9dc03ba2c3254883cc17f63769a4bcc444ce6b55b2322ff33b
+   Share #1 tx:  0x7ea33182ff0ef7b110664110a0ab30e903d1afb35694a3daea66a1031a06665c
+   Share #2 tx:  0xb3a6762bf0a916b1a5a143b2897caaefcd670e1f93a6e93de140e5cdb4542930
+   Share #3 tx:  0x742b2261e8883f36acc4e9e664ec76d444ca91e8c18447ccec536eb6b9c16df3
+   Share #4 tx:  0x42e71ab5f72642e93d6e37ba0f5a7438e650f4ecddfcdd32f05639835f53ca5d
+   Share #5 tx:  0x845eb41f2f5490b01ede38fc685f81f2e8e15b2d0cea37a04578f53a90f77d24
+   Action [email_warning]  tx: 0x5dcd2cf288a5cb27a86c070e7918fcd2b8c2158c6ee317e3bd8bc8333daa16b7
+   Action [email_delivery] tx: 0x6a37e5406a429dde850bc9485c99afc118c738b0517c42adf3835e4a1c31cfc4
 
 ✓ getEntity returns vault with correct attrs
 ✓ getSharesForVault returns 5 shares (sorted by share_index)
 ✓ listVaultsForValidator finds vault from validator 3's perspective
+✓ getActionsForVault returns 2 actions
+✓ Each action's payload + attributes round-trip correctly
 ✓ Recovered secret matches original after 3-of-5 Shamir combine
 ```
 
-The vault entity is browsable at [explorer.braga.hoodi.arkiv.network/entity/0x9224…7a6e](https://explorer.braga.hoodi.arkiv.network/entity/0x9224e57d6af73b320b06c8eae4f223b220254f04200c7d4b54b966bd63497a6e) — the `PROJECT_ATTRIBUTE`, `kind=vault`, `threshold=3`, `total_shares=5` etc. are all visible on-chain. The 5 share entities link to it via the `vault_key` attribute.
+The vault entity is browsable at [explorer.braga.hoodi.arkiv.network/entity/0xb33d…6420](https://explorer.braga.hoodi.arkiv.network/entity/0xb33d392775695b472d7815d7ef5d6989d5e2ff125ce961980fed03c986b26420) — the `PROJECT_ATTRIBUTE`, `kind=vault`, `threshold=3`, `total_shares=5` etc. are all visible on-chain. The 5 share entities link to it via the `vault_key` attribute. The 2 action entities link via the same `vault_key` and carry the email payloads + `trigger_at` for the off-chain cron dispatcher.
 
 This is the evidence that the feature works against the real Braga network, not just in a unit test.
 
