@@ -27,7 +27,8 @@ import { Header } from "@/components/Header";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useArkivClients } from "@/hooks/useArkivClients";
 import { encryptForTime } from "@/lib/tlock";
-import { createVault, createShare } from "@/lib/arkiv";
+import { createVault, createShare, createAction } from "@/lib/arkiv";
+import { ACTION_TYPE } from "@/lib/config";
 import {
   splitSecret,
   shareToHex,
@@ -45,6 +46,7 @@ type Status =
   | { kind: "splitting"; n: number }
   | { kind: "vault" }
   | { kind: "share"; i: number; n: number }
+  | { kind: "action"; i: number; n: number }
   | { kind: "done"; entityKey: string }
   | {
       kind: "error";
@@ -54,6 +56,14 @@ type Status =
     };
 
 const isAddress = (v: string) => /^0x[a-fA-F0-9]{40}$/.test(v.trim());
+const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+
+// Email trigger row — what the user composes for each scheduled email Action
+interface EmailTrigger {
+  recipient: string;
+  message: string;
+  timing: "on-expiry" | "warn-7d" | "warn-30d";
+}
 
 export default function NewInheritancePage() {
   const router = useRouter();
@@ -78,6 +88,7 @@ export default function NewInheritancePage() {
   const [heartbeat, setHeartbeat] =
     useState<HeartbeatPreset>(DEFAULT_HEARTBEAT);
   const [validators, setValidators] = useState<string[]>(["", "", "", "", ""]);
+  const [emailTriggers, setEmailTriggers] = useState<EmailTrigger[]>([]);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
 
   const preset = THRESHOLD_PRESETS[thresholdIdx];
@@ -162,12 +173,60 @@ export default function NewInheritancePage() {
         });
       }
 
+      // Validate + create email-trigger Action entities (if any configured)
+      const validTriggers = emailTriggers.filter(
+        (et) => isEmail(et.recipient) && et.message.trim().length > 0,
+      );
+      for (let i = 0; i < validTriggers.length; i++) {
+        const et = validTriggers[i];
+        setStatus({
+          kind: "action",
+          i: i + 1,
+          n: validTriggers.length,
+        });
+        // Convert UI timing → ms-epoch relative to heartbeatAt
+        const triggerAtMs =
+          et.timing === "on-expiry"
+            ? heartbeatAt
+            : et.timing === "warn-7d"
+              ? heartbeatAt - 7 * 24 * 60 * 60 * 1000
+              : heartbeatAt - 30 * 24 * 60 * 60 * 1000;
+        const actionType =
+          et.timing === "on-expiry"
+            ? ACTION_TYPE.EMAIL_DELIVERY
+            : ACTION_TYPE.EMAIL_WARNING;
+        await createAction({
+          walletClient: arkivWallet,
+          vaultKey,
+          actionType,
+          triggerAtMs,
+          destination: et.recipient.trim(),
+          message: et.message.trim(),
+        });
+      }
+
       setStatus({ kind: "done", entityKey: vaultKey });
       setTimeout(() => router.push(`/inheritance/${vaultKey}`), 1500);
     } catch (err) {
       const raw = err instanceof Error ? err.message : String(err);
       setStatus({ kind: "error", raw });
     }
+  }
+
+  // Email trigger editor helpers
+  function addEmailTrigger() {
+    setEmailTriggers((prev) => [
+      ...prev,
+      { recipient: "", message: "", timing: "on-expiry" },
+    ]);
+  }
+  function updateEmailTrigger(idx: number, patch: Partial<EmailTrigger>) {
+    setEmailTriggers((prev) =>
+      prev.map((et, i) => (i === idx ? { ...et, ...patch } : et)),
+    );
+  }
+  function removeEmailTrigger(idx: number) {
+    setEmailTriggers((prev) => prev.filter((_, i) => i !== idx));
   }
 
   const statusLine = useMemo(() => {
@@ -180,6 +239,8 @@ export default function NewInheritancePage() {
         return t("inh.statusCreatingVault");
       case "share":
         return t("inh.statusCreatingShare", { i: status.i, n: status.n });
+      case "action":
+        return `[ACTION ${status.i}/${status.n}] scheduling on-chain trigger…`;
       case "done":
         return t("inh.statusDone");
       default:
@@ -270,6 +331,98 @@ export default function NewInheritancePage() {
                   ))}
                 </div>
               </Field>
+
+              {/* ── Email triggers (Action entities) — optional, multi-row ── */}
+              <div className="border-t-2 border-black pt-6">
+                <div className="flex items-baseline justify-between gap-3">
+                  <div>
+                    <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-black">
+                      [§ EMAIL TRIGGERS]
+                    </p>
+                    <p className="mt-1 font-mono text-[10px] text-gray-500 leading-snug">
+                      Each row creates an on-chain Action entity. The cron fires
+                      the email when the heartbeat reaches that point.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addEmailTrigger}
+                    disabled={busy}
+                    className="border-2 border-black bg-white px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-black hover:bg-black hover:text-[#00e676] disabled:opacity-50"
+                  >
+                    + ADD EMAIL
+                  </button>
+                </div>
+
+                {emailTriggers.length === 0 && (
+                  <p className="mt-3 border-2 border-dashed border-gray-300 bg-white p-3 font-mono text-[10px] uppercase tracking-widest text-gray-500">
+                    no email triggers configured. vault recovery via Shamir
+                    works on its own — emails are an optional notification
+                    layer.
+                  </p>
+                )}
+
+                <div className="mt-3 flex flex-col gap-3">
+                  {emailTriggers.map((et, i) => (
+                    <div key={i} className="border-2 border-black bg-white p-3">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#00e676]">
+                          [TRIGGER {String(i + 1).padStart(2, "0")}]
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => removeEmailTrigger(i)}
+                          disabled={busy}
+                          className="font-mono text-[10px] uppercase tracking-widest text-gray-500 hover:text-black"
+                        >
+                          [remove]
+                        </button>
+                      </div>
+                      <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
+                        <BrutalInput
+                          type="email"
+                          value={et.recipient}
+                          onChange={(e) =>
+                            updateEmailTrigger(i, { recipient: e.target.value })
+                          }
+                          placeholder="recipient@example.com"
+                          disabled={busy}
+                        />
+                        <select
+                          value={et.timing}
+                          onChange={(e) =>
+                            updateEmailTrigger(i, {
+                              timing: e.target.value as EmailTrigger["timing"],
+                            })
+                          }
+                          disabled={busy}
+                          className="w-full border-2 border-black bg-white px-3 py-2 font-mono text-sm text-black outline-none focus:bg-[#00e676]/5 disabled:bg-gray-100"
+                        >
+                          <option value="on-expiry">
+                            On heartbeat expiry (delivery)
+                          </option>
+                          <option value="warn-7d">
+                            7 days before expiry (warning)
+                          </option>
+                          <option value="warn-30d">
+                            30 days before expiry (warning)
+                          </option>
+                        </select>
+                      </div>
+                      <textarea
+                        value={et.message}
+                        onChange={(e) =>
+                          updateEmailTrigger(i, { message: e.target.value })
+                        }
+                        rows={3}
+                        placeholder="Message body that will be delivered…"
+                        disabled={busy}
+                        className="mt-2 w-full border-2 border-black bg-white px-3 py-2 font-mono text-sm text-black outline-none placeholder:text-gray-400 focus:bg-[#00e676]/5 disabled:bg-gray-100"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Right column — config + actions */}
