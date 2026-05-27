@@ -135,10 +135,9 @@ ethns-builder/
 │   ├── vercel.json               ← cron schedule + framework config
 │   └── public/error-silencer.js  ← runs beforeInteractive
 ├── smoke/                         ← standalone validation scripts (Bun)
-│   └── src/{wallet,arkiv,tlock,combined}.ts
-├── CLAUDE.md                      ← AI builder rules for this project
-├── PATTERNS.md                    ← Arkiv patterns this build demonstrates
-└── SKILLS.md                      ← index of skills loaded
+│   └── src/{wallet,arkiv,tlock,combined,inheritance-e2e}.ts
+├── PATTERNS.md                    ← 12 Arkiv patterns this build demonstrates
+└── README.md
 ```
 
 ## Arkiv patterns this project demonstrates
