@@ -30,12 +30,7 @@ import { Header } from "@/components/Header";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useArkivClients } from "@/hooks/useArkivClients";
 import { encryptForTime, encryptBytesForTime } from "@/lib/tlock";
-import {
-  createVault,
-  createShare,
-  createAction,
-  createCapsule,
-} from "@/lib/arkiv";
+import { createInheritanceBundle } from "@/lib/arkiv";
 import { ACTION_TYPE } from "@/lib/config";
 import {
   MAX_CAPSULE_FILE_BYTES,
@@ -185,44 +180,13 @@ export default function NewInheritancePage() {
       const { ciphertext, round } = await encryptForTime(secret, heartbeatAt);
 
       setStatus({ kind: "splitting", n: preset.total });
-      const shares = splitSecret(secret, preset.threshold, preset.total);
+      const sharesRaw = splitSecret(secret, preset.threshold, preset.total);
 
-      setStatus({ kind: "vault" });
-      const vaultRes = await createVault({
-        walletClient: arkivWallet,
-        ciphertext,
-        unlockRound: round,
-        heartbeatAt,
-        title: title.trim(),
-        threshold: preset.threshold,
-        totalShares: preset.total,
-      });
-
-      const vaultKey = vaultRes.entityKey;
-
-      for (let i = 0; i < preset.total; i++) {
-        setStatus({ kind: "share", i: i + 1, n: preset.total });
-        await createShare({
-          walletClient: arkivWallet,
-          vaultKey,
-          shareIndex: i + 1,
-          validatorAddress: trimmed[i],
-          shareHex: shareToHex(shares[i]),
-        });
-      }
-
-      // Validate + create email-trigger Action entities (if any configured)
-      const validTriggers = emailTriggers.filter(
+      // Build the email-action list from the configured triggers.
+      const validEmails = emailTriggers.filter(
         (et) => isEmail(et.recipient) && et.message.trim().length > 0,
       );
-      for (let i = 0; i < validTriggers.length; i++) {
-        const et = validTriggers[i];
-        setStatus({
-          kind: "action",
-          i: i + 1,
-          n: validTriggers.length,
-        });
-        // Convert UI timing → ms-epoch relative to heartbeatAt
+      const emailActions = validEmails.map((et) => {
         const triggerAtMs =
           et.timing === "on-expiry"
             ? heartbeatAt
@@ -233,21 +197,30 @@ export default function NewInheritancePage() {
           et.timing === "on-expiry"
             ? ACTION_TYPE.EMAIL_DELIVERY
             : ACTION_TYPE.EMAIL_WARNING;
-        await createAction({
-          walletClient: arkivWallet,
-          vaultKey,
+        return {
           actionType,
           triggerAtMs,
           destination: et.recipient.trim(),
           message: et.message.trim(),
-        });
-      }
+        };
+      });
 
-      // Doc-drop triggers — encrypt each file with the same heartbeat round,
-      // store as an unlisted Capsule, then point an Action at it.
+      // Build the doc-drop list: encrypt each file client-side now, then hand
+      // the ciphertext to the bundle so it can mint Capsules in batch.
       const validDocs = docDrops.filter(
         (d) => isEmail(d.recipient) && !!d.file,
       );
+      const docDropInputs = [] as Array<{
+        triggerAtMs: number;
+        destination: string;
+        message: string;
+        capsule: {
+          ciphertext: Uint8Array;
+          unlockRound: number;
+          heartbeatAt: number;
+          title: string;
+        };
+      }>;
       for (let i = 0; i < validDocs.length; i++) {
         const d = validDocs[i];
         const f = d.file!;
@@ -264,30 +237,46 @@ export default function NewInheritancePage() {
           mime: f.type || "application/octet-stream",
           bytes: fileBytes,
         });
-        // Encrypt with same drand round as the vault's heartbeat — nothing
-        // can be decrypted before that round publishes.
         const enc = await encryptBytesForTime(wrapped, heartbeatAt);
-        const cap = await createCapsule({
-          walletClient: arkivWallet,
-          ciphertext: enc.ciphertext,
-          unlockRound: enc.round,
-          unlockAt: heartbeatAt,
-          title: `${title.trim()} — ${f.name}`,
-          isPublic: false,
-        });
-        await createAction({
-          walletClient: arkivWallet,
-          vaultKey,
-          actionType: ACTION_TYPE.DOC_DROP,
+        docDropInputs.push({
           triggerAtMs: heartbeatAt,
           destination: d.recipient.trim(),
           message: d.message.trim() || f.name,
-          capsuleKey: cap.entityKey,
+          capsule: {
+            ciphertext: enc.ciphertext,
+            unlockRound: enc.round,
+            heartbeatAt,
+            title: `${title.trim()} — ${f.name}`,
+          },
         });
       }
 
-      setStatus({ kind: "done", entityKey: vaultKey });
-      setTimeout(() => router.push(`/inheritance/${vaultKey}`), 1500);
+      // ───── Batch mint everything ─────
+      // Pattern 12: mutateEntities collapses what would be 1 (vault) + N
+      // (shares) + M (email actions) + 2K (capsule + action per doc-drop)
+      // wallet signatures into 2-3 total, no matter the volume.
+      setStatus({ kind: "vault" });
+      const bundle = await createInheritanceBundle({
+        walletClient: arkivWallet,
+        vault: {
+          ciphertext,
+          unlockRound: round,
+          heartbeatAt,
+          title: title.trim(),
+          threshold: preset.threshold,
+          totalShares: preset.total,
+        },
+        shares: sharesRaw.map((s, i) => ({
+          shareIndex: i + 1,
+          validatorAddress: trimmed[i],
+          shareHex: shareToHex(s),
+        })),
+        emailActions,
+        docDrops: docDropInputs,
+      });
+
+      setStatus({ kind: "done", entityKey: bundle.vaultKey });
+      setTimeout(() => router.push(`/inheritance/${bundle.vaultKey}`), 1500);
     } catch (err) {
       const raw = err instanceof Error ? err.message : String(err);
       setStatus({ kind: "error", raw });
