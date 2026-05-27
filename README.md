@@ -8,19 +8,21 @@ documents that deliver themselves, wallets that transfer themselves.
 > _(Chainalysis: ~20% of all BTC permanently lost. At current prices, ~$140B.)_
 > _Yours doesn't have to be next._
 
-|                          |                                                                                                                                                                                                                                                                  |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Demo**                 | https://web-eta-hazel-33.vercel.app                                                                                                                                                                                                                              |
-| **Live capsule example** | [`0x91807c…0403a`](https://web-eta-hazel-33.vercel.app/capsule/0x91807c370f60f91312267f23a319f2d587b09a20b0cc502287ac1eb2081d403a) · [view tx](https://explorer.braga.hoodi.arkiv.network/tx/0x7d23fef2d37e94d09a999266809d23c4db71bd06df1bf35262c7fa18300a1fe1) |
-| **Network**              | Arkiv on Braga testnet (chainId `60138453102`)                                                                                                                                                                                                                   |
-| **Stack**                | Bun · Next.js 16 · React 19 · `@arkiv-network/sdk` · `tlock-js` · wagmi · viem · RainbowKit                                                                                                                                                                      |
-| **Challenge**            | Arkiv × ETHNS Builder Challenge — Privacy track                                                                                                                                                                                                                  |
+|                        |                                                                                                                                                                              |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Live demo**          | https://web-eta-hazel-33.vercel.app                                                                                                                                          |
+| **Demo video** (2 min) | https://youtu.be/xhoP865xgvY                                                                                                                                                 |
+| **Verifiable vault**   | [`0xb33d39…6420`](https://explorer.braga.hoodi.arkiv.network/entity/0xb33d392775695b472d7815d7ef5d6989d5e2ff125ce961980fed03c986b26420) — 5 shares + 2 actions, all on Arkiv |
+| **Live capsule**       | [`0x91807c…0403a`](https://web-eta-hazel-33.vercel.app/capsule/0x91807c370f60f91312267f23a319f2d587b09a20b0cc502287ac1eb2081d403a)                                           |
+| **Network**            | Arkiv on Braga testnet (chainId `60138453102`)                                                                                                                               |
+| **Stack**              | Bun · Next.js 16 · React 19 · `@arkiv-network/sdk` · `tlock-js` (drand) · `shamirs-secret-sharing` · wagmi + viem · RainbowKit · Resend + Vercel Cron                        |
+| **Challenge**          | Arkiv × ETHNS Builder Challenge — Privacy track                                                                                                                              |
 
 ---
 
 ## The problem
 
-Crypto Twitter is full of deleted tweets, edited screenshots and "I told you so" with no proof. Tipster channels delete losing trades. Influencers cherry-pick their wins. There is no neutral, trust-less way to verify who said what, when.
+**$140B+ in crypto is lost forever** to dead wallets. People die with seed phrases on USB sticks. Founders disappear with single-sig keys. Whistleblowers vanish before publishing. Nothing on-chain knows when its owner is gone — so nothing fires automatically. Either you trust a custodian (defeats the point) or you accept that your intentions die with you.
 
 ## What Veil does
 
@@ -156,6 +158,7 @@ The full write-up with code snippets is in [`PATTERNS.md`](./PATTERNS.md). Brief
 | 9   | **Off-chain action dispatcher driven by on-chain state** — Action entities scheduled in Arkiv, fired by a Vercel cron polling hourly; `notified_at` numeric attribute as idempotency anchor                                                                                                                                                             | `Action` entity + `/api/cron/check-vaults/route.ts`   |
 | 10  | **Binary payloads on a string-shaped substrate** — Capsule payloads carry a 1-byte kind tag + length-prefixed name/mime + raw file bytes, all then drand-encrypted. The same primitive renders text, photos, audio, video and PDFs in the browser after unlock.                                                                                         | `lib/capsule-payload.ts` + `/capsule/[key]`           |
 | 11  | **Cross-entity composition (Vault → Action → Capsule)** — a `doc_drop` Action keeps a `capsule_key` attribute pointing at a separate Capsule entity. When the heartbeat lapses, the cron emails a deep-link to the Capsule, whose drand round is the same as the heartbeat round — so the recipient's browser can decrypt only after the trigger fires. | `createAction({capsuleKey})` + cron `doc_drop` branch |
+| 12  | **`mutateEntities` batch creates** — naive flow signed 8+ wallet popups for one vault (vault + 5 shares + 2 actions + capsule). Bundle helper collapses to 2-3 signatures regardless of share/email/doc counts, sidestepping Braga RPC rate-limits.                                                                                                     | `createInheritanceBundle()` in `lib/arkiv.ts`         |
 
 ## End-to-end evidence on Braga
 
