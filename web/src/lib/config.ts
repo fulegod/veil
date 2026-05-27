@@ -45,7 +45,7 @@ export const EXPLORER_BASE = "https://explorer.braga.hoodi.arkiv.network";
  * don't ship a broken link. When populated, the button appears and opens in
  * a new tab.
  */
-export const DEMO_VIDEO_URL = "";
+export const DEMO_VIDEO_URL = "https://youtu.be/xhoP865xgvY";
 
 export function explorerTxUrl(hash: string): string {
   return `${EXPLORER_BASE}/tx/${hash}`;
