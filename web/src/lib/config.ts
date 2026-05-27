@@ -39,6 +39,14 @@ export type EntityKind = (typeof ENTITY_KIND)[keyof typeof ENTITY_KIND];
 
 export const EXPLORER_BASE = "https://explorer.braga.hoodi.arkiv.network";
 
+/**
+ * Demo video URL — set once the recording is uploaded to YouTube (unlisted)
+ * or Loom. When empty, the "Live demo" button in the header is hidden so we
+ * don't ship a broken link. When populated, the button appears and opens in
+ * a new tab.
+ */
+export const DEMO_VIDEO_URL = "";
+
 export function explorerTxUrl(hash: string): string {
   return `${EXPLORER_BASE}/tx/${hash}`;
 }

@@ -642,6 +642,7 @@ const dict = {
 
     // Header
     "head.tagline": "SEAL IT. PROVE IT. ISSUE NO. {issue}",
+    "head.demoLive": "Live demo · 2 min",
 
     // /case-files outcome
     "cf.outcome": "OUTCOME",
@@ -1331,6 +1332,7 @@ const dict = {
 
     // Header
     "head.tagline": "SÉLLALO. PRUÉBALO. ISSUE NO. {issue}",
+    "head.demoLive": "Demo live · 2 min",
 
     // /case-files outcome
     "cf.outcome": "RESULTADO",
