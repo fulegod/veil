@@ -97,26 +97,18 @@ export function Header() {
             </Link>
           </div>
           <div className="flex items-center gap-3">
-            {DEMO_VIDEO_URL ? (
-              <a
-                href={DEMO_VIDEO_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 border-2 border-black bg-[#00e676] px-3 py-2 font-mono text-xs font-bold uppercase tracking-widest text-black shadow-[3px_3px_0_rgba(0,0,0,1)] transition-colors hover:bg-black hover:text-[#00e676]"
-              >
-                <span>▶</span>
-                <span>{t("head.demoLive")}</span>
-              </a>
-            ) : (
-              <span
-                aria-disabled="true"
-                title={t("head.demoSoonTooltip")}
-                className="inline-flex cursor-not-allowed items-center gap-1.5 border-2 border-black bg-white px-3 py-2 font-mono text-xs font-bold uppercase tracking-widest text-gray-500 opacity-70"
-              >
-                <span>▶</span>
-                <span>{t("head.demoSoon")}</span>
-              </span>
-            )}
+            <a
+              href={DEMO_VIDEO_URL || "#"}
+              target={DEMO_VIDEO_URL ? "_blank" : undefined}
+              rel={DEMO_VIDEO_URL ? "noopener noreferrer" : undefined}
+              onClick={(e) => {
+                if (!DEMO_VIDEO_URL) e.preventDefault();
+              }}
+              className="inline-flex items-center gap-1.5 border-2 border-black bg-[#00e676] px-3 py-2 font-mono text-xs font-bold uppercase tracking-widest text-black shadow-[3px_3px_0_rgba(0,0,0,1)] transition-colors hover:bg-black hover:text-[#00e676]"
+            >
+              <span>▶</span>
+              <span>{t("head.demoLive")}</span>
+            </a>
             <LanguageToggle />
             <ConnectButton />
           </div>

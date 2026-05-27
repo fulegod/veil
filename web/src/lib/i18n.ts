@@ -643,9 +643,6 @@ const dict = {
     // Header
     "head.tagline": "SEAL IT. PROVE IT. ISSUE NO. {issue}",
     "head.demoLive": "Live demo · 2 min",
-    "head.demoSoon": "Demo · uploading",
-    "head.demoSoonTooltip":
-      "Demo video is being recorded and will be linked here shortly.",
 
     // /case-files outcome
     "cf.outcome": "OUTCOME",
@@ -1336,9 +1333,6 @@ const dict = {
     // Header
     "head.tagline": "SÉLLALO. PRUÉBALO. ISSUE NO. {issue}",
     "head.demoLive": "Demo live · 2 min",
-    "head.demoSoon": "Demo · subiéndose",
-    "head.demoSoonTooltip":
-      "El video demo se está grabando y aparecerá aquí pronto.",
 
     // /case-files outcome
     "cf.outcome": "RESULTADO",
