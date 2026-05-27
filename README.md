@@ -281,9 +281,22 @@ Tiers (`§02D` on the home) shown as roadmap commitments, not shipped today:
 - **Family** — legal templates + notary partner + insurance overlay.
 - **Enterprise** — REST API, multisig integrations, white-label.
 
+## Team & submission info
+
+|                               |                                                              |
+| ----------------------------- | ------------------------------------------------------------ |
+| **Builder**                   | Juan Palomino                                                |
+| **GitHub**                    | [@fulegod](https://github.com/fulegod)                       |
+| **Email**                     | juanpalominocotera@gmail.com                                 |
+| **Submission wallet** (Braga) | `0x308f31f4021e3F518AAc94724B79644D88746d85`                 |
+| **Submitted to**              | Arkiv × ETHNS Builder Challenge — Privacy track              |
+| **Demo video**                | [youtu.be/xhoP865xgvY](https://youtu.be/xhoP865xgvY) (2 min) |
+
+Prize distribution (if applicable) should go to the submission wallet above. Solo builder, no team.
+
 ## License
 
-MIT.
+[MIT](./LICENSE) — see file for full text.
 
 ---
 
