@@ -97,7 +97,7 @@ export function Header() {
             </Link>
           </div>
           <div className="flex items-center gap-3">
-            {DEMO_VIDEO_URL && (
+            {DEMO_VIDEO_URL ? (
               <a
                 href={DEMO_VIDEO_URL}
                 target="_blank"
@@ -107,6 +107,15 @@ export function Header() {
                 <span>▶</span>
                 <span>{t("head.demoLive")}</span>
               </a>
+            ) : (
+              <span
+                aria-disabled="true"
+                title={t("head.demoSoonTooltip")}
+                className="inline-flex cursor-not-allowed items-center gap-1.5 border-2 border-black bg-white px-3 py-2 font-mono text-xs font-bold uppercase tracking-widest text-gray-500 opacity-70"
+              >
+                <span>▶</span>
+                <span>{t("head.demoSoon")}</span>
+              </span>
             )}
             <LanguageToggle />
             <ConnectButton />
